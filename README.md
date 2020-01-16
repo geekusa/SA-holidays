@@ -1,6 +1,6 @@
 ## SA-holidays
 
-This supporting add-on provides one command -- `holidays`. A wrapper for python-holidays providing holidays, business days, and business holidays when presented a \_time (or specified) field.
+This supporting add-on provides one command -- `holidays`. A wrapper for python-holidays (https://github.com/dr-prodigy/python-holidays) providing holidays, business days, and business holidays when presented a \_time (or specified) field.
 
 Version: 1.0
 
@@ -10,7 +10,7 @@ Command reference:
 
 ## Description
 
-A wrapper for for the python library python-holidays (https://github.com/dr-prodigy/python-holidays) to enrich existing data with timestamps to know if the given timestamp is a holiday, business day, or business holiday (a holiday that occurs on a normal business day). Default settings: country is set to US and timestamp is expected in the `_time` field. This can be helpful for a number of reasons but often for predictions or forecasts as those days usually will mean a difference in the model. 
+A wrapper for for the python library python-holidays (https://github.com/dr-prodigy/python-holidays) to enrich existing data with timestamps to know if the given timestamp is a holiday, business day, or business holiday (a holiday that occurs on a normal business day). Default settings: country is set to US and timestamp is expected in the `_time` field. This can be helpful for a number of reasons but often for predictions or forecasts as those days usually will mean a difference in the model, especially those holidays that land on a business day. 
 
 Supported country, state, and province codes can be found listed on https://github.com/dr-prodigy/python-holidays/blob/master/README.rst
 
