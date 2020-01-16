@@ -16,45 +16,45 @@ Supported country, state, and province codes can be found listed on https://gith
 
 ## Syntax
 
- * | holidays [timefield=<field>] [country=<string>] [province=<string>] [state=<string>] [business\_days=<comma\_sep\_int>] [custom_holiday=<date>]
+ * | holidays [timefield=\<field>] [country=\<string>] [province=\<string>] [state=\<string>] [business\_days=\<comma\_sep\_int>] [custom_holiday=\<date>]
 
 
 ###Optional arguments
 
   **timefield**  
    	**Syntax:** timefield="\<field\>"  
-   	**Description:** The field containing the timestamp in unix epoch, normally this is `_time` which is the default if not set.
-   	**Usage:** i.e. timefield=timestamp
+   	**Description:** The field containing the timestamp in unix epoch, normally this is `_time` which is the default if not set. </br>
+   	**Usage:** i.e. timefield=timestamp </br>
    	**Default:** \_time
 
   **country**  
    	**Syntax:** country="\<string\>"  
-   	**Description:** Country code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to US
-   	**Usage:** i.e. country=DE
+   	**Description:** Country code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to US </br>
+   	**Usage:** i.e. country=DE </br>
    	**Default:** US
 
   **state**  
    	**Syntax:** state="\<string\>"  
-   	**Description:** State code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none
-   	**Usage:** i.e. state=CA
+   	**Description:** State code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none </br>
+   	**Usage:** i.e. state=CA </br>
    	**Default:** None
 
   **province**  
    	**Syntax:** province="\<string\>"  
-   	**Description:** Province code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none
-   	**Usage:** i.e. country=DE province=BW
+   	**Description:** Province code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none </br>
+   	**Usage:** i.e. country=DE province=BW </br>
    	**Default:** None
 
   **business\_days**  
    	**Syntax:** business\_days="\<comma-sep-int\>"  
-   	**Description:** Defaults to Monday-Friday (1-5) but if different days are business days they can be specified using numbers (Saturday and Sunday are 6 and 7 respectively)
-   	**Usage:** i.e. business\_days="2,3,4,5,6,7"
+   	**Description:** Defaults to Monday-Friday (1-5) but if different days are business days they can be specified using numbers (Saturday and Sunday are 6 and 7 respectively) </br>
+   	**Usage:** i.e. business\_days="2,3,4,5,6,7" </br>
    	**Default:** 1,2,3,4,5
 
   **custom\_holiday**  
    	**Syntax:** custom\_holiday="\<date\>"  
-   	**Description:** Ability to supply a date string for a non-standard holiday.
-   	**Usage:** i.e. custom\_holiday="2020-01-16"
+   	**Description:** Ability to supply a date string for a non-standard holiday. </br>
+   	**Usage:** i.e. custom\_holiday="2020-01-16" </br>
    	**Default:** None
 
 ##Examples
