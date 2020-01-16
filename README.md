@@ -19,7 +19,7 @@ Supported country, state, and province codes can be found listed on https://gith
  * | holidays [timefield=\<field>] [country=\<string>] [province=\<string>] [state=\<string>] [business\_days=\<comma\_sep\_int>] [custom_holiday=\<date>]
 
 
-###Optional arguments
+### Optional arguments
 
   **timefield**  
    	**Syntax:** timefield="\<field\>"  
@@ -57,24 +57,24 @@ Supported country, state, and province codes can be found listed on https://gith
    	**Usage:** i.e. custom\_holiday="2020-01-16" </br>
    	**Default:** None
 
-##Examples
+## Examples
 
-###**1: Enrich existing \_time field with US holidays**###
+### **1: Enrich existing \_time field with US holidays**
 
 `* | holidays`
 
-###**2: Enrich existing \_time field with US holidays in California**###
+### **2: Enrich existing \_time field with US holidays in California**
 
 `* | holidays state=CA`
 
-###**3: Add custom holiday**###
+### **3: Add custom holiday**
 
 `* | holidays custom_holiday="Jan 16,2020"`
 
-###**4: Hong Kong holidays**###
+### **4: Hong Kong holidays**
 
 `* | holidays country=HK`
 
-###**5: Baden-Württemberg province in Germany holidays**###
+### **5: Baden-Württemberg province in Germany holidays**
 
 `* | holidays country=DE province=BW`
