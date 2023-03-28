@@ -1,8 +1,8 @@
 ## SA-holidays
 
-This supporting add-on provides one command -- `holidays`. A wrapper for python-holidays (https://github.com/dr-prodigy/python-holidays) providing holidays, business days, and business holidays when presented a \_time (or specified) field.
+This supporting add-on provides one command -- `holidays`. A wrapper for python-holidays providing holidays, business days, and business holidays when presented a \_time (or specified) field.
 
-Version: 1.0
+Version: 1.1.0
 
 Command reference:
 
@@ -10,71 +10,74 @@ Command reference:
 
 ## Description
 
-A wrapper for for the python library python-holidays (https://github.com/dr-prodigy/python-holidays) to enrich existing data with timestamps to know if the given timestamp is a holiday, business day, or business holiday (a holiday that occurs on a normal business day). Default settings: country is set to US and timestamp is expected in the `_time` field. This can be helpful for a number of reasons but often for predictions or forecasts as those days usually will mean a difference in the model, especially those holidays that land on a business day. 
+A wrapper for for the python library python-holidays (https://github.com/dr-prodigy/python-holidays) to enrich existing data with timestamps to know if the given timestamp is a holiday, business day, or business holiday (a holiday that occurs on a normal business day). Default settings: country is set to US and timestamp is expected in the `_time` field.
 
 Supported country, state, and province codes can be found listed on https://github.com/dr-prodigy/python-holidays/blob/master/README.rst
 
 ## Syntax
 
- * | holidays [timefield=\<field>] [country=\<string>] [province=\<string>] [state=\<string>] [business\_days=\<comma\_sep\_int>] [custom_holiday=\<date>]
+ * | holidays [timefield=<field>] [country=<string>] [province=<string>] [state=<string>] [business\_days=<comma\_sep\_int>] [custom_holiday=<date>]
 
 
-### Optional arguments
+###Optional arguments
 
   **timefield**  
    	**Syntax:** timefield="\<field\>"  
-   	**Description:** The field containing the timestamp in unix epoch, normally this is `_time` which is the default if not set. </br>
-   	**Usage:** i.e. timefield=timestamp </br>
+   	**Description:** The field containing the timestamp in unix epoch, normally this is `_time` which is the default if not set.
+   	**Usage:** i.e. timefield=timestamp
    	**Default:** \_time
 
   **country**  
    	**Syntax:** country="\<string\>"  
-   	**Description:** Country code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to US </br>
-   	**Usage:** i.e. country=DE </br>
+   	**Description:** Country code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to US
+   	**Usage:** i.e. country=DE
    	**Default:** US
 
   **state**  
    	**Syntax:** state="\<string\>"  
-   	**Description:** State code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none </br>
-   	**Usage:** i.e. state=CA </br>
+   	**Description:** State code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none
+   	**Usage:** i.e. state=CA
    	**Default:** None
 
   **province**  
    	**Syntax:** province="\<string\>"  
-   	**Description:** Province code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none </br>
-   	**Usage:** i.e. country=DE province=BW </br>
+   	**Description:** Province code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none
+   	**Usage:** i.e. country=DE province=BW
    	**Default:** None
 
   **business\_days**  
    	**Syntax:** business\_days="\<comma-sep-int\>"  
-   	**Description:** Defaults to Monday-Friday (1-5) but if different days are business days they can be specified using numbers (Saturday and Sunday are 6 and 7 respectively) </br>
-   	**Usage:** i.e. business\_days="2,3,4,5,6,7" </br>
+   	**Description:** Defaults to Monday-Friday (1-5) but if different days are business days they can be specified using numbers (Saturday and Sunday are 6 and 7 respectively)
+   	**Usage:** i.e. business\_days="2,3,4,5,6,7"
    	**Default:** 1,2,3,4,5
 
   **custom\_holiday**  
    	**Syntax:** custom\_holiday="\<date\>"  
-   	**Description:** Ability to supply a date string for a non-standard holiday. </br>
-   	**Usage:** i.e. custom\_holiday="2020-01-16" </br>
+   	**Description:** Ability to supply a date string for a non-standard holiday.
+   	**Usage:** i.e. custom\_holiday="2020-01-16"
    	**Default:** None
 
-## Examples
+##Examples
 
-### **1: Enrich existing \_time field with US holidays**
+###**1: Enrich existing \_time field with US holidays**###
 
 `* | holidays`
 
-### **2: Enrich existing \_time field with US holidays in California**
+###**2: Enrich existing \_time field with US holidays in California**###
 
 `* | holidays state=CA`
 
-### **3: Add custom holiday**
+###**3: Add custom holiday**###
 
 `* | holidays custom_holiday="Jan 16,2020"`
 
-### **4: Hong Kong holidays**
+###**4: Hong Kong holidays**###
 
 `* | holidays country=HK`
 
-### **5: Baden-Württemberg province in Germany holidays**
+###**5: Baden-Württemberg province in Germany holidays**###
 
 `* | holidays country=DE province=BW`
+
+### Release Notes
+Updated splunklib from 1.6.11 to 1.6.18. Updated python-holidays from 0.9.12 to 0.12. Added new dependencies for python-holidays--convertdate, hijri_converter, korean_lunar_calendar, and pymeeus.

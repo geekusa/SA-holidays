@@ -80,8 +80,8 @@ class MakeHolidays(StreamingCommand):
     def stream(self, records):
         holiday_list = holidays.CountryHoliday(
              self.country,
-             self.province,
-             self.state
+             prov=self.province,
+             state=self.state
         )
         if self.custom_holiday:
              holiday_list.append([self.custom_holiday])
