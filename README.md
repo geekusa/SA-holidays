@@ -2,7 +2,7 @@
 
 This supporting add-on provides one command -- `holidays`. A wrapper for python-holidays providing holidays, business days, and business holidays when presented a \_time (or specified) field.
 
-Version: 1.1.0
+Version: 1.2.0
 
 Command reference:
 
@@ -33,15 +33,21 @@ Supported country, state, and province codes can be found listed on https://gith
    	**Usage:** i.e. country=DE
    	**Default:** US
 
+  **subdiv**  
+   	**Syntax:** subdiv="\<string\>"  
+   	**Description:** Subdivision code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none
+   	**Usage:** i.e. country=US subdiv=PR
+   	**Default:** None
+
   **state**  
    	**Syntax:** state="\<string\>"  
-   	**Description:** State code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none
+   	**Description:** Deprecated--Subdivision code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none
    	**Usage:** i.e. state=CA
    	**Default:** None
 
   **province**  
    	**Syntax:** province="\<string\>"  
-   	**Description:** Province code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none
+   	**Description:** Deprecated--Subdivision code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none
    	**Usage:** i.e. country=DE province=BW
    	**Default:** None
 
@@ -57,6 +63,12 @@ Supported country, state, and province codes can be found listed on https://gith
    	**Usage:** i.e. custom\_holiday="2020-01-16"
    	**Default:** None
 
+  **language**  
+   	**Syntax:** language="\<string\>"  
+   	**Description:** Language code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none
+   	**Usage:** i.e. country=MX language=es
+   	**Default:** None
+
 ##Examples
 
 ###**1: Enrich existing \_time field with US holidays**###
@@ -65,7 +77,7 @@ Supported country, state, and province codes can be found listed on https://gith
 
 ###**2: Enrich existing \_time field with US holidays in California**###
 
-`* | holidays state=CA`
+`* | holidays subdiv=CA`
 
 ###**3: Add custom holiday**###
 
@@ -77,7 +89,11 @@ Supported country, state, and province codes can be found listed on https://gith
 
 ###**5: Baden-Württemberg province in Germany holidays**###
 
-`* | holidays country=DE province=BW`
+`* | holidays country=DE subdiv=BW`
+
+###**6: Cuban holidays in Spanish**###
+
+`* | holidays country=CU language=es`
 
 ### Release Notes
-Updated splunklib from 1.6.11 to 1.6.18. Updated python-holidays from 0.9.12 to 0.12. Added new dependencies for python-holidays--convertdate, hijri_converter, korean_lunar_calendar, and pymeeus.
+Updated splunklib from 1.6.18 to 1.7.3. Updated python-holidays from 0.12 to 0.21.13. Added new dependencies for python-holidays--backports. Added subdiv and language options (subdiv is now preferred over state and province).

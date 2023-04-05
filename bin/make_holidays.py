@@ -49,18 +49,25 @@ class MakeHolidays(StreamingCommand):
         **Description:** Country code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to US''',
         )
 
+    subdiv = Option(
+        default=None,
+        doc='''
+        **Syntax:** **subdiv=***<string>*
+        **Description:** Subdivision code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to None''',
+        )
+
     province = Option(
         default=None,
         doc='''
         **Syntax:** **province=***<string>*
-        **Description:** Province code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to None''',
+        **Description:** Deprecated--Subdivision code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to None''',
         )
 
     state = Option(
         default=None,
         doc='''
         **Syntax:** **state=***<string>*
-        **Description:** State code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to None''',
+        **Description:** Deprecated--Subdivision code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to None''',
         )
 
     business_days = Option(
@@ -77,11 +84,29 @@ class MakeHolidays(StreamingCommand):
         **Description:** Ability to supply a date for a non-standard holiday.''',
         )
 
+    language = Option(
+        default=None,
+        doc='''
+        **Syntax:** **language=***<string>*
+        **Description:** Language code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to None''',
+        )
+  
+    def subdiv_option(self):
+        if self.subdiv:
+            return self.subdiv
+        elif self.state:
+            return self.state
+        elif self.province:
+            return self.province
+        else:
+            return None
+      
+
     def stream(self, records):
-        holiday_list = holidays.CountryHoliday(
+        holiday_list = holidays.country_holidays(
              self.country,
-             prov=self.province,
-             state=self.state
+             subdiv=self.subdiv_option(),
+             language=self.language
         )
         if self.custom_holiday:
              holiday_list.append([self.custom_holiday])
