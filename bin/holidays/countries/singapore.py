@@ -1,52 +1,53 @@
-#  python-holidays
-#  ---------------
+#  holidays
+#  --------
 #  A fast, efficient Python library for generating country, province and state
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
+#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
-#  Website: https://github.com/dr-prodigy/python-holidays
+#  Website: https://github.com/vacanza/holidays
 #  License: MIT (see LICENSE file)
 
-from datetime import date
-from datetime import timedelta as td
-from typing import Dict, Iterable, Optional, Tuple, Union
+from gettext import gettext as tr
 
-from dateutil.easter import easter
+from holidays.calendars import (
+    _CustomBuddhistHolidays,
+    _CustomChineseHolidays,
+    _CustomIslamicHolidays,
+    _CustomHinduHolidays,
+)
+from holidays.calendars.gregorian import JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC
+from holidays.groups import (
+    BuddhistCalendarHolidays,
+    ChineseCalendarHolidays,
+    ChristianHolidays,
+    HinduCalendarHolidays,
+    InternationalHolidays,
+    IslamicHolidays,
+    StaticHolidays,
+)
+from holidays.observed_holiday_base import ObservedHolidayBase, SUN_TO_NEXT_WORKDAY
 
-from holidays.calendars import _ChineseLuniSolar, _islamic_to_gre
-from holidays.constants import JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP
-from holidays.constants import OCT, NOV, DEC
-from holidays.holiday_base import HolidayBase
 
-
-class Singapore(HolidayBase):
+class Singapore(
+    ObservedHolidayBase,
+    BuddhistCalendarHolidays,
+    ChineseCalendarHolidays,
+    ChristianHolidays,
+    HinduCalendarHolidays,
+    InternationalHolidays,
+    IslamicHolidays,
+    StaticHolidays,
+):
     country = "SG"
-    special_holidays = {
-        2001: ((NOV, 3, "Polling Day"),),
-        2006: ((MAY, 6, "Polling Day"),),
-        2011: ((MAY, 7, "Polling Day"),),
-        2015: (
-            # SG50 Public holiday
-            # Announced on 14 March 2015
-            # https://www.mom.gov.sg/newsroom/press-releases/2015/sg50-public-holiday-on-7-august-2015
-            (AUG, 7, "SG50 Public Holiday"),
-            (SEP, 11, "Polling Day"),
-        ),
-        2020: ((JUL, 10, "Polling Day"),),
-    }
+    default_language = "en_SG"
+    # %s (observed).
+    observed_label = tr("%s (observed)")
+    supported_languages = ("en_SG", "en_US", "th")
 
-    def __init__(
-        self,
-        years: Optional[Union[int, Iterable[int]]] = None,
-        expand: bool = True,
-        observed: bool = True,
-        subdiv: Optional[str] = None,
-        prov: Optional[str] = None,
-        state: Optional[str] = None,
-        language: Optional[str] = None,
-    ) -> None:
+    def __init__(self, *args, **kwargs):
         """
         A subclass of :py:class:`HolidayBase` representing public holidays in
         Singapore.
@@ -80,251 +81,257 @@ class Singapore(HolidayBase):
 
         See parameters and usage in :py:class:`HolidayBase`.
         """
-
-        self.cnls = _ChineseLuniSolar()
-        super().__init__(
-            years, expand, observed, subdiv, prov, state, language
-        )
-
-    def _populate(self, year) -> None:
+        BuddhistCalendarHolidays.__init__(self, cls=SingaporeBuddhistHolidays, show_estimated=True)
+        ChineseCalendarHolidays.__init__(self, cls=SingaporeChineseHolidays, show_estimated=True)
+        ChristianHolidays.__init__(self)
+        HinduCalendarHolidays.__init__(self, cls=SingaporeHinduHolidays)
+        InternationalHolidays.__init__(self)
+        IslamicHolidays.__init__(self, cls=SingaporeIslamicHolidays)
+        StaticHolidays.__init__(self, cls=SingaporeStaticHolidays)
         # Implement Section 4(2) of the Holidays Act:
         # "if any day specified in the Schedule falls on a Sunday,
         # the day next following not being itself a public holiday
         # is declared a public holiday in Singapore."
-        def _add_with_observed(
-            hol_date: date, hol_name: str, days: int = +1
-        ) -> None:
-            self[hol_date] = hol_name
-            if self.observed and self._is_sunday(hol_date) and year >= 1998:
-                self[hol_date + td(days=days)] = f"{hol_name} (Observed)"
+        kwargs.setdefault("observed_rule", SUN_TO_NEXT_WORKDAY)
+        kwargs.setdefault("observed_since", 1998)
+        super().__init__(*args, **kwargs)
 
-        super()._populate(year)
+    def _populate_public_holidays(self) -> None:
+        dts_observed = set()
 
-        # New Year's Day
-        _add_with_observed(date(year, JAN, 1), "New Year's Day")
+        # New Year's Day.
+        dts_observed.add(self._add_new_years_day(tr("New Year's Day")))
 
-        # Chinese New Year (two days)
-        hol_date = self.cnls.lunar_n_y_date(year)
-        _add_with_observed(hol_date, "Chinese New Year", days=+2)
-        _add_with_observed(hol_date + td(days=+1), "Chinese New Year")
+        # Chinese New Year.
+        name = tr("Chinese New Year")
+        dts_observed.add(self._add_chinese_new_years_day(name))  # type: ignore[arg-type]
+        dts_observed.add(self._add_chinese_new_years_day_two(name))  # type: ignore[arg-type]
 
-        # Hari Raya Puasa
-        # aka Eid al-Fitr
-        # Date of observance is announced yearly.
-        # An Islamic holiday could fall twice in the same Gregorian year.
-        dates_fixed_multiple_obs: Dict[int, Tuple[Tuple[int, int], ...]] = {
-            2001: ((DEC, 16),),
-            2002: ((DEC, 6),),
-            2003: ((NOV, 25),),
-            2004: ((NOV, 14),),
-            2005: ((NOV, 3),),
-            2006: ((OCT, 24),),
-            2007: ((OCT, 13),),
-            2008: ((OCT, 1),),
-            2009: ((SEP, 20),),
-            2010: ((SEP, 10),),
-            2011: ((AUG, 30),),
-            2012: ((AUG, 19),),
-            2013: ((AUG, 8),),
-            2014: ((JUL, 28),),
-            2015: ((JUL, 17),),
-            2016: ((JUL, 6),),
-            2017: ((JUN, 25),),
-            2018: ((JUN, 15),),
-            2019: ((JUN, 5),),
-            2020: ((MAY, 24),),
-            2021: ((MAY, 13),),
-            2022: ((MAY, 3),),
-            2023: ((APR, 22),),
-        }
-        if year in dates_fixed_multiple_obs:
-            for month_day in dates_fixed_multiple_obs[year]:
-                hol_date = date(year, *month_day)
-                _add_with_observed(hol_date, "Hari Raya Puasa")
-                # Second day of Hari Raya Puasa (up to and including 1968)
-                # Removed since we don't have Hari Raya Puasa dates for the
-                # the years <= 1968.
-        else:
-            for hol_date in _islamic_to_gre(year, 10, 1):
-                _add_with_observed(hol_date, "Hari Raya Puasa* (*estimated)")
-                # Second day of Hari Raya Puasa (up to and including 1968)
-                if year <= 1968:
-                    self[
-                        hol_date + td(days=+1)
-                    ] = "Second day of Hari Raya Puasa* (*estimated)"
+        # Eid al-Fitr.
+        dts_observed.update(self._add_eid_al_fitr_day(tr("Hari Raya Puasa")))
+        if self._year <= 1968:
+            # Second Day of Eid al-Fitr.
+            self._add_eid_al_fitr_day_two(tr("Second Day of Hari Raya Puasa"))
 
-        # Hari Raya Haji
-        # aka Eid al-Adha
-        # Date of observance is announced yearly.
-        # An Islamic holiday could fall twice in the same Gregorian year.
-        dates_fixed_multiple_obs = {
-            2001: ((MAR, 6),),
-            2002: ((FEB, 23),),
-            2003: ((FEB, 12),),
-            2004: ((FEB, 1),),
-            2005: ((JAN, 21),),
-            2006: ((JAN, 10), (DEC, 31)),
-            2007: ((DEC, 20),),
-            2008: ((DEC, 8),),
-            2009: ((NOV, 27),),
-            2010: ((NOV, 17),),
-            2011: ((NOV, 6),),
-            2012: ((OCT, 26),),
-            2013: ((OCT, 15),),
-            2014: ((OCT, 5),),
-            2015: ((SEP, 24),),
-            2016: ((SEP, 12),),
-            2017: ((SEP, 1),),
-            2018: ((AUG, 22),),
-            2019: ((AUG, 11),),
-            2020: ((JUL, 31),),
-            2021: ((JUL, 20),),
-            2022: ((JUL, 10),),
-            2023: ((JUN, 29),),
-        }
-        if year in dates_fixed_multiple_obs:
-            for month_day in dates_fixed_multiple_obs[year]:
-                hol_date = date(year, *month_day)
-                if year == 2006:
-                    self[hol_date] = "Hari Raya Haji"
-                else:
-                    _add_with_observed(hol_date, "Hari Raya Haji")
-        else:
-            for hol_date in _islamic_to_gre(year, 12, 10):
-                _add_with_observed(hol_date, "Hari Raya Haji* (*estimated)")
+        # Eid al-Adha.
+        dts_observed.update(self._add_eid_al_adha_day(tr("Hari Raya Haji")))
 
-        easter_date = easter(year)
-        # Good Friday
-        self[easter_date + td(days=-2)] = "Good Friday"
+        # Good Friday.
+        self._add_good_friday(tr("Good Friday"))
 
-        if year <= 1968:
-            # Holy Saturday
-            self[easter_date + td(days=-1)] = "Holy Saturday"
+        if self._year <= 1968:
+            # Holy Saturday.
+            self._add_holy_saturday(tr("Holy Saturday"))
 
-            # Easter Monday
-            self[easter_date + td(days=+1)] = "Easter Monday"
+            # Easter Monday.
+            self._add_easter_monday(tr("Easter Monday"))
 
-        # Labour Day
-        _add_with_observed(date(year, MAY, 1), "Labour Day")
+        # Labor Day.
+        dts_observed.add(self._add_labor_day(tr("Labour Day")))
 
-        # Vesak Day
-        # date of observance is announced yearly
-        # https://en.wikipedia.org/wiki/Vesak#Dates_of_observance
-        dates_fixed_obs: Dict[int, Tuple[int, int]] = {
-            2001: (MAY, 7),
-            2002: (MAY, 26),
-            2003: (MAY, 15),
-            2004: (JUN, 2),
-            2005: (MAY, 22),
-            2006: (MAY, 12),
-            2007: (MAY, 31),
-            2008: (MAY, 19),
-            2009: (MAY, 9),
-            2010: (MAY, 28),
-            2011: (MAY, 17),
-            2012: (MAY, 5),
-            2013: (MAY, 24),
-            2014: (MAY, 13),
-            2015: (JUN, 1),
-            2016: (MAY, 21),
-            2017: (MAY, 10),
-            2018: (MAY, 29),
-            2019: (MAY, 19),
-            2020: (MAY, 7),
-            2021: (MAY, 26),
-            2022: (MAY, 15),
-            # 2023 date revised by MOM on 29-sep-22
-            # https://www.mom.gov.sg/newsroom/press-releases/2022/0929-revised-date-for-vesak-day-2023
-            2023: (JUN, 2),
-        }
-        if year in dates_fixed_obs:
-            hol_date = date(year, *dates_fixed_obs[year])
-            _add_with_observed(hol_date, "Vesak Day")
-        else:
-            hol_date = self.cnls.vesak_date(year)
-            _add_with_observed(hol_date, "Vesak Day* (*estimated)")
+        # Vesak Day.
+        dts_observed.add(self._add_vesak(tr("Vesak Day")))  # type: ignore[arg-type]
 
-        # National Day
-        _add_with_observed(date(year, AUG, 9), "National Day")
+        # National Day.
+        dts_observed.add(self._add_holiday_aug_9(tr("National Day")))
 
-        # Deepavali
-        # aka Diwali
-        # date of observance is announced yearly
-        dates_fixed_obs = {
-            2001: (NOV, 14),
-            2002: (NOV, 3),
-            2003: (OCT, 23),
-            2004: (NOV, 11),
-            2005: (NOV, 1),
-            2006: (OCT, 21),
-            2007: (NOV, 8),
-            2008: (OCT, 27),
-            2009: (NOV, 15),
-            2010: (NOV, 5),
-            2011: (OCT, 26),
-            2012: (NOV, 13),
-            2013: (NOV, 2),
-            2014: (OCT, 22),
-            2015: (NOV, 10),
-            2016: (OCT, 29),
-            2017: (OCT, 18),
-            2018: (NOV, 6),
-            2019: (OCT, 27),
-            2020: (NOV, 14),
-            2021: (NOV, 4),
-            2022: (OCT, 24),
-            2023: (NOV, 12),
-        }
-        if year in dates_fixed_obs:
-            hol_date = date(year, *dates_fixed_obs[year])
-            _add_with_observed(hol_date, "Deepavali")
-        else:
-            hol_date = self.cnls.s_diwali_date(year)
-            _add_with_observed(hol_date, "Deepavali* (*estimated)")
+        # Deepavali.
+        dts_observed.add(self._add_diwali(tr("Deepavali")))  # type: ignore[arg-type]
 
-        # Christmas Day
-        _add_with_observed(
-            date(year, DEC, 25), "Christmas Day", +2 if year == 2039 else +1
-        )
+        # Christmas Day.
+        dts_observed.add(self._add_christmas_day(tr("Christmas Day")))
 
-        # Boxing day (up to and including 1968)
-        if year <= 1968:
-            self[date(year, DEC, 26)] = "Boxing Day"
+        if self._year <= 1968:
+            # Boxing day.
+            self._add_christmas_day_two(tr("Boxing Day"))
 
-        # special case (observed from previuos year)
-        if self.observed and year == 2007:
-            self[date(2007, JAN, 2)] = "Hari Raya Haji (Observed)"
+        if self.observed:
+            self._populate_observed(dts_observed)
 
 
 class SG(Singapore):
-    # __init__ required for IDE typing and inheritance of docstring.
-    def __init__(
-        self,
-        years: Optional[Union[int, Iterable[int]]] = None,
-        expand: bool = True,
-        observed: bool = True,
-        subdiv: Optional[str] = None,
-        prov: Optional[str] = None,
-        state: Optional[str] = None,
-        language: Optional[str] = None,
-    ) -> None:
-        super().__init__(
-            years, expand, observed, subdiv, prov, state, language
-        )
+    pass
 
 
 class SGP(Singapore):
-    # __init__ required for IDE typing and inheritance of docstring.
-    def __init__(
-        self,
-        years: Optional[Union[int, Iterable[int]]] = None,
-        expand: bool = True,
-        observed: bool = True,
-        subdiv: Optional[str] = None,
-        prov: Optional[str] = None,
-        state: Optional[str] = None,
-        language: Optional[str] = None,
-    ) -> None:
-        super().__init__(
-            years, expand, observed, subdiv, prov, state, language
-        )
+    pass
+
+
+class SingaporeBuddhistHolidays(_CustomBuddhistHolidays):
+    VESAK_DATES = {
+        2001: (MAY, 7),
+        2002: (MAY, 26),
+        2003: (MAY, 15),
+        2004: (JUN, 2),
+        2005: (MAY, 22),
+        2006: (MAY, 12),
+        2007: (MAY, 31),
+        2008: (MAY, 19),
+        2009: (MAY, 9),
+        2010: (MAY, 28),
+        2011: (MAY, 17),
+        2012: (MAY, 5),
+        2013: (MAY, 24),
+        2014: (MAY, 13),
+        2015: (JUN, 1),
+        2016: (MAY, 21),
+        2017: (MAY, 10),
+        2018: (MAY, 29),
+        2019: (MAY, 19),
+        2020: (MAY, 7),
+        2021: (MAY, 26),
+        2022: (MAY, 15),
+        2023: (JUN, 2),
+        2024: (MAY, 22),
+        2025: (MAY, 12),
+    }
+
+
+class SingaporeChineseHolidays(_CustomChineseHolidays):
+    LUNAR_NEW_YEAR_DATES = {
+        2001: (JAN, 24),
+        2002: (FEB, 12),
+        2003: (FEB, 1),
+        2004: (JAN, 22),
+        2005: (FEB, 9),
+        2006: (JAN, 30),
+        2007: (FEB, 19),
+        2008: (FEB, 7),
+        2009: (JAN, 26),
+        2010: (FEB, 14),
+        2011: (FEB, 3),
+        2012: (JAN, 23),
+        2013: (FEB, 10),
+        2014: (JAN, 31),
+        2015: (FEB, 19),
+        2016: (FEB, 8),
+        2017: (JAN, 28),
+        2018: (FEB, 16),
+        2019: (FEB, 5),
+        2020: (JAN, 25),
+        2021: (FEB, 12),
+        2022: (FEB, 1),
+        2023: (JAN, 22),
+        2024: (FEB, 10),
+        2025: (JAN, 29),
+    }
+
+
+class SingaporeHinduHolidays(_CustomHinduHolidays):
+    # Deepavali
+    DIWALI_DATES = {
+        2001: (NOV, 14),
+        2002: (NOV, 3),
+        2003: (OCT, 23),
+        2004: (NOV, 11),
+        2005: (NOV, 1),
+        2006: (OCT, 21),
+        2007: (NOV, 8),
+        2008: (OCT, 27),
+        2009: (NOV, 15),
+        2010: (NOV, 5),
+        2011: (OCT, 26),
+        2012: (NOV, 13),
+        2013: (NOV, 2),
+        2014: (OCT, 22),
+        2015: (NOV, 10),
+        2016: (OCT, 29),
+        2017: (OCT, 18),
+        2018: (NOV, 6),
+        2019: (OCT, 27),
+        2020: (NOV, 14),
+        2021: (NOV, 4),
+        2022: (OCT, 24),
+        2023: (NOV, 12),
+        2024: (OCT, 31),
+        2025: (OCT, 20),
+    }
+
+
+class SingaporeIslamicHolidays(_CustomIslamicHolidays):
+    # Hari Raya Haji
+    EID_AL_ADHA_DATES = {
+        2001: (MAR, 6),
+        2002: (FEB, 23),
+        2003: (FEB, 12),
+        2004: (FEB, 1),
+        2005: (JAN, 21),
+        2006: ((JAN, 10), (DEC, 31)),
+        2007: (DEC, 20),
+        2008: (DEC, 8),
+        2009: (NOV, 27),
+        2010: (NOV, 17),
+        2011: (NOV, 6),
+        2012: (OCT, 26),
+        2013: (OCT, 15),
+        2014: (OCT, 5),
+        2015: (SEP, 24),
+        2016: (SEP, 12),
+        2017: (SEP, 1),
+        2018: (AUG, 22),
+        2019: (AUG, 11),
+        2020: (JUL, 31),
+        2021: (JUL, 20),
+        2022: (JUL, 10),
+        2023: (JUN, 29),
+        2024: (JUN, 17),
+        2025: (JUN, 7),
+    }
+
+    # Hari Raya Puasa
+    EID_AL_FITR_DATES = {
+        2001: (DEC, 16),
+        2002: (DEC, 6),
+        2003: (NOV, 25),
+        2004: (NOV, 14),
+        2005: (NOV, 3),
+        2006: (OCT, 24),
+        2007: (OCT, 13),
+        2008: (OCT, 1),
+        2009: (SEP, 20),
+        2010: (SEP, 10),
+        2011: (AUG, 30),
+        2012: (AUG, 19),
+        2013: (AUG, 8),
+        2014: (JUL, 28),
+        2015: (JUL, 17),
+        2016: (JUL, 6),
+        2017: (JUN, 25),
+        2018: (JUN, 15),
+        2019: (JUN, 5),
+        2020: (MAY, 24),
+        2021: (MAY, 13),
+        2022: (MAY, 3),
+        2023: (APR, 22),
+        2024: (APR, 10),
+        2025: (MAR, 31),
+    }
+
+
+class SingaporeStaticHolidays:
+    """
+    References
+     - https://www.mom.gov.sg/newsroom/press-releases/2015/sg50-public-holiday-on-7-august-2015
+     - https://www.straitstimes.com/singapore/politics/singapore-presidential-election-2023-polling-day-on-sept-1-nomination-day-on-aug-22
+    """
+
+    # Polling Day.
+    polling_day_name = tr("Polling Day")
+
+    special_public_holidays = {
+        2001: (NOV, 3, polling_day_name),
+        2006: (MAY, 6, polling_day_name),
+        2011: (MAY, 7, polling_day_name),
+        2015: (
+            # SG50 Public Holiday.
+            (AUG, 7, tr("SG50 Public Holiday")),
+            (SEP, 11, polling_day_name),
+        ),
+        2020: (JUL, 10, polling_day_name),
+        2023: (SEP, 1, polling_day_name),
+    }
+
+    special_public_holidays_observed = {
+        # Eid al-Adha.
+        2007: (JAN, 2, tr("Hari Raya Haji")),
+    }

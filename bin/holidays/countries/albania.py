@@ -1,115 +1,120 @@
-#  python-holidays
-#  ---------------
+#  holidays
+#  --------
 #  A fast, efficient Python library for generating country, province and state
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: dr-prodigy <maurizio.montel@gmail.com> (c) 2017-2022
+#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
-#  Website: https://github.com/dr-prodigy/python-holidays
+#  Website: https://github.com/vacanza/holidays
 #  License: MIT (see LICENSE file)
 
-from datetime import date
-from datetime import timedelta as td
+from gettext import gettext as tr
 
-from dateutil.easter import EASTER_ORTHODOX, easter
+from holidays.calendars import _CustomIslamicHolidays
+from holidays.calendars.gregorian import JAN, MAR, APR, MAY, JUN, JUL, AUG
+from holidays.calendars.julian import JULIAN_CALENDAR
+from holidays.groups import (
+    ChristianHolidays,
+    InternationalHolidays,
+    IslamicHolidays,
+    StaticHolidays,
+)
+from holidays.observed_holiday_base import ObservedHolidayBase, SAT_SUN_TO_NEXT_WORKDAY
 
-from holidays.calendars import _islamic_to_gre
-from holidays.constants import JAN, MAR, MAY, SEP, OCT, NOV, DEC
-from holidays.holiday_base import HolidayBase
 
-
-class Albania(HolidayBase):
+class Albania(
+    ObservedHolidayBase, ChristianHolidays, InternationalHolidays, IslamicHolidays, StaticHolidays
+):
     """
     References:
-      - https://en.wikipedia.org/wiki/Public_holidays_in_Albania
+        - https://en.wikipedia.org/wiki/Public_holidays_in_Albania
+        - `Law No. 7651 <http://kqk.gov.al/sites/default/files/publikime/ligj_7651_-_per_festat_zyrtare_e_ditet_perkujtimore.pdf>`_
+        - `Holidays for 2018–2024 <https://www.bankofalbania.org/Shtypi/Kalendari_i_festave_zyrtare_2024/>`_
     """
 
     country = "AL"
-    special_holidays = {
-        2022: ((MAR, 21, "Public Holiday"),),
-    }
+    default_language = "sq"
+    # %s (estimated).
+    estimated_label = tr("%s (e vlerësuar)")
+    # %s (observed).
+    observed_label = tr("%s (ditë pushimi e shtyrë)")
+    # %s (observed, estimated).
+    observed_estimated_label = tr("%s (ditë pushimi e shtyrë, e vlerësuar)")
+    supported_languages = ("en_US", "sq", "uk")
 
-    def _populate(self, year: int) -> None:
-        def _add_with_observed(
-            hol_date: date, hol_name: str, days: int = +1
-        ) -> None:
-            self[hol_date] = hol_name
-            if self.observed and self._is_weekend(hol_date):
-                self[
-                    hol_date
-                    + td(days=+2 if self._is_saturday(hol_date) else days)
-                ] = f"{hol_name} (Observed)"
+    def __init__(self, *args, **kwargs):
+        ChristianHolidays.__init__(self)
+        InternationalHolidays.__init__(self)
+        IslamicHolidays.__init__(self, AlbaniaIslamicHolidays)
+        StaticHolidays.__init__(self, AlbaniaStaticHolidays)
+        kwargs.setdefault("observed_rule", SAT_SUN_TO_NEXT_WORKDAY)
+        super().__init__(*args, **kwargs)
 
-        super()._populate(year)
+    def _populate_public_holidays(self):
+        # Law No. 7651 from 21.12.1992.
+        if self._year <= 1992:
+            return None
+
+        dts_observed = set()
 
         # New Year's Day.
-        name = "New Year's Day"
-        _add_with_observed(date(year, JAN, 1), name, days=+2)
-        _add_with_observed(date(year, JAN, 2), name, days=+2)
+        name = tr("Festat e Vitit të Ri")
+        dts_observed.add(self._add_new_years_day(name))
+        dts_observed.add(self._add_new_years_day_two(name))
 
-        # Summer Day.
-        if year >= 2004:
-            _add_with_observed(date(year, MAR, 14), "Summer Day")
+        if self._year >= 2004:
+            # Summer Day.
+            dts_observed.add(self._add_holiday_mar_14(tr("Dita e Verës")))
 
-        # Nevruz.
-        if year >= 1996:
-            _add_with_observed(date(year, MAR, 22), "Nevruz")
+        if self._year >= 1996:
+            # Nowruz Day.
+            dts_observed.add(self._add_holiday_mar_22(tr("Dita e Nevruzit")))
 
-        # Easter.
-        _add_with_observed(
-            easter(year),
-            "Catholic Easter",
-            days=+2 if year == 2008 else +1,
-        )
-        _add_with_observed(
-            easter(year, method=EASTER_ORTHODOX),
-            "Orthodox Easter",
-            days=+2
-            if year in {1989, 2000, 2021, 2027, 2032, 2062, 2073, 2084}
-            else +1,
+        # Catholic Easter Sunday.
+        dts_observed.add(self._add_easter_sunday(tr("E diela e Pashkëve Katolike")))
+
+        dts_observed.add(
+            # Orthodox Easter Sunday.
+            self._add_easter_sunday(tr("E diela e Pashkëve Ortodokse"), JULIAN_CALENDAR)
         )
 
-        # May Day.
-        _add_with_observed(date(year, MAY, 1), "May Day")
+        # International Workers' Day.
+        dts_observed.add(self._add_labor_day(tr("Dita Ndërkombëtare e Punëtorëve")))
 
-        # Mother Teresa Day.
-        if 2004 <= year <= 2017:
-            _add_with_observed(
-                date(year, OCT, 19), "Mother Teresa Beatification Day"
-            )
-        elif year >= 2018:
-            _add_with_observed(
-                date(year, SEP, 5), "Mother Teresa Canonisation Day"
-            )
+        if 2004 <= self._year <= 2017:
+            # Mother Teresa Beatification Day.
+            dts_observed.add(self._add_holiday_oct_19(tr("Dita e Lumturimit të Shenjt Terezës")))
+        elif self._year >= 2018:
+            # Mother Teresa Canonization Day.
+            dts_observed.add(self._add_holiday_sep_5(tr("Dita e Shenjtërimit të Shenjt Terezës")))
 
-        # Independence Day.
-        _add_with_observed(date(year, NOV, 28), "Independence Day", days=+2)
+        if self._year >= 2024:
+            # Alphabet Day.
+            dts_observed.add(self._add_holiday_nov_22(tr("Dita e Alfabetit")))
+
+        # Flag and Independence Day.
+        dts_observed.add(self._add_holiday_nov_28(tr("Dita Flamurit dhe e Pavarësisë")))
 
         # Liberation Day.
-        _add_with_observed(date(year, NOV, 29), "Liberation Day", days=+2)
+        dts_observed.add(self._add_holiday_nov_29(tr("Dita e Çlirimit")))
 
-        # National Youth Day.
-        if year >= 2009:
-            _add_with_observed(date(year, DEC, 8), "National Youth Day")
+        if self._year >= 2009:
+            # National Youth Day.
+            dts_observed.add(self._add_holiday_dec_8(tr("Dita Kombëtare e Rinisë")))
 
         # Christmas Day.
-        _add_with_observed(date(year, DEC, 25), "Christmas Day")
+        dts_observed.add(self._add_christmas_day(tr("Krishtlindjet")))
 
         # Eid al-Fitr.
-        for dt in _islamic_to_gre(year, 10, 1):
-            _add_with_observed(dt, "Eid al-Fitr* (*estimated)")
+        dts_observed.update(self._add_eid_al_fitr_day(tr("Dita e Bajramit të Madh")))
 
         # Eid al-Adha.
-        for dt in _islamic_to_gre(year, 12, 10):
-            if year == 2006:
-                self[dt] = "Eid al-Adha* (*estimated)"
-            else:
-                _add_with_observed(dt, "Eid al-Adha* (*estimated)")
+        dts_observed.update(self._add_eid_al_adha_day(tr("Dita e Kurban Bajramit")))
 
-        # observed holidays special cases
-        if self.observed and year == 2007:
-            self[date(2007, JAN, 3)] = "Eid al-Adha* (*estimated) (Observed)"
+        if self.observed:
+            self._populate_observed(dts_observed)
 
 
 class AL(Albania):
@@ -118,3 +123,42 @@ class AL(Albania):
 
 class ALB(Albania):
     pass
+
+
+class AlbaniaIslamicHolidays(_CustomIslamicHolidays):
+    EID_AL_ADHA_DATES = {
+        2018: (AUG, 21),
+        2019: (AUG, 11),
+        2020: (JUL, 31),
+        2021: (JUL, 20),
+        2022: (JUL, 9),
+        2023: (JUN, 28),
+        2024: (JUN, 16),
+        2025: (JUN, 6),
+    }
+
+    EID_AL_FITR_DATES = {
+        2018: (JUN, 15),
+        2019: (JUN, 4),
+        2020: (MAY, 24),
+        2021: (MAY, 13),
+        2022: (MAY, 2),
+        2023: (APR, 21),
+        2024: (APR, 10),
+        2025: (MAR, 30),
+    }
+
+
+class AlbaniaStaticHolidays:
+    # Public Holiday.
+    public_holiday = tr("Ditë pushimi")
+
+    special_public_holidays = {
+        2020: (JAN, 3, public_holiday),
+        2022: (MAR, 21, public_holiday),
+        2024: (MAR, 15, public_holiday),
+    }
+
+    special_public_holidays_observed = {
+        2007: (JAN, 3, tr("Dita e Kurban Bajramit")),
+    }

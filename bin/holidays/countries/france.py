@@ -1,24 +1,22 @@
-#  python-holidays
-#  ---------------
+#  holidays
+#  --------
 #  A fast, efficient Python library for generating country, province and state
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
+#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
-#  Website: https://github.com/dr-prodigy/python-holidays
+#  Website: https://github.com/vacanza/holidays
 #  License: MIT (see LICENSE file)
 
-from datetime import date
-from datetime import timedelta as td
+from gettext import gettext as tr
 
-from dateutil.easter import easter
-
-from holidays.constants import JAN, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC
+from holidays.groups import ChristianHolidays, InternationalHolidays
 from holidays.holiday_base import HolidayBase
 
 
-class France(HolidayBase):
+class France(HolidayBase, ChristianHolidays, InternationalHolidays):
     """Official French holidays.
 
     Some provinces have specific holidays, only those are included in the
@@ -34,7 +32,23 @@ class France(HolidayBase):
     """
 
     country = "FR"
-    subdivisions = [
+    default_language = "fr"
+    supported_languages = ("en_US", "fr", "uk")
+    subdivisions = (
+        "BL",  # Saint Barthelemy.
+        "GES",  # Alsace, Champagne-Ardenne, Lorraine(Moselle).
+        "GP",  # Guadeloupe.
+        "GY",  # Guyane.
+        "MF",  # Saint Martin.
+        "MQ",  # Martinique.
+        "NC",  # Nouvelle-Calédonie,
+        "PF",  # Polynésie Française.
+        "RE",  # Reunion.
+        "WF",  # Wallis-et-Futuna.
+        "YT",  # Mayotte.
+    )
+
+    _deprecated_subdivisions = (
         "Alsace-Moselle",
         "Guadeloupe",
         "Guyane",
@@ -47,102 +61,171 @@ class France(HolidayBase):
         "Saint-Barthélémy",
         "Saint-Martin",
         "Wallis-et-Futuna",
-    ]
+    )
 
-    def __init__(self, **kwargs):
-        # Default subdivision to Métropole; prov for backwards compatibility
-        if not kwargs.get("subdiv", kwargs.get("prov")):
-            kwargs["subdiv"] = "Métropole"
-        HolidayBase.__init__(self, **kwargs)
+    def __init__(self, *args, **kwargs):
+        ChristianHolidays.__init__(self)
+        InternationalHolidays.__init__(self)
+        super().__init__(*args, **kwargs)
 
-    def _populate(self, year):
-        super()._populate(year)
+    def _populate_public_holidays(self):
+        # Civil holidays.
+        if self._year >= 1811:
+            # New Year's Day.
+            self._add_new_years_day(tr("Jour de l'an"))
 
-        # Civil holidays
-        if year > 1810:
-            self[date(year, JAN, 1)] = "Jour de l'an"
+        if self._year >= 1919:
+            self._add_labor_day(
+                # Labor Day.
+                tr("Fête du Travail")
+                if self._year >= 1948
+                # Labor and Social Concord Day.
+                else tr("Fête du Travail et de la Concorde sociale")
+            )
 
-        if year > 1919:
-            name = "Fête du Travail"
-            if year <= 1948:
-                name += " et de la Concorde sociale"
-            self[date(year, MAY, 1)] = name
+        if 1953 <= self._year <= 1959 or self._year >= 1982:
+            # Victory Day.
+            self._add_world_war_two_victory_day(tr("Fête de la Victoire"))
 
-        if (1953 <= year <= 1959) or year > 1981:
-            self[date(year, MAY, 8)] = "Armistice 1945"
+        if self._year >= 1880:
+            # National Day.
+            self._add_holiday_jul_14(tr("Fête nationale"))
 
-        if year >= 1880:
-            self[date(year, JUL, 14)] = "Fête nationale"
+        if self._year >= 1918:
+            # Armistice Day.
+            self._add_holiday_nov_11(tr("Armistice"))
 
-        if year >= 1918:
-            self[date(year, NOV, 11)] = "Armistice 1918"
+        # Religious holidays.
 
-        # Religious holidays
-        easter_date = easter(year)
+        if self._year >= 1886:
+            # Easter Monday.
+            self._add_easter_monday(tr("Lundi de Pâques"))
 
-        if self.subdiv in {
-            "Alsace-Moselle",
-            "Guadeloupe",
-            "Guyane",
-            "Martinique",
-            "Polynésie Française",
-        }:
-            self[easter_date + td(days=-2)] = "Vendredi saint"
+            if self._year not in {2005, 2006, 2007}:
+                # Whit Monday.
+                self._add_whit_monday(tr("Lundi de Pentecôte"))
+
+        if self._year >= 1802:
+            # Ascension Day.
+            self._add_ascension_thursday(tr("Ascension"))
+            # Assumption Day.
+            self._add_assumption_of_mary_day(tr("Assomption"))
+            # All Saints' Day.
+            self._add_all_saints_day(tr("Toussaint"))
+            # Christmas Day.
+            self._add_christmas_day(tr("Noël"))
 
         if self.subdiv == "Alsace-Moselle":
-            self[date(year, DEC, 26)] = "Deuxième jour de Noël"
+            self._populate_subdiv_ges_public_holidays()
+        elif self.subdiv == "Guadeloupe":
+            self._populate_subdiv_gp_public_holidays()
+        elif self.subdiv == "Guyane":
+            self._populate_subdiv_gy_public_holidays()
+        elif self.subdiv == "La Réunion":
+            self._populate_subdiv_re_public_holidays()
+        elif self.subdiv == "Martinique":
+            self._populate_subdiv_mq_public_holidays()
+        elif self.subdiv == "Mayotte":
+            self._populate_subdiv_yt_public_holidays()
+        elif self.subdiv == "Nouvelle-Calédonie":
+            self._populate_subdiv_nc_public_holidays()
+        elif self.subdiv == "Polynésie Française":
+            self._populate_subdiv_pf_public_holidays()
+        elif self.subdiv == "Saint-Barthélémy":
+            self._populate_subdiv_bl_public_holidays()
+        elif self.subdiv == "Saint-Martin":
+            self._populate_subdiv_mf_public_holidays()
+        elif self.subdiv == "Wallis-et-Futuna":
+            self._populate_subdiv_wf_public_holidays()
 
-        if year >= 1886:
-            self[easter_date + td(days=+1)] = "Lundi de Pâques"
-            self[easter_date + td(days=+50)] = "Lundi de Pentecôte"
+    # Saint Barthelemy.
+    def _populate_subdiv_bl_public_holidays(self):
+        # Abolition of slavery.
+        self._add_holiday_oct_9(tr("Abolition de l'esclavage"))
 
-        if year >= 1802:
-            self[easter_date + td(days=+39)] = "Ascension"
-            self[date(year, AUG, 15)] = "Assomption"
-            self[date(year, NOV, 1)] = "Toussaint"
+    # Alsace, Champagne-Ardenne, Lorraine(Moselle).
+    def _populate_subdiv_ges_public_holidays(self):
+        # Good Friday.
+        self._add_good_friday(tr("Vendredi saint"))
 
-            name = "Noël"
-            if self.subdiv == "Alsace-Moselle":
-                name = "Premier jour de " + name
-            self[date(year, DEC, 25)] = name
+        # Saint Stephen's Day.
+        self._add_christmas_day_two(tr("Saint Étienne"))
 
-        # Non-metropolitan holidays (starting dates missing)
-        if self.subdiv == "Mayotte":
-            self[date(year, APR, 27)] = "Abolition de l'esclavage"
+    # Guadeloupe.
+    def _populate_subdiv_gp_public_holidays(self):
+        # Good Friday.
+        self._add_good_friday(tr("Vendredi saint"))
 
-        if self.subdiv == "Wallis-et-Futuna":
-            self[date(year, APR, 28)] = "Saint Pierre Chanel"
+        # Mi-Careme.
+        self._add_holiday_24_days_prior_easter(tr("Mi-Carême"))
 
-        if self.subdiv == "Martinique":
-            self[date(year, MAY, 22)] = "Abolition de l'esclavage"
+        # Abolition of slavery.
+        self._add_holiday_may_27(tr("Abolition de l'esclavage"))
 
-        if self.subdiv in {"Guadeloupe", "Saint-Martin"}:
-            self[date(year, MAY, 27)] = "Abolition de l'esclavage"
+        # Feast of Victor Schoelcher.
+        self._add_holiday_jul_21(tr("Fête de Victor Schoelcher"))
 
-        if self.subdiv == "Guyane":
-            self[date(year, JUN, 10)] = "Abolition de l'esclavage"
+    # Guyane.
+    def _populate_subdiv_gy_public_holidays(self):
+        # Abolition of slavery.
+        self._add_holiday_jun_10(tr("Abolition de l'esclavage"))
 
-        if self.subdiv == "Polynésie Française":
-            self[date(year, JUN, 29)] = "Fête de l'autonomie"
+    # Saint Martin.
+    def _populate_subdiv_mf_public_holidays(self):
+        if self._year >= 2018:
+            # Abolition of slavery.
+            self._add_holiday_may_28(tr("Abolition de l'esclavage"))
 
-        if self.subdiv in {"Guadeloupe", "Martinique"}:
-            self[date(year, JUL, 21)] = "Fête Victor Schoelcher"
+    # Martinique.
+    def _populate_subdiv_mq_public_holidays(self):
+        # Good Friday.
+        self._add_good_friday(tr("Vendredi saint"))
 
-        if self.subdiv == "Wallis-et-Futuna":
-            self[date(year, JUL, 29)] = "Fête du Territoire"
+        # Abolition of slavery.
+        self._add_holiday_may_22(tr("Abolition de l'esclavage"))
 
-        if self.subdiv == "Nouvelle-Calédonie":
-            self[date(year, SEP, 24)] = "Fête de la Citoyenneté"
+        # Feast of Victor Schoelcher.
+        self._add_holiday_jul_21(tr("Fête de Victor Schoelcher"))
 
-        if self.subdiv == "Saint-Barthélémy":
-            self[date(year, OCT, 9)] = "Abolition de l'esclavage"
+    # New Caledonia.
+    def _populate_subdiv_nc_public_holidays(self):
+        # Citizenship Day.
+        self._add_holiday_sep_24(tr("Fête de la Citoyenneté"))
 
-        if self.subdiv == "La Réunion" and year >= 1981:
-            self[date(year, DEC, 20)] = "Abolition de l'esclavage"
+    # French Polynesia.
+    def _populate_subdiv_pf_public_holidays(self):
+        # Good Friday.
+        self._add_good_friday(tr("Vendredi saint"))
+
+        # Missionary Day.
+        self._add_holiday_mar_5(tr("Arrivée de l'Évangile"))
+
+        # Internal Autonomy Day.
+        self._add_holiday_jun_29(tr("Fête de l'autonomie"))
+
+    # Reunion.
+    def _populate_subdiv_re_public_holidays(self):
+        if self._year >= 1981:
+            # Abolition of slavery.
+            self._add_holiday_dec_20(tr("Abolition de l'esclavage"))
+
+    #  Wallis and Futuna.
+    def _populate_subdiv_wf_public_holidays(self):
+        # Feast of Saint Peter Chanel.
+        self._add_holiday_apr_28(tr("Saint Pierre Chanel"))
+
+        # Festival of the territory.
+        self._add_holiday_jul_29(tr("Fête du Territoire"))
+
+    # Mayotte.
+    def _populate_subdiv_yt_public_holidays(self):
+        # Abolition of slavery.
+        self._add_holiday_apr_27(tr("Abolition de l'esclavage"))
 
 
-# *Warning* FR is also used by dateutlis (Friday), so be careful with its use
 class FR(France):
+    """FR is also used by dateutil (Friday), so be careful with this one."""
+
     pass
 
 

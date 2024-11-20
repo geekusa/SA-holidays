@@ -2,7 +2,7 @@
 
 This supporting add-on provides one command -- `holidays`. A wrapper for python-holidays providing holidays, business days, and business holidays when presented a \_time (or specified) field.
 
-Version: 1.2.0
+Version: 1.3.0
 
 Command reference:
 
@@ -10,9 +10,11 @@ Command reference:
 
 ## Description
 
-A wrapper for for the python library python-holidays (https://github.com/dr-prodigy/python-holidays) to enrich existing data with timestamps to know if the given timestamp is a holiday, business day, or business holiday (a holiday that occurs on a normal business day). Default settings: country is set to US and timestamp is expected in the `_time` field.
+A wrapper for for the python library holidays (https://github.com/vacanza/holidays) to enrich existing data with timestamps to know if the given timestamp is a holiday, business day, or business holiday (a holiday that occurs on a normal business day). Default settings: country is set to US and timestamp is expected in the `_time` field.
 
-Supported country, state, and province codes can be found listed on https://github.com/dr-prodigy/python-holidays/blob/master/README.rst
+Supported country, state, province, and market codes can be found listed on https://github.com/vacanza/holidays/blob/dev/README.rst 
+
+Currently supports 154 countries and 4 financial markets.
 
 ## Syntax
 
@@ -29,25 +31,25 @@ Supported country, state, and province codes can be found listed on https://gith
 
   **country**  
    	**Syntax:** country="\<string\>"  
-   	**Description:** Country code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to US
+   	**Description:** Country code string from https://github.com/vacanza/holidays/blob/dev/README.rst, defaults to US
    	**Usage:** i.e. country=DE
    	**Default:** US
 
   **subdiv**  
    	**Syntax:** subdiv="\<string\>"  
-   	**Description:** Subdivision code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none
+   	**Description:** Subdivision code string from https://github.com/vacanza/holidays/blob/dev/README.rst, defaults to none
    	**Usage:** i.e. country=US subdiv=PR
    	**Default:** None
 
   **state**  
    	**Syntax:** state="\<string\>"  
-   	**Description:** Deprecated--Subdivision code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none
+   	**Description:** Deprecated--Subdivision code string from https://github.com/vacanza/holidays/blob/dev/README.rst, defaults to none
    	**Usage:** i.e. state=CA
    	**Default:** None
 
   **province**  
    	**Syntax:** province="\<string\>"  
-   	**Description:** Deprecated--Subdivision code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none
+   	**Description:** Deprecated--Subdivision code string from https://github.com/vacanza/holidays/blob/dev/README.rst, defaults to none
    	**Usage:** i.e. country=DE province=BW
    	**Default:** None
 
@@ -65,8 +67,14 @@ Supported country, state, and province codes can be found listed on https://gith
 
   **language**  
    	**Syntax:** language="\<string\>"  
-   	**Description:** Language code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to none
+   	**Description:** Language code string from https://github.com/vacanza/holidays/blob/dev/README.rst, defaults to none
    	**Usage:** i.e. country=MX language=es
+   	**Default:** None
+
+  **market**  
+   	**Syntax:** market="\<string\>"  
+   	**Description:** Financial Markets code string https://github.com/vacanza/holidays/blob/dev/README.rst, defaults to none
+   	**Usage:** i.e. market=ECB
    	**Default:** None
 
 ##Examples
@@ -95,5 +103,9 @@ Supported country, state, and province codes can be found listed on https://gith
 
 `* | holidays country=CU language=es`
 
+###**7: NYSE market holidays**###
+
+`* | holidays market=NYSE`
+
 ### Release Notes
-Updated splunklib from 1.6.18 to 1.7.3. Updated python-holidays from 0.12 to 0.21.13. Added new dependencies for python-holidays--backports. Added subdiv and language options (subdiv is now preferred over state and province).
+Updated splunklib from 1.7.3 to 2.0.2. Updated python-holidays from 0.21.13 to migrated holidays 0.61. Added new market option to find financial market holidays.

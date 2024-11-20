@@ -46,28 +46,28 @@ class MakeHolidays(StreamingCommand):
         default='US',
         doc='''
         **Syntax:** **country=***<string>*
-        **Description:** Country code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to US''',
+        **Description:** Country code string from https://github.com/vacanza/holidays/blob/dev/README.rst, defaults to US''',
         )
 
     subdiv = Option(
         default=None,
         doc='''
         **Syntax:** **subdiv=***<string>*
-        **Description:** Subdivision code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to None''',
+        **Description:** Subdivision code string from https://github.com/vacanza/holidays/blob/dev/README.rst, defaults to None''',
         )
 
     province = Option(
         default=None,
         doc='''
         **Syntax:** **province=***<string>*
-        **Description:** Deprecated--Subdivision code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to None''',
+        **Description:** Deprecated--Subdivision code string from https://github.com/vacanza/holidays/blob/dev/README.rst, defaults to None''',
         )
 
     state = Option(
         default=None,
         doc='''
         **Syntax:** **state=***<string>*
-        **Description:** Deprecated--Subdivision code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to None''',
+        **Description:** Deprecated--Subdivision code string from https://github.com/vacanza/holidays/blob/dev/README.rst, defaults to None''',
         )
 
     business_days = Option(
@@ -88,7 +88,14 @@ class MakeHolidays(StreamingCommand):
         default=None,
         doc='''
         **Syntax:** **language=***<string>*
-        **Description:** Language code string from https://github.com/dr-prodigy/python-holidays/blob/master/README.rst, defaults to None''',
+        **Description:** Language code string from https://github.com/vacanza/holidays/blob/dev/README.rst, defaults to None''',
+        )
+  
+    market = Option(
+        default=None,
+        doc='''
+        **Syntax:** **market=***<string>*
+        **Description:** Financial market code string from https://github.com/vacanza/holidays/blob/dev/README.rst, defaults to None''',
         )
   
     def subdiv_option(self):
@@ -103,11 +110,16 @@ class MakeHolidays(StreamingCommand):
       
 
     def stream(self, records):
-        holiday_list = holidays.country_holidays(
-             self.country,
-             subdiv=self.subdiv_option(),
-             language=self.language
-        )
+        if self.market:
+            holiday_list = holidays.financial_holidays(
+                 self.market,
+            )
+        else:
+            holiday_list = holidays.country_holidays(
+                 self.country,
+                 subdiv=self.subdiv_option(),
+                 language=self.language
+            )
         if self.custom_holiday:
              holiday_list.append([self.custom_holiday])
 

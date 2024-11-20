@@ -1,24 +1,23 @@
-#  python-holidays
-#  ---------------
+#  holidays
+#  --------
 #  A fast, efficient Python library for generating country, province and state
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
+#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
-#  Website: https://github.com/dr-prodigy/python-holidays
+#  Website: https://github.com/vacanza/holidays
 #  License: MIT (see LICENSE file)
 
-from datetime import date
-from datetime import timedelta as td
+from gettext import gettext as tr
 
-from dateutil.easter import EASTER_ORTHODOX, easter
-
-from holidays.constants import JAN, FEB, MAY, NOV
-from holidays.holiday_base import HolidayBase
+from holidays.calendars.julian import JULIAN_CALENDAR
+from holidays.groups import ChristianHolidays, InternationalHolidays
+from holidays.observed_holiday_base import ObservedHolidayBase, SUN_TO_NEXT_MON, SUN_TO_NEXT_TUE
 
 
-class Serbia(HolidayBase):
+class Serbia(ObservedHolidayBase, ChristianHolidays, InternationalHolidays):
     """
     Serbia holidays.
 
@@ -28,53 +27,50 @@ class Serbia(HolidayBase):
 
     country = "RS"
     default_language = "sr"
+    # %s (observed).
+    observed_label = tr("%s (слободан дан)")
+    supported_languages = ("en_US", "sr")
 
-    def _populate(self, year):
-        super()._populate(year)
+    def __init__(self, *args, **kwargs):
+        ChristianHolidays.__init__(self, JULIAN_CALENDAR)
+        InternationalHolidays.__init__(self)
+        kwargs.setdefault("observed_rule", SUN_TO_NEXT_MON)
+        super().__init__(*args, **kwargs)
 
+    def _populate_public_holidays(self):
         # New Year's Day.
-        name = self.tr("Нова година")
-        self[date(year, JAN, 1)] = name
-        self[date(year, JAN, 2)] = name
-        if self.observed and self._is_weekend(year, JAN, 1):
-            self[date(year, JAN, 3)] = self.tr("%s (Слободан дан)") % name
+        name = tr("Нова година")
+        self._add_observed(self._add_new_years_day(name), rule=SUN_TO_NEXT_TUE)
+        self._add_observed(self._add_new_years_day_two(name))
 
-        # Orthodox Christmas.
-        self[date(year, JAN, 7)] = self.tr("Божић")
+        # Orthodox Christmas Day.
+        self._add_christmas_day(tr("Божић"))
 
         # Statehood Day.
-        name = self.tr("Дан државности Србије")
-        self[date(year, FEB, 15)] = name
-        self[date(year, FEB, 16)] = name
-        if self.observed and self._is_weekend(year, FEB, 15):
-            self[date(year, FEB, 17)] = self.tr("%s (Слободан дан)") % name
+        name = tr("Дан државности Србије")
+        self._add_observed(self._add_holiday_feb_15(name), rule=SUN_TO_NEXT_TUE)
+        self._add_observed(self._add_holiday_feb_16(name))
 
-        easter_date = easter(year, method=EASTER_ORTHODOX)
+        # Labor Day.
+        name = tr("Празник рада")
+        self._add_observed(self._add_labor_day(name), rule=SUN_TO_NEXT_TUE)
 
-        # International Workers' Day.
-        name = self.tr("Празник рада")
-        self[date(year, MAY, 1)] = name
-        self[date(year, MAY, 2)] = name
-        if self.observed and self._is_weekend(date(year, MAY, 1)):
-            if date(year, MAY, 2) == easter_date:
-                self[date(year, MAY, 4)] = self.tr("%s (Слободан дан)") % name
-            else:
-                self[date(year, MAY, 3)] = self.tr("%s (Слободан дан)") % name
+        self._add_observed(
+            may_2 := self._add_labor_day_two(name),
+            rule=SUN_TO_NEXT_TUE if may_2 == self._easter_sunday else SUN_TO_NEXT_MON,
+        )
 
         # Armistice Day.
-        name = self.tr("Дан примирја у Првом светском рату")
-        self[date(year, NOV, 11)] = name
-        if self.observed and self._is_sunday(year, NOV, 11):
-            self[date(year, NOV, 12)] = self.tr("%s (Слободан дан)") % name
+        self._add_observed(self._add_remembrance_day(tr("Дан примирја у Првом светском рату")))
 
         # Good Friday.
-        self[easter_date + td(days=-2)] = self.tr("Велики петак")
-        # Easter Saturday.
-        self[easter_date + td(days=-1)] = self.tr("Велика субота")
+        self._add_good_friday(tr("Велики петак"))
+        # Holy Saturday.
+        self._add_holy_saturday(tr("Велика субота"))
         # Easter Sunday.
-        self[easter_date] = self.tr("Васкрс")
+        self._add_easter_sunday(tr("Васкрс"))
         # Easter Monday.
-        self[easter_date + td(days=+1)] = self.tr("Други дан Васкрса")
+        self._add_easter_monday(tr("Други дан Васкрса"))
 
 
 class RS(Serbia):

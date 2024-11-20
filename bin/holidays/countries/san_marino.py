@@ -1,24 +1,20 @@
-#  python-holidays
-#  ---------------
+#  holidays
+#  --------
 #  A fast, efficient Python library for generating country, province and state
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: dr-prodigy <maurizio.montel@gmail.com> (c) 2017-2022
+#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
-#  Website: https://github.com/dr-prodigy/python-holidays
+#  Website: https://github.com/vacanza/holidays
 #  License: MIT (see LICENSE file)
 
-from datetime import date
-from datetime import timedelta as td
-
-from dateutil.easter import easter
-
-from holidays.constants import JAN, FEB, MAR, MAY, JUL, AUG, SEP, NOV, DEC
+from holidays.groups import ChristianHolidays, InternationalHolidays
 from holidays.holiday_base import HolidayBase
 
 
-class SanMarino(HolidayBase):
+class SanMarino(HolidayBase, ChristianHolidays, InternationalHolidays):
     """
     References:
       - https://en.wikipedia.org/wiki/Public_holidays_in_San_Marino
@@ -26,64 +22,65 @@ class SanMarino(HolidayBase):
 
     country = "SM"
 
-    def _populate(self, year: int) -> None:
-        super()._populate(year)
+    def __init__(self, *args, **kwargs):
+        ChristianHolidays.__init__(self)
+        InternationalHolidays.__init__(self)
+        super().__init__(*args, **kwargs)
 
+    def _populate_public_holidays(self) -> None:
         # New Year's Day.
-        self[date(year, JAN, 1)] = "New Year's Day"
+        self._add_new_years_day("New Year's Day")
 
         # Epiphany.
-        self[date(year, JAN, 6)] = "Epiphany"
+        self._add_epiphany_day("Epiphany")
 
         # Feast of Saint Agatha.
-        self[date(year, FEB, 5)] = "Feast of Saint Agatha"
+        self._add_holiday_feb_5("Feast of Saint Agatha")
 
         # Anniversary of the Arengo.
-        self[date(year, MAR, 25)] = "Anniversary of the Arengo"
-
-        easter_sunday = easter(year)
+        self._add_holiday_mar_25("Anniversary of the Arengo")
 
         # Easter Sunday.
-        self[easter_sunday] = "Easter Sunday"
+        self._add_easter_sunday("Easter Sunday")
 
         # Easter Monday.
-        self[easter_sunday + td(days=+1)] = "Easter Monday"
+        self._add_easter_monday("Easter Monday")
 
         # Labour Day.
-        self[date(year, MAY, 1)] = "Labour Day"
+        self._add_labor_day("Labour Day")
 
         # Corpus Cristi.
-        self[easter_sunday + td(days=+60)] = "Corpus Cristi"
+        self._add_corpus_christi_day("Corpus Cristi")
 
         # Liberation from Fascism Day.
-        self[date(year, JUL, 28)] = "Liberation from Fascism Day"
+        self._add_holiday_jul_28("Liberation from Fascism Day")
 
         # Assumption of Mary.
-        self[date(year, AUG, 15)] = "Assumption Day"
+        self._add_assumption_of_mary_day("Assumption Day")
 
         # The Feast of Saint Marinus and the Republic.
-        self[date(year, SEP, 3)] = "Foundation Day"
+        self._add_holiday_sep_3("Foundation Day")
 
         # All Saints' Day.
-        self[date(year, NOV, 1)] = "All Saints' Day"
+        self._add_all_saints_day("All Saints' Day")
 
         # Commemoration of the Dead.
-        self[date(year, NOV, 2)] = "Commemoration of the Dead"
+        self._add_all_souls_day("Commemoration of the Dead")
 
         # Immaculate Conception.
-        self[date(year, DEC, 8)] = "Immaculate Conception Day"
+        self._add_immaculate_conception_day("Immaculate Conception Day")
 
         # Christmas Eve.
-        self[date(year, DEC, 24)] = "Christmas Eve"
+        self._add_christmas_eve("Christmas Eve")
 
         # Christmas Day.
-        self[date(year, DEC, 25)] = "Christmas Day"
+        self._add_christmas_day("Christmas Day")
 
         # Saint Stephen's Day.
-        self[date(year, DEC, 26)] = "Saint Stephen's Day"
+        self._add_christmas_day_two("Saint Stephen's Day")
 
         # New Year's Eve.
-        self[date(year, DEC, 31)] = "New Year's Eve"
+        self._add_new_years_eve("New Year's Eve")
 
 
 class SM(SanMarino):

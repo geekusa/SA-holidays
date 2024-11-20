@@ -1,89 +1,79 @@
-#  python-holidays
-#  ---------------
+#  holidays
+#  --------
 #  A fast, efficient Python library for generating country, province and state
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
+#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
-#  Website: https://github.com/dr-prodigy/python-holidays
+#  Website: https://github.com/vacanza/holidays
 #  License: MIT (see LICENSE file)
 
-from datetime import date
-from datetime import timedelta as td
 from gettext import gettext as tr
 
-from dateutil.easter import easter
+from holidays.calendars.gregorian import JAN
+from holidays.groups import ChristianHolidays, InternationalHolidays, StaticHolidays
+from holidays.observed_holiday_base import ObservedHolidayBase, SUN_TO_NEXT_MON
 
-from holidays.constants import JAN, MAY, AUG, NOV, DEC
-from holidays.holiday_base import HolidayBase
 
-
-class Monaco(HolidayBase):
+class Monaco(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, StaticHolidays):
     """
     https://en.wikipedia.org/wiki/Public_holidays_in_Monaco
-    https://en.service-public-entreprises.gouv.mc/Employment-and-social-affairs/Employment-regulations/Leave/Public-Holidays  # noqa: E501
+    https://en.service-public-entreprises.gouv.mc/Employment-and-social-affairs/Employment-regulations/Leave/Public-Holidays
     """
 
     country = "MC"
     default_language = "fr"
-    special_holidays = {
-        2015: ((JAN, 7, tr("Jour férié")),),
-    }
+    # %s (observed).
+    observed_label = tr("%s (observé)")
+    supported_languages = ("en_US", "fr", "uk")
 
-    def _populate(self, year):
-        def _add_with_observed(hol_date: date, hol_name: str) -> None:
-            self[hol_date] = hol_name
-            if self.observed and self._is_sunday(hol_date):
-                self[hol_date + td(days=+1)] = (
-                    self.tr("%s (Observé)") % hol_name
-                )
+    def __init__(self, *args, **kwargs):
+        ChristianHolidays.__init__(self)
+        InternationalHolidays.__init__(self)
+        StaticHolidays.__init__(self, MonacoStaticHolidays)
+        kwargs.setdefault("observed_rule", SUN_TO_NEXT_MON)
+        super().__init__(*args, **kwargs)
 
-        super()._populate(year)
+    def _populate_public_holidays(self):
+        # New Year's Day.
+        self._add_observed(self._add_new_years_day(tr("Le jour de l'An")))
 
-        # New Year's Day
-        _add_with_observed(date(year, JAN, 1), self.tr("Le jour de l'An"))
+        # Saint Devote's Day.
+        self._add_holiday_jan_27(tr("La Sainte Dévote"))
 
-        # Saint Dévote's Day
-        self[date(year, JAN, 27)] = self.tr("La Sainte Dévote")
+        # Easter Monday.
+        self._add_easter_monday(tr("Le lundi de Pâques"))
 
-        easter_date = easter(year)
+        # Labor Day.
+        self._add_observed(self._add_labor_day(tr("Fête de la Travaille")))
 
-        # Easter Monday
-        self[easter_date + td(days=+1)] = self.tr("Le lundi de Pâques")
+        # Ascension Day.
+        self._add_ascension_thursday(tr("L'Ascension"))
 
-        # Labour Day
-        _add_with_observed(date(year, MAY, 1), self.tr("Fête de la Travaille"))
+        # Whit Monday.
+        self._add_whit_monday(tr("Le lundi de Pentecôte"))
 
-        # Ascension's Day
-        self[easter_date + td(days=+39)] = self.tr("L'Ascension")
+        # Corpus Christi.
+        self._add_corpus_christi_day(tr("La Fête Dieu"))
 
-        # Whit Monday
-        self[easter_date + td(days=+50)] = self.tr("Le lundi de Pentecôte")
+        # Assumption Day.
+        self._add_observed(self._add_assumption_of_mary_day(tr("L'Assomption de Marie")))
 
-        # Corpus Christi
-        self[easter_date + td(days=+60)] = self.tr("La Fête Dieu")
+        # All Saints' Day.
+        self._add_observed(self._add_all_saints_day(tr("La Toussaint")))
 
-        _add_with_observed(
-            date(year, AUG, 15),
-            # Assumption's Day
-            self.tr("L'Assomption de Marie"),
-        )
+        # Prince's Day.
+        self._add_observed(self._add_holiday_nov_19(tr("La Fête du Prince")))
 
-        # All Saints' Day
-        _add_with_observed(date(year, NOV, 1), self.tr("La Toussaint"))
+        # Immaculate Conception.
+        dec_8 = self._add_immaculate_conception_day(tr("L'Immaculée Conception"))
+        if self._year >= 2019:
+            self._move_holiday(dec_8, show_observed_label=False)
 
-        # Prince's Day
-        _add_with_observed(date(year, NOV, 19), self.tr("La Fête du Prince"))
-
-        dt = date(year, DEC, 8)
-        if year >= 2019 and self._is_sunday(dt):
-            dt += td(days=+1)
-        # Immaculate Conception's Day
-        self[dt] = self.tr("L'Immaculée Conception")
-
-        # Christmas Day
-        _add_with_observed(date(year, DEC, 25), self.tr("Noël"))
+        # Christmas Day.
+        self._add_observed(self._add_christmas_day(tr("Noël")))
 
 
 class MC(Monaco):
@@ -92,3 +82,10 @@ class MC(Monaco):
 
 class MCO(Monaco):
     pass
+
+
+class MonacoStaticHolidays:
+    special_public_holidays = {
+        # Public holiday.
+        2015: (JAN, 7, tr("Jour férié")),
+    }

@@ -1,24 +1,21 @@
-#  python-holidays
-#  ---------------
+#  holidays
+#  --------
 #  A fast, efficient Python library for generating country, province and state
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: dr-prodigy <maurizio.montel@gmail.com> (c) 2017-2022
+#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
-#  Website: https://github.com/dr-prodigy/python-holidays
+#  Website: https://github.com/vacanza/holidays
 #  License: MIT (see LICENSE file)
 
-from datetime import date
-from datetime import timedelta as td
-
-from dateutil.easter import EASTER_ORTHODOX, easter
-
-from holidays.constants import JAN, MAY, JUL
-from holidays.holiday_base import HolidayBase
+from holidays.calendars.julian import JULIAN_CALENDAR
+from holidays.groups import ChristianHolidays, InternationalHolidays
+from holidays.observed_holiday_base import ObservedHolidayBase, SUN_TO_NEXT_MON, SUN_TO_NEXT_TUE
 
 
-class Montenegro(HolidayBase):
+class Montenegro(ObservedHolidayBase, ChristianHolidays, InternationalHolidays):
     """
     References:
       - https://en.wikipedia.org/wiki/Public_holidays_in_Montenegro
@@ -28,46 +25,49 @@ class Montenegro(HolidayBase):
     """
 
     country = "ME"
+    observed_label = "%s (observed)"
 
-    def _add_holiday_observed(self, hol_date: date, hol_name: str) -> None:
-        self[hol_date] = hol_name
-        if self._is_weekend(hol_date):
-            self[hol_date + td(days=+2)] = f"{hol_name} (Observed)"
-        self[hol_date + td(days=+1)] = (
-            f"{hol_name} (Observed)" if self._is_sunday(hol_date) else hol_name
-        )
+    def __init__(self, *args, **kwargs):
+        ChristianHolidays.__init__(self, calendar=JULIAN_CALENDAR)
+        InternationalHolidays.__init__(self)
+        kwargs.setdefault("observed_rule", SUN_TO_NEXT_MON)
+        super().__init__(*args, **kwargs)
 
-    def _populate(self, year: int) -> None:
-        super()._populate(year)
-
+    def _populate_public_holidays(self):
         # New Year's Day.
-        self._add_holiday_observed(date(year, JAN, 1), "New Year's Day")
+        name = "New Year's Day"
+        self._add_observed(self._add_new_years_day(name), rule=SUN_TO_NEXT_TUE)
+        self._add_observed(self._add_new_years_day_two(name))
 
         # Orthodox Christmas Eve.
-        self[date(year, JAN, 6)] = "Orthodox Christmas Eve"
+        self._add_christmas_eve("Orthodox Christmas Eve")
 
         # Orthodox Christmas.
-        self[date(year, JAN, 7)] = "Orthodox Christmas"
-
-        easter_sunday = easter(year, method=EASTER_ORTHODOX)
-
-        # Good Friday.
-        self[easter_sunday + td(days=-2)] = "Orthodox Good Friday"
-
-        # Easter Sunday.
-        self[easter_sunday] = "Orthodox Easter Sunday"
-
-        # Easter Monday.
-        self[easter_sunday + td(days=+1)] = "Orthodox Easter Monday"
+        self._add_christmas_day("Orthodox Christmas")
 
         # Labour Day.
-        self._add_holiday_observed(date(year, MAY, 1), "Labour Day")
+        name = "Labour Day"
+        self._add_observed(self._add_labor_day(name), rule=SUN_TO_NEXT_TUE)
+        self._add_observed(self._add_labor_day_two(name))
+
+        # Good Friday.
+        self._add_good_friday("Orthodox Good Friday")
+
+        # Easter Sunday.
+        self._add_easter_sunday("Orthodox Easter Sunday")
+
+        # Easter Monday.
+        self._add_easter_monday("Orthodox Easter Monday")
 
         # Independence Day.
-        self._add_holiday_observed(date(year, MAY, 21), "Independence Day")
+        name = "Independence Day"
+        self._add_observed(self._add_holiday_may_21(name), rule=SUN_TO_NEXT_TUE)
+        self._add_observed(self._add_holiday_may_22(name))
 
         # Statehood Day.
-        self._add_holiday_observed(date(year, JUL, 13), "Statehood Day")
+        name = "Statehood Day"
+        self._add_observed(self._add_holiday_jul_13(name), rule=SUN_TO_NEXT_TUE)
+        self._add_observed(self._add_holiday_jul_14(name))
 
 
 class ME(Montenegro):

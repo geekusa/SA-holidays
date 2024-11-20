@@ -1,25 +1,21 @@
-#  python-holidays
-#  ---------------
+#  holidays
+#  --------
 #  A fast, efficient Python library for generating country, province and state
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
+#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
-#  Website: https://github.com/dr-prodigy/python-holidays
+#  Website: https://github.com/vacanza/holidays
 #  License: MIT (see LICENSE file)
 
-from datetime import date
-from datetime import timedelta as td
-
-from dateutil.easter import easter
-
-from holidays.calendars import _get_nth_weekday_of_month
-from holidays.constants import JAN, MAR, APR, MAY, JUL, AUG, SEP, OCT, DEC, MON
-from holidays.holiday_base import HolidayBase
+from holidays.calendars.gregorian import MAR, JUL, AUG, SEP
+from holidays.groups import ChristianHolidays, InternationalHolidays, StaticHolidays
+from holidays.observed_holiday_base import ObservedHolidayBase, SUN_TO_NEXT_MON
 
 
-class Zambia(HolidayBase):
+class Zambia(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, StaticHolidays):
     """
     https://www.officeholidays.com/countries/zambia/
     https://www.timeanddate.com/holidays/zambia/
@@ -28,15 +24,84 @@ class Zambia(HolidayBase):
     """
 
     country = "ZM"
-    special_holidays = {
+    observed_label = "%s (observed)"
+
+    def __init__(self, *args, **kwargs):
+        ChristianHolidays.__init__(self)
+        InternationalHolidays.__init__(self)
+        StaticHolidays.__init__(self, ZambiaStaticHolidays)
+        kwargs.setdefault("observed_rule", SUN_TO_NEXT_MON)
+        super().__init__(*args, **kwargs)
+
+    def _populate_public_holidays(self):
+        # Observed since 1965
+        if self._year <= 1964:
+            return None
+
+        # New Year's Day.
+        self._add_observed(self._add_new_years_day("New Year's Day"))
+
+        if self._year >= 1991:
+            self._add_observed(
+                # International Women's Day.
+                self._add_womens_day("International Women's Day")
+            )
+
+        # Youth Day.
+        self._add_observed(self._add_holiday_mar_12("Youth Day"))
+
+        # Good Friday.
+        self._add_good_friday("Good Friday")
+
+        # Holy Saturday.
+        self._add_holy_saturday("Holy Saturday")
+
+        # Easter Monday.
+        self._add_easter_monday("Easter Monday")
+
+        if self._year >= 2022:
+            # Kenneth Kaunda Day.
+            self._add_observed(self._add_holiday_apr_28("Kenneth Kaunda Day"))
+
+        # Labour Day.
+        self._add_observed(self._add_labor_day("Labour Day"))
+
+        # Africa Freedom Day.
+        self._add_observed(self._add_africa_day("Africa Freedom Day"))
+
+        # Heroes' Day.
+        self._add_holiday_1st_mon_of_jul("Heroes' Day")
+
+        # Unity Day.
+        self._add_holiday_1_day_past_1st_mon_of_jul("Unity Day")
+
+        # Farmers' Day.
+        self._add_holiday_1st_mon_of_aug("Farmers' Day")
+
+        if self._year >= 2015:
+            # National Prayer Day.
+            self._add_observed(self._add_holiday_oct_18("National Prayer Day"))
+
+        # Independence Day.
+        self._add_observed(self._add_holiday_oct_24("Independence Day"))
+
+        # Christmas Day.
+        self._add_observed(self._add_christmas_day("Christmas Day"))
+
+
+class ZM(Zambia):
+    pass
+
+
+class ZMB(Zambia):
+    pass
+
+
+class ZambiaStaticHolidays:
+    special_public_holidays = {
         2016: (
             (AUG, 11, "General elections and referendum"),
-            (
-                SEP,
-                13,
-                "Inauguration ceremony of President-elect "
-                "and Vice President-elect",
-            ),
+            (SEP, 13, "Inauguration ceremony of President-elect and Vice President-elect"),
         ),
         2018: (
             (MAR, 9, "Public holiday"),
@@ -49,59 +114,5 @@ class Zambia(HolidayBase):
             (AUG, 13, "Counting in general elections"),
             (AUG, 24, "Presidential inauguration"),
         ),
-        2022: ((MAR, 18, "Funeral of Rupiah Banda"),),
+        2022: (MAR, 18, "Funeral of Rupiah Banda"),
     }
-
-    def _populate(self, year):
-        def _add_with_observed(hol_date: date, hol_name: str) -> None:
-            # whenever a public holiday falls on a Sunday,
-            # it rolls over to the following Monday
-            self[hol_date] = hol_name
-            if self.observed and self._is_sunday(hol_date):
-                self[hol_date + td(days=+1)] = f"{hol_name} (Observed)"
-
-        # Observed since 1965
-        if year <= 1964:
-            return None
-
-        super()._populate(year)
-
-        _add_with_observed(date(year, JAN, 1), "New Year's Day")
-
-        if year >= 1991:
-            _add_with_observed(date(year, MAR, 8), "International Women's Day")
-
-        _add_with_observed(date(year, MAR, 12), "Youth Day")
-
-        easter_date = easter(year)
-        self[easter_date + td(days=-2)] = "Good Friday"
-        self[easter_date + td(days=-1)] = "Holy Saturday"
-        self[easter_date + td(days=+1)] = "Easter Monday"
-
-        if year >= 2022:
-            _add_with_observed(date(year, APR, 28), "Kenneth Kaunda Day")
-
-        _add_with_observed(date(year, MAY, 1), "Labour Day")
-        _add_with_observed(date(year, MAY, 25), "Africa Freedom Day")
-
-        # 1st Monday of July = "Heroes' Day"
-        dt = _get_nth_weekday_of_month(1, MON, JUL, year)
-        self[dt] = "Heroes' Day"
-        self[dt + td(days=+1)] = "Unity Day"
-
-        # 1st Monday of Aug = "Farmers' Day"
-        self[_get_nth_weekday_of_month(1, MON, AUG, year)] = "Farmers' Day"
-
-        if year >= 2015:
-            _add_with_observed(date(year, OCT, 18), "National Prayer Day")
-
-        _add_with_observed(date(year, OCT, 24), "Independence Day")
-        _add_with_observed(date(year, DEC, 25), "Christmas Day")
-
-
-class ZM(Zambia):
-    pass
-
-
-class ZMB(Zambia):
-    pass

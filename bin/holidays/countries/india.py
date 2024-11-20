@@ -1,26 +1,23 @@
-#  python-holidays
-#  ---------------
+#  holidays
+#  --------
 #  A fast, efficient Python library for generating country, province and state
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
+#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
-#  Website: https://github.com/dr-prodigy/python-holidays
+#  Website: https://github.com/vacanza/holidays
 #  License: MIT (see LICENSE file)
 
 import warnings
-from datetime import date
-from datetime import timedelta as td
 
-from dateutil.easter import easter
-
-from holidays.calendars import _islamic_to_gre
-from holidays.constants import JAN, MAR, APR, MAY, JUN, AUG, OCT, NOV, DEC
+from holidays.calendars.gregorian import MAR, OCT, NOV
+from holidays.groups import ChristianHolidays, InternationalHolidays, IslamicHolidays
 from holidays.holiday_base import HolidayBase
 
 
-class India(HolidayBase):
+class India(HolidayBase, ChristianHolidays, InternationalHolidays, IslamicHolidays):
     """
     https://www.india.gov.in/calendar
     https://www.india.gov.in/state-and-ut-holiday-calendar
@@ -31,152 +28,78 @@ class India(HolidayBase):
     """
 
     country = "IN"
+    subdivisions = (
+        "AN",  # Andaman and Nicobar Islands.
+        "AP",  # Andhra Pradesh.
+        "AR",  # Arunāchal Pradesh.
+        "AS",  # Assam.
+        "BR",  # Bihār.
+        "CG",  # Chhattīsgarh.
+        "CH",  # Chandīgarh.
+        "DH",  # Dādra and Nagar Haveli and Damān and Diu.
+        "DL",  # Delhi.
+        "GA",  # Goa.
+        "GJ",  # Gujarāt.
+        "HP",  # Himāchal Pradesh.
+        "HR",  # Haryāna.
+        "JH",  # Jhārkhand.
+        "JK",  # Jammu and Kashmīr.
+        "KA",  # Karnātaka.
+        "KL",  # Kerala.
+        "LA",  # Ladākh.
+        "LD",  # Lakshadweep.
+        "MH",  # Mahārāshtra.
+        "ML",  # Meghālaya.
+        "MN",  # Manipur.
+        "MP",  # Madhya Pradesh.
+        "MZ",  # Mizoram.
+        "NL",  # Nāgāland.
+        "OD",  # Odisha.
+        "PB",  # Punjab.
+        "PY",  # Puducherry.
+        "RJ",  # Rājasthān.
+        "SK",  # Sikkim.
+        "TN",  # Tamil Nādu.
+        "TR",  # Tripura.
+        "TS",  # Telangāna.
+        "UK",  # Uttarākhand.
+        "UP",  # Uttar Pradesh.
+        "WB",  # West Bengal.
+    )
+    _deprecated_subdivisions = (
+        "DD",  # Daman and Diu.
+        "OR",  # Orissa.
+    )
 
-    subdivisions = [
-        "AN",  # Andaman and Nicobar Islands
-        "AP",  # Andhra Pradesh
-        "AR",  # Arunachal Pradesh
-        "AS",  # Assam
-        "BR",  # Bihar
-        "CG",  # Chhattisgarh
-        "CH",  # Chandigarh
-        "DD",  # Daman and Diu
-        "DH",  # Dadra and Nagar Haveli
-        "DL",  # Delhi
-        "GA",  # Goa
-        "GJ",  # Gujarat
-        "HP",  # Himachal Pradesh
-        "HR",  # Haryana
-        "JH",  # Jharkhand
-        "JK",  # Jammu and Kashmir
-        "KA",  # Karnataka
-        "KL",  # Kerala
-        "LA",  # Ladakh
-        "LD",  # Lakshadweep
-        "MH",  # Maharashtra
-        "ML",  # Meghalaya
-        "MN",  # Manipur
-        "MP",  # Madhya Pradesh
-        "MZ",  # Mizoram
-        "NL",  # Nagaland
-        "OR",  # Orissa / Odisha (Govt sites (dacnet/vahan) use code "OR")
-        "PB",  # Punjab
-        "PY",  # Pondicherry
-        "RJ",  # Rajasthan
-        "SK",  # Sikkim
-        "TN",  # Tamil Nadu
-        "TR",  # Tripura
-        "TS",  # Telangana
-        "UK",  # Uttarakhand
-        "UP",  # Uttar Pradesh
-        "WB",  # West Bengal
-    ]
+    def __init__(self, *args, **kwargs):
+        ChristianHolidays.__init__(self)
+        IslamicHolidays.__init__(self)
+        InternationalHolidays.__init__(self)
+        super().__init__(*args, **kwargs)
 
-    def _populate(self, year):
-        super()._populate(year)
+    def _populate_public_holidays(self):
+        # Makar Sankranti / Pongal.
+        self._add_holiday_jan_14("Makar Sankranti / Pongal")
 
-        # Pongal/ Makar Sankranti
-        self[date(year, JAN, 14)] = "Makar Sankranti / Pongal"
+        if self._year >= 1950:
+            # Republic Day.
+            self._add_holiday_jan_26("Republic Day")
 
-        if year >= 1950:
-            # Republic Day
-            self[date(year, JAN, 26)] = "Republic Day"
+        if self._year >= 1947:
+            # Independence Day.
+            self._add_holiday_aug_15("Independence Day")
 
-        if year >= 1947:
-            # Independence Day
-            self[date(year, AUG, 15)] = "Independence Day"
+        # Gandhi Jayanti.
+        self._add_holiday_oct_2("Gandhi Jayanti")
 
-        # Gandhi Jayanti
-        self[date(year, OCT, 2)] = "Gandhi Jayanti"
-
-        # Labour Day
-        self[date(year, MAY, 1)] = "Labour Day"
-
-        # Christmas
-        self[date(year, DEC, 25)] = "Christmas"
-
-        # GJ: Gujarat
-        if self.subdiv == "GJ":
-            self[date(year, JAN, 14)] = "Uttarayan"
-            self[date(year, MAY, 1)] = "Gujarat Day"
-            self[date(year, OCT, 31)] = "Sardar Patel Jayanti"
-
-        if self.subdiv == "BR":
-            self[date(year, MAR, 22)] = "Bihar Day"
-
-        if self.subdiv == "RJ":
-            self[date(year, MAR, 30)] = "Rajasthan Day"
-            self[date(year, JUN, 15)] = "Maharana Pratap Jayanti"
-
-        if self.subdiv == "OR":
-            self[date(year, APR, 1)] = "Odisha Day (Utkala Dibasa)"
-            self[date(year, APR, 15)] = (
-                "Maha Vishuva Sankranti / Pana" " Sankranti"
-            )
-
-        if self.subdiv in {
-            "OR",
-            "AP",
-            "BR",
-            "WB",
-            "KL",
-            "HR",
-            "MH",
-            "UP",
-            "UK",
-            "TN",
-        }:
-            self[date(year, APR, 14)] = "Dr. B. R. Ambedkar's Jayanti"
-
-        if self.subdiv == "TN":
-            self[date(year, APR, 14)] = "Puthandu (Tamil New Year)"
-            self[date(year, APR, 15)] = "Puthandu (Tamil New Year)"
-
-        if self.subdiv == "WB":
-            self[date(year, APR, 14)] = "Pohela Boishakh"
-            self[date(year, APR, 15)] = "Pohela Boishakh"
-            self[date(year, MAY, 9)] = "Rabindra Jayanti"
-
-        if self.subdiv == "AS":
-            self[date(year, APR, 15)] = "Bihu (Assamese New Year)"
-
-        if self.subdiv == "MH":
-            self[date(year, MAY, 1)] = "Maharashtra Day"
-            self[date(year, OCT, 15)] = "Dussehra"
-
-        if self.subdiv == "SK":
-            self[date(year, MAY, 16)] = "Annexation Day"
-
-        if self.subdiv == "KA":
-            self[date(year, NOV, 1)] = "Karnataka Rajyotsava"
-
-        if self.subdiv == "AP":
-            self[date(year, NOV, 1)] = "Andhra Pradesh Foundation Day"
-
-        if self.subdiv == "HR":
-            self[date(year, NOV, 1)] = "Haryana Foundation Day"
-
-        if self.subdiv == "MP":
-            self[date(year, NOV, 1)] = "Madhya Pradesh Foundation Day"
-
-        if self.subdiv == "KL":
-            self[date(year, NOV, 1)] = "Kerala Foundation Day"
-
-        if self.subdiv == "CG":
-            self[date(year, NOV, 1)] = "Chhattisgarh Foundation Day"
-
-        if self.subdiv == "TS":
-            self[date(year, OCT, 6)] = "Bathukamma Festival"
-            self[date(year, APR, 6)] = "Eid al-Fitr"
+        # Labour Day.
+        self._add_labor_day("Labour Day")
 
         # Directly lifted Diwali and Holi dates from FBProphet from:
         # https://github.com/facebook/prophet/blob/main/python/prophet/hdays.py
         # Warnings kept in place so that users are aware
-
-        if year < 2001 or year > 2030:
-            warning_msg = (
-                "Diwali and Holi holidays available from 2001 to 2030 only"
-            )
+        if self._year < 2001 or self._year > 2030:
+            warning_msg = "Diwali and Holi holidays available from 2001 to 2030 only"
             warnings.warn(warning_msg, Warning)
 
         # https://www.timeanddate.com/holidays/india/diwali
@@ -247,43 +170,127 @@ class India(HolidayBase):
             2030: (MAR, 20),
         }
 
-        if year in diwali_dates:
-            hol_date = date(year, *diwali_dates[year])
-            self[hol_date] = "Diwali"
-        if year in holi_dates:
-            hol_date = date(year, *holi_dates[year])
-            self[hol_date] = "Holi"
+        if self._year in diwali_dates:
+            self._add_holiday("Diwali", diwali_dates[self._year])
 
-        # Islamic holidays
-        # Day of Ashura (10th day of 1st Islamic month)
-        name = "Day of Ashura"
-        for dt in _islamic_to_gre(year, 1, 10):
-            self[dt] = f"{name}* (*estimated)"
+        if self._year in holi_dates:
+            self._add_holiday("Holi", holi_dates[self._year])
 
-        # Mawlid, Birth of the Prophet (12th day of 3rd Islamic month)
-        name = "Mawlid"
-        for dt in _islamic_to_gre(year, 3, 12):
-            self[dt] = f"{name}* (*estimated)"
+        # Islamic holidays.
+        # Day of Ashura.
+        self._add_ashura_day("Day of Ashura")
 
-        # Eid ul-Fitr (1st and 2nd day of 10th Islamic month)
+        # Birth of the Prophet.
+        self._add_mawlid_day("Mawlid")
+
+        # Eid ul-Fitr.
         name = "Eid ul-Fitr"
-        for dt in _islamic_to_gre(year, 10, 1):
-            self[dt] = f"{name}* (*estimated)"
-            self[dt + td(days=+1)] = f"{name}* (*estimated)"
+        self._add_eid_al_fitr_day(name)
+        self._add_eid_al_fitr_day_two(name)
 
-        # Eid al-Adha, i.e., Feast of the Sacrifice
+        # Eid al-Adha.
         name = "Eid al-Adha"
-        for dt in _islamic_to_gre(year, 12, 10):
-            self[dt] = f"{name}* (*estimated)"
-            self[dt + td(days=+1)] = f"{name}* (*estimated)"
+        self._add_eid_al_adha_day(name)
+        self._add_eid_al_adha_day_two(name)
 
-        # Christian holidays
-        easter_date = easter(year)
-        self[easter_date + td(days=-7)] = "Palm Sunday"
-        self[easter_date + td(days=-2)] = "Good Friday"
-        self[easter_date] = "Easter Sunday"
-        self[easter_date + td(days=+49)] = "Feast of Pentecost"
-        self[date(year, DEC, 25)] = "Christmas Day"
+        # Christian holidays.
+        self._add_palm_sunday("Palm Sunday")
+        self._add_good_friday("Good Friday")
+        self._add_easter_sunday("Easter Sunday")
+        self._add_whit_sunday("Feast of Pentecost")
+        self._add_christmas_day("Christmas Day")
+
+        if self.subdiv == "OR":
+            self._populate_subdiv_od_public_holidays()
+
+    # Andhra Pradesh.
+    def _populate_subdiv_ap_public_holidays(self):
+        self._add_holiday_apr_14("Dr. B. R. Ambedkar's Jayanti")
+        self._add_holiday_nov_1("Andhra Pradesh Foundation Day")
+
+    # Assam.
+    def _populate_subdiv_as_public_holidays(self):
+        self._add_holiday_apr_15("Bihu (Assamese New Year)")
+
+    # Bihar.
+    def _populate_subdiv_br_public_holidays(self):
+        self._add_holiday_mar_22("Bihar Day")
+        self._add_holiday_apr_14("Dr. B. R. Ambedkar's Jayanti")
+
+    # Chhattisgarh.
+    def _populate_subdiv_cg_public_holidays(self):
+        self._add_holiday_nov_1("Chhattisgarh Foundation Day")
+
+    # Gujarat.
+    def _populate_subdiv_gj_public_holidays(self):
+        self._add_holiday_jan_14("Uttarayan")
+        self._add_holiday_may_1("Gujarat Day")
+        self._add_holiday_oct_31("Sardar Patel Jayanti")
+
+    # Haryana.
+    def _populate_subdiv_hr_public_holidays(self):
+        self._add_holiday_apr_14("Dr. B. R. Ambedkar's Jayanti")
+        self._add_holiday_nov_1("Haryana Foundation Day")
+
+    # Karnataka.
+    def _populate_subdiv_ka_public_holidays(self):
+        self._add_holiday_nov_1("Karnataka Rajyotsava")
+
+    # Kerala.
+    def _populate_subdiv_kl_public_holidays(self):
+        self._add_holiday_apr_14("Dr. B. R. Ambedkar's Jayanti")
+        self._add_holiday_nov_1("Kerala Foundation Day")
+
+    # Maharashtra.
+    def _populate_subdiv_mh_public_holidays(self):
+        self._add_holiday_apr_14("Dr. B. R. Ambedkar's Jayanti")
+        self._add_holiday_may_1("Maharashtra Day")
+        self._add_holiday_oct_15("Dussehra")
+
+    # Madhya Pradesh.
+    def _populate_subdiv_mp_public_holidays(self):
+        self._add_holiday_nov_1("Madhya Pradesh Foundation Day")
+
+    # Orissa / Odisha.
+    def _populate_subdiv_od_public_holidays(self):
+        self._add_holiday_apr_1("Odisha Day (Utkala Dibasa)")
+        self._add_holiday_apr_14("Dr. B. R. Ambedkar's Jayanti")
+        self._add_holiday_apr_15("Maha Vishuva Sankranti / Pana Sankranti")
+
+    # Rajasthan.
+    def _populate_subdiv_rj_public_holidays(self):
+        self._add_holiday_mar_30("Rajasthan Day")
+        self._add_holiday_jun_15("Maharana Pratap Jayanti")
+
+    # Sikkim.
+    def _populate_subdiv_sk_public_holidays(self):
+        self._add_holiday_may_16("Annexation Day")
+
+    # Tamil Nadu.
+    def _populate_subdiv_tn_public_holidays(self):
+        self._add_holiday_apr_14("Dr. B. R. Ambedkar's Jayanti")
+        self._add_holiday_apr_14("Puthandu (Tamil New Year)")
+        self._add_holiday_apr_15("Puthandu (Tamil New Year)")
+
+    # Telangana.
+    def _populate_subdiv_ts_public_holidays(self):
+        self._add_holiday_apr_6("Eid al-Fitr")
+        self._add_holiday_oct_6("Bathukamma Festival")
+
+    # Uttarakhand.
+    def _populate_subdiv_uk_public_holidays(self):
+        self._add_holiday_apr_14("Dr. B. R. Ambedkar's Jayanti")
+
+    # Uttar Pradesh.
+    def _populate_subdiv_up_public_holidays(self):
+        self._add_holiday_apr_14("Dr. B. R. Ambedkar's Jayanti")
+
+    # West Bengal.
+    def _populate_subdiv_wb_public_holidays(self):
+        self._add_holiday_apr_14("Dr. B. R. Ambedkar's Jayanti")
+        self._add_holiday_apr_14("Pohela Boishakh")
+        self._add_holiday_apr_15("Pohela Boishakh")
+        self._add_holiday_may_9("Rabindra Jayanti")
 
 
 class IN(India):

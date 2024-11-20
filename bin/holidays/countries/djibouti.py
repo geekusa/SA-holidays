@@ -1,103 +1,79 @@
-#  python-holidays
-#  ---------------
+#  holidays
+#  --------
 #  A fast, efficient Python library for generating country, province and state
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
+#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
-#  Website: https://github.com/dr-prodigy/python-holidays
+#  Website: https://github.com/vacanza/holidays
 #  License: MIT (see LICENSE file)
 
-from datetime import date
-from datetime import timedelta as td
+from gettext import gettext as tr
 
-from holidays.calendars import _islamic_to_gre
-from holidays.constants import JAN, MAY, JUN, FRI, SAT
+from holidays.calendars.gregorian import FRI, SAT
+from holidays.groups import ChristianHolidays, IslamicHolidays, InternationalHolidays
 from holidays.holiday_base import HolidayBase
 
-# Since Djibouti share most of it's holidays with other muslim countries,
-# this class is just a copy of Egypt's.
 
-
-class Djibouti(HolidayBase):
-    # Holidays here are estimates, it is common for the day to be pushed
-    # if falls in a weekend, although not a rule that can be implemented.
-    # Holidays after 2020: the following four moving date holidays whose exact
-    # date is announced yearly are estimated (and so denoted):
-    # - Eid El Fetr*
-    # - Eid El Adha*
-    # - Isra wal Miraj*
-    # - Moulad El Naby*
-    # - Arafat*
-    # *only if hijri-converter library is installed, otherwise a warning is
-    #  raised that this holiday is missing. hijri-converter requires
-    #  Python >= 3.6
-    # is_weekend function is there, however not activated for accuracy.
-
+class Djibouti(HolidayBase, ChristianHolidays, IslamicHolidays, InternationalHolidays):
     country = "DJ"
+    default_language = "fr"
+    # %s (estimated).
+    estimated_label = tr("%s (estimé)")
+    supported_languages = ("ar", "en_US", "fr")
     weekend = {FRI, SAT}
 
-    def _populate(self, year):
-        super()._populate(year)
+    def __init__(self, *args, **kwargs):
+        ChristianHolidays.__init__(self)
+        IslamicHolidays.__init__(self)
+        InternationalHolidays.__init__(self)
+        super().__init__(*args, **kwargs)
 
-        def _add_holiday(dt: date, hol: str) -> None:
-            """Only add if in current year; prevents adding holidays across
-            years (handles multi-day Islamic holidays that straddle Gregorian
-            years).
-            """
-            if dt.year == year:
-                self[dt] = hol
+    def _populate_public_holidays(self):
+        # On 27 June 1977, Djibouti gained independence from France.
+        if self._year <= 1977:
+            return None
 
-        # New Year's Day
-        self[date(year, JAN, 1)] = "Nouvel an"
+        # New Year's Day.
+        self._add_new_years_day(tr("Nouvel an"))
 
-        # Labour Day
-        self[date(year, MAY, 1)] = "Fête du travail"
+        # Labor Day.
+        self._add_labor_day(tr("Fête du travail"))
 
-        # Fête de l'indépendance
-        self[date(year, JUN, 27)] = "Fête de l'indépendance"
-        self[date(year, JUN, 28)] = "Fête de l'indépendance"
+        # Independence Day.
+        self._add_holiday_jun_27(tr("Fête de l'indépendance"))
 
-        # Isra wal Miraj
-        # The night journey of the prophet Muhammad
-        for date_obs in _islamic_to_gre(year, 7, 27):
-            hol_date = date_obs
-            self[hol_date] = "Isra wal Miraj"
+        # Independence Day Holiday.
+        self._add_holiday_jun_28(tr("Fête de l'indépendance deuxième jour"))
 
-        # Eid al-Fitr - Feast Festive
-        # date of observance is announced yearly, This is an estimate since
-        # having the Holiday on Weekend does change the number of days,
-        # deceided to leave it since marking a Weekend as a holiday
-        # wouldn't do much harm.
-        for yr in (year - 1, year):
-            for date_obs in _islamic_to_gre(yr, 10, 1):
-                hol_date = date_obs
-                _add_holiday(hol_date, "Eid al-Fitr")
-                _add_holiday(
-                    hol_date + td(days=+1), "Eid al-Fitr deuxième jour"
-                )
+        # Christmas Day.
+        self._add_christmas_day(tr("Noël"))
 
-        # Arafat & Eid al-Adha - Scarfice Festive
-        # date of observance is announced yearly
-        for yr in (year - 1, year):
-            for date_obs in _islamic_to_gre(yr, 12, 9):
-                hol_date = date_obs
-                _add_holiday(hol_date, "Arafat")
-                _add_holiday(hol_date + td(days=+1), "Eid al-Adha")
-                _add_holiday(
-                    hol_date + td(days=+2), "Eid al-Adha deuxième jour"
-                )
+        # Isra' and Mi'raj.
+        self._add_isra_and_miraj_day(tr("Al Isra et Al Mirague"))
 
-        # Islamic New Year - (hijari_year, 1, 1)
-        for date_obs in _islamic_to_gre(year, 1, 1):
-            hol_date = date_obs
-            self[hol_date] = "Nouvel an musulman"
+        # Eid al-Fitr.
+        self._add_eid_al_fitr_day(tr("Eid al-Fitr"))
 
-        # Prophet Muhammad's Birthday - (hijari_year, 3, 12)
-        for date_obs in _islamic_to_gre(year, 3, 12):
-            hol_date = date_obs
-            self[hol_date] = "Naissance du prophet Muhammad"
+        # Eid al-Fitr Holiday.
+        self._add_eid_al_fitr_day_two(tr("Eid al-Fitr deuxième jour"))
+
+        # Arafat Day.
+        self._add_arafah_day(tr("Arafat"))
+
+        # Eid al-Adha.
+        self._add_eid_al_adha_day(tr("Eid al-Adha"))
+
+        # Eid al-Adha Holiday.
+        self._add_eid_al_adha_day_two(tr("Eid al-Adha deuxième jour"))
+
+        # Islamic New Year.
+        self._add_islamic_new_year_day(tr("Nouvel an musulman"))
+
+        # Prophet Muhammad's Birthday.
+        self._add_mawlid_day(tr("Anniversaire du prophète Muhammad"))
 
 
 class DJ(Djibouti):

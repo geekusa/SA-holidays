@@ -1,84 +1,98 @@
-#  python-holidays
-#  ---------------
+#  holidays
+#  --------
 #  A fast, efficient Python library for generating country, province and state
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
+#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
-#  Website: https://github.com/dr-prodigy/python-holidays
+#  Website: https://github.com/vacanza/holidays
 #  License: MIT (see LICENSE file)
 
 from datetime import date
-from datetime import timedelta as td
+from gettext import gettext as tr
 
-from dateutil.easter import easter
-
-from holidays.constants import JAN, APR, MAY, AUG, DEC
+from holidays.calendars.gregorian import APR, AUG, _timedelta
+from holidays.constants import OPTIONAL, PUBLIC
+from holidays.groups import ChristianHolidays, InternationalHolidays
 from holidays.holiday_base import HolidayBase
 
 
-class Netherlands(HolidayBase):
+class Netherlands(HolidayBase, ChristianHolidays, InternationalHolidays):
     """
-    http://www.iamsterdam.com/en/plan-your-trip/practical-info/public-holidays
+    References:
+
+    - https://en.wikipedia.org/wiki/Public_holidays_in_the_Netherlands
+    - https://nl.wikipedia.org/wiki/Feestdagen_in_Nederland
+    - http://www.iamsterdam.com/en/plan-your-trip/practical-info/public-holidays
     """
 
     country = "NL"
+    default_language = "nl"
+    supported_categories = (OPTIONAL, PUBLIC)
+    supported_languages = ("en_US", "nl", "uk")
 
-    def _populate(self, year):
-        super()._populate(year)
+    def __init__(self, *args, **kwargs):
+        ChristianHolidays.__init__(self)
+        InternationalHolidays.__init__(self)
+        super().__init__(*args, **kwargs)
 
-        # New years
-        self[date(year, JAN, 1)] = "Nieuwjaarsdag"
+    def _populate_public_holidays(self):
+        # New Year's Day.
+        self._add_new_years_day(tr("Nieuwjaarsdag"))
 
-        easter_date = easter(year)
+        # Easter Sunday.
+        self._add_easter_sunday(tr("Eerste paasdag"))
 
-        # Easter
-        self[easter_date] = "Eerste paasdag"
+        # Easter Monday.
+        self._add_easter_monday(tr("Tweede paasdag"))
 
-        # Good friday
-        self[easter_date + td(days=-2)] = "Goede Vrijdag"
+        # King's / Queen's day
+        if self._year >= 1891:
+            name = (
+                # King's Day.
+                tr("Koningsdag")
+                if self._year >= 2014
+                # Queen's Day.
+                else tr("Koninginnedag")
+            )
+            if self._year >= 2014:
+                dt = date(self._year, APR, 27)
+            elif self._year >= 1949:
+                dt = date(self._year, APR, 30)
+            else:
+                dt = date(self._year, AUG, 31)
+            if self._is_sunday(dt):
+                dt = _timedelta(dt, -1 if self._year >= 1980 else +1)
+            self._add_holiday(name, dt)
 
-        # Second easter day
-        self[easter_date + td(days=+1)] = "Tweede paasdag"
+        if self._year >= 1950 and self._year % 5 == 0:
+            # Liberation Day.
+            self._add_holiday_may_5(tr("Bevrijdingsdag"))
 
-        # Ascension day
-        self[easter_date + td(days=+39)] = "Hemelvaart"
+        # Ascension Day.
+        self._add_ascension_thursday(tr("Hemelvaartsdag"))
 
-        # Pentecost
-        self[easter_date + td(days=+49)] = "Eerste Pinksterdag"
+        # Whit Sunday.
+        self._add_whit_sunday(tr("Eerste Pinksterdag"))
 
-        # Pentecost monday
-        self[easter_date + td(days=+50)] = "Tweede Pinksterdag"
+        # Whit Monday.
+        self._add_whit_monday(tr("Tweede Pinksterdag"))
 
-        # First christmas
-        self[date(year, DEC, 25)] = "Eerste Kerstdag"
+        # Christmas Day.
+        self._add_christmas_day(tr("Eerste Kerstdag"))
 
-        # Second christmas
-        self[date(year, DEC, 26)] = "Tweede Kerstdag"
+        # Second Day of Christmas.
+        self._add_christmas_day_two(tr("Tweede Kerstdag"))
 
-        # Liberation day
-        if year >= 1945 and year % 5 == 0:
-            self[date(year, MAY, 5)] = "Bevrijdingsdag"
+    def _populate_optional_holidays(self):
+        # Good Friday.
+        self._add_good_friday(tr("Goede Vrijdag"))
 
-        # Kingsday
-        if year >= 2014:
-            kings_day = date(year, APR, 27)
-            if self._is_sunday(kings_day):
-                kings_day += td(days=-1)
-
-            self[kings_day] = "Koningsdag"
-
-        # Queen's day
-        if 1891 <= year <= 2013:
-            queens_day = date(year, APR, 30)
-            if year <= 1948:
-                queens_day = date(year, AUG, 31)
-
-            if self._is_sunday(queens_day):
-                queens_day += td(days=1) if year < 1980 else td(days=-1)
-
-            self[queens_day] = "Koninginnedag"
+        if self._year >= 1990:
+            # Liberation Day.
+            self._add_holiday_may_5(tr("Bevrijdingsdag"))
 
 
 class NL(Netherlands):

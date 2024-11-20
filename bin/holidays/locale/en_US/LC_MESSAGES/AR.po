@@ -1,87 +1,95 @@
+#  holidays
+#  --------
+#  A fast, efficient Python library for generating country, province and state
+#  specific sets of holidays on the fly. It aims to make determining whether a
+#  specific date is a holiday as fast and flexible as possible.
+#
+#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
+#           ryanss <ryanssdev@icloud.com> (c) 2014-2017
+#  Website: https://github.com/vacanza/holidays
+#  License: MIT (see LICENSE file)
+#
 # Argentina holidays en_US localization.
-# Authors: Arkadii Yakovets <ark@cho.red>, (c) 2022.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Python Holidays 0.20\n"
+"Project-Id-Version: Holidays 0.41\n"
 "POT-Creation-Date: 2023-03-02 00:39+0700\n"
-"PO-Revision-Date: 2023-02-20 19:10+0200\n"
+"PO-Revision-Date: 2024-01-05 12:31+0200\n"
 "Last-Translator: ~Jhellico <jhellico@gmail.com>\n"
-"Language-Team: Python Holidays localization team\n"
+"Language-Team: Holidays Localization Team\n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.5\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.4\n"
 
-#: holidays/countries/argentina.py:71
+#. Bridge Public Holiday.
 msgid "Feriado con fines turísticos"
 msgstr "Bridge Public Holiday"
 
-#: holidays/countries/argentina.py:75
+#. Bicentenary of the creation and first oath of the national flag.
 msgid "Bicentenario de la creación y primera jura de la bandera nacional"
 msgstr "Bicentenary of the creation and first oath of the national flag"
 
-#: holidays/countries/argentina.py:78
+#. Bicentenary of the Battle of Tucuman.
 msgid "Bicentenario de la Batalla de Tucumán"
 msgstr "Bicentenary of the Battle of Tucumán"
 
-#: holidays/countries/argentina.py:79
+#. Bicentenary of the inaugural session of the National Constituent Assembly
+#. of the year 1813.
 msgid ""
 "Bicentenario de la sesión inaugural de la Asamblea Nacional Constituyente "
 "del año 1813"
 msgstr ""
-"Bicentenary of the inaugural session of the National Constituent Assembly of "
-"the year 1813"
+"Bicentenary of the inaugural session of the National Constituent Assembly of"
+" the year 1813"
 
-#: holidays/countries/argentina.py:83
+#. Bicentenary of the Battle of Salta.
 msgid "Bicentenario de la Batalla de Salta"
 msgstr "Bicentenary of the Battle of Salta"
 
-#: holidays/countries/argentina.py:84
+#. National Census Day 2022.
 msgid "Censo nacional 2022"
 msgstr "National Census Day 2022"
 
-#: holidays/countries/argentina.py:162 holidays/countries/argentina.py:165
-#, c-format
-msgid "%s (Observado)"
-msgstr "%s (Observed)"
-
-#: holidays/countries/argentina.py:177
+#. New Year's Day.
 msgid "Año Nuevo"
 msgstr "New Year's Day"
 
-#: holidays/countries/argentina.py:185
+#. Carnival Day.
 msgid "Día de Carnaval"
-msgstr "Carnival"
+msgstr "Carnival Day"
 
-#: holidays/countries/argentina.py:194
+#. Memory's National Day for the Truth and Justice.
 msgid "Día Nacional de la Memoria por la Verdad y la Justicia"
 msgstr "Memory's National Day for the Truth and Justice"
 
-#: holidays/countries/argentina.py:209
+#. War Veterans Day.
 msgid "Día del Veterano de Guerra"
 msgstr "War Veterans Day"
 
-#: holidays/countries/argentina.py:211
+#. Veterans Day and the Fallen in the Malvinas War.
 msgid "Día del Veterano y de los Caidos en la Guerra de Malvinas"
 msgstr "Veterans Day and the Fallen in the Malvinas War"
 
-#: holidays/countries/argentina.py:219
+#. Good Friday.
 msgid "Viernes Santo"
 msgstr "Good Friday"
 
-#: holidays/countries/argentina.py:226
+#. Labor Day.
 msgid "Día del Trabajo"
 msgstr "Labor Day"
 
-#: holidays/countries/argentina.py:233
+#. May Revolution Day.
 msgid "Día de la Revolución de Mayo"
 msgstr "May Revolution Day"
 
-#: holidays/countries/argentina.py:244
+#. Day of Argentine Sovereignty over the Malvinas, Sandwich and South Atlantic
+#. Islands.
 msgid ""
 "Día de los Derechos Argentinos sobre las Islas Malvinas, Sandwich y del "
 "Atlántico Sur"
@@ -89,38 +97,43 @@ msgstr ""
 "Day of Argentine Sovereignty over the Malvinas, Sandwich and South Atlantic "
 "Islands"
 
-#: holidays/countries/argentina.py:261
+#. Pass to the Immortality of General Don Manuel Belgrano.
 msgid "Paso a la Inmortalidad del General Don Manuel Belgrano"
 msgstr "Pass to the Immortality of General Don Manuel Belgrano"
 
-#: holidays/countries/argentina.py:270
+#. Independence Day.
 msgid "Día de la Independencia"
 msgstr "Independence Day"
 
-#: holidays/countries/argentina.py:275
+#. Immaculate Conception.
 msgid "Inmaculada Concepción de María"
 msgstr "Immaculate Conception"
 
-#: holidays/countries/argentina.py:280
+#. Christmas Day.
 msgid "Navidad"
-msgstr "Christmas"
+msgstr "Christmas Day"
 
-#: holidays/countries/argentina.py:290
+#. Pass to the Immortality of General Don Martin Miguel de Guemes.
 msgid "Paso a la Inmortalidad del General Don Martín Miguel de Güemes"
 msgstr "Pass to the Immortality of General Don Martín Miguel de Güemes"
 
-#: holidays/countries/argentina.py:307
+#. Pass to the Immortality of General Don Jose de San Martin.
 msgid "Paso a la Inmortalidad del General Don José de San Martin"
 msgstr "Pass to the Immortality of General Don José de San Martin"
 
-#: holidays/countries/argentina.py:327
+#. Respect for Cultural Diversity Day.
 msgid "Día del Respeto a la Diversidad Cultural"
 msgstr "Respect for Cultural Diversity Day"
 
-#: holidays/countries/argentina.py:329
+#. Columbus Day.
 msgid "Día de la Raza"
 msgstr "Columbus day"
 
-#: holidays/countries/argentina.py:340
+#. National Sovereignty Day.
 msgid "Día de la Soberanía Nacional"
 msgstr "National Sovereignty Day"
+
+#. %s (observed).
+#, c-format
+msgid "%s (observado)"
+msgstr "%s (observed)"

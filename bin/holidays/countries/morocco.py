@@ -1,128 +1,105 @@
-#  python-holidays
-#  ---------------
+#  holidays
+#  --------
 #  A fast, efficient Python library for generating country, province and state
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
+#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
-#  Website: https://github.com/dr-prodigy/python-holidays
+#  Website: https://github.com/vacanza/holidays
 #  License: MIT (see LICENSE file)
 
-from datetime import date
-from datetime import timedelta as td
+from gettext import gettext as tr
 
-from holidays.calendars import _islamic_to_gre
-from holidays.constants import JAN, MAR, MAY, JUL, AUG, NOV
+from holidays.groups import IslamicHolidays, InternationalHolidays
 from holidays.holiday_base import HolidayBase
 
 
-class Morocco(HolidayBase):
+class Morocco(HolidayBase, InternationalHolidays, IslamicHolidays):
     """
-    Moroccan holidays
-    Note that holidays falling on a sunday is "lost",
-    it will not be moved to another day to make up for the collision.
+    Morocco holidays.
 
-    # Holidays after 2020: the following four moving date holidays whose exact
-    # date is announced yearly are estimated (and so denoted):
-    # - Eid El Fetr*
-    # - Eid El Adha*
-    # - 1er Moharram*
-    # - Aid al Mawlid Annabawi*
-    # *only if hijri-converter library is installed, otherwise a warning is
-    #  raised that this holiday is missing. hijri-converter requires
-    #  Python >= 3.6
     Primary sources:
-    https://fr.wikipedia.org/wiki/F%C3%AAtes_et_jours_f%C3%A9ri%C3%A9s_au_Maroc
-    https://www.mmsp.gov.ma/fr/pratiques.aspx?id=38
+    - https://fr.wikipedia.org/wiki/F%C3%AAtes_et_jours_f%C3%A9ri%C3%A9s_au_Maroc
+    - https://www.mmsp.gov.ma/fr/pratiques.aspx?id=38
     """
 
     country = "MA"
+    default_language = "ar"
+    # %s (estimated).
+    estimated_label = tr("(تقدير) %s")
+    supported_languages = ("ar", "en_US", "fr")
 
-    def _populate(self, year):
-        super()._populate(year)
+    def __init__(self, *args, **kwargs):
+        InternationalHolidays.__init__(self)
+        IslamicHolidays.__init__(self)
+        super().__init__(*args, **kwargs)
 
-        def _add_holiday(dt: date, hol: str) -> None:
-            """Only add if in current year; prevents adding holidays across
-            years (handles multi-day Islamic holidays that straddle Gregorian
-            years).
-            """
-            if dt.year == year:
-                self[dt] = hol
+    def _populate_public_holidays(self):
+        # New Year's Day.
+        self._add_new_years_day(tr("رأس السنة الميلادية"))
 
-        # New Year's Day
-        self[date(year, JAN, 1)] = "Nouvel an - Premier janvier"
+        if self._year >= 1945:
+            # Proclamation of Independence Day.
+            self._add_holiday_jan_11(tr("ذكرى تقديم وثيقة الاستقلال"))
 
-        # Independence Manifesto Day post 1944
-        if year > 1944:
-            self[date(year, JAN, 11)] = (
-                "Commémoration de la présentation "
-                "du manifeste de l'indépendance"
-            )
+        # In May 2023, Morocco recognized Berber New Year as official holiday.
+        # http://www.diplomatie.ma/en/statement-royal-office-12
+        if self._year >= 2024:
+            # Amazigh New Year.
+            self._add_holiday_jan_13(tr("رأس السنة الأمازيغية"))
 
-        # Labor day
-        self[date(year, MAY, 1)] = "Fête du Travail"
+        # Labor Day.
+        self._add_labor_day(tr("عيد العمال"))
 
-        # Throne day
-        if year > 2000:
-            self[date(year, JUL, 30)] = "Fête du Trône"
-        elif year > 1962:
-            self[date(year, MAR, 3)] = "Fête du Trône"
+        # Throne day.
+        name = tr("عيد العرش")
+        if self._year >= 2001:
+            self._add_holiday_jul_30(name)
+        elif self._year >= 1963:
+            self._add_holiday_mar_3(name)
         else:
-            self[date(year, NOV, 18)] = "Fête du Trône"
+            self._add_holiday_nov_18(name)
 
-        # Oued Ed-Dahab Day
-        self[date(year, AUG, 14)] = "Journée de Oued Ed-Dahab"
+        # Oued Ed-Dahab Day.
+        self._add_holiday_aug_14(tr("ذكرى استرجاع إقليم وادي الذهب"))
 
-        # Revolution Day
-        self[date(year, AUG, 20)] = (
-            "Commémoration de la révolution du " "Roi et du peuple"
-        )
+        # Revolution Day.
+        self._add_holiday_aug_20(tr("ذكرى ثورة الملك و الشعب"))
 
-        # Youth day
-        if year > 2000:
-            self[date(year, AUG, 21)] = "Fête de la jeunesse"
+        # Youth Day.
+        name = tr("عيد الشباب")
+        if self._year >= 2001:
+            self._add_holiday_aug_21(name)
         else:
-            self[date(year, JUL, 9)] = "Fête du Trône"
+            self._add_holiday_jul_9(name)
 
-        # Green March
-        if year > 1975:
-            self[date(year, NOV, 6)] = "Marche verte"
+        if self._year >= 1976:
+            # Green March.
+            self._add_holiday_nov_6(tr("ذكرى المسيرة الخضراء"))
 
-        # Independance day
-        if year > 1956:
-            self[date(year, NOV, 18)] = "Fête de l'indépendance"
+        if self._year >= 1957:
+            # Independence Day.
+            self._add_holiday_nov_18(tr("عيد الإستقلال"))
 
-        # Eid al-Fitr - Feast Festive
-        # date of observance is announced yearly, This is an estimate since
-        # having the Holiday on Weekend does change the number of days,
-        # deceided to leave it since marking a Weekend as a holiday
-        # wouldn't do much harm.
-        for yr in (year - 1, year):
-            for date_obs in _islamic_to_gre(yr, 10, 1):
-                hol_date = date_obs
-                _add_holiday(hol_date, "Eid al-Fitr")
-                _add_holiday(hol_date + td(days=+1), "Eid al-Fitr")
+        # Eid al-Fitr.
+        name = tr("عيد الفطر")
+        self._add_eid_al_fitr_day(name)
+        self._add_eid_al_fitr_day_two(name)
 
-        # Eid al-Adha - Sacrifice Festive
-        # date of observance is announced yearly
-        for yr in (year - 1, year):
-            for date_obs in _islamic_to_gre(yr, 12, 10):
-                hol_date = date_obs
-                _add_holiday(hol_date, "Eid al-Adha")
-                _add_holiday(hol_date + td(days=+1), "Eid al-Adha")
+        # Eid al-Adha.
+        name = tr("عيد الأضحى")
+        self._add_eid_al_adha_day(name)
+        self._add_eid_al_adha_day_two(name)
 
-        # Islamic New Year - (hijari_year, 1, 1)
-        for date_obs in _islamic_to_gre(year, 1, 1):
-            hol_date = date_obs
-            self[hol_date] = "1er Moharram"
+        # Islamic New Year.
+        self._add_islamic_new_year_day(tr("رأس السنة الهجرية"))
 
-        # Prophet Muhammad's Birthday - (hijari_year, 3, 12)
-        for yr in (year - 1, year):
-            for date_obs in _islamic_to_gre(yr, 3, 12):
-                hol_date = date_obs
-                _add_holiday(hol_date, "Aid al Mawlid Annabawi")
-                _add_holiday(hol_date + td(days=+1), "Aid al Mawlid Annabawi")
+        # Prophet's Birthday.
+        name = tr("عيد المولد النبوي")
+        self._add_mawlid_day(name)
+        self._add_mawlid_day_two(name)
 
 
 class MA(Morocco):

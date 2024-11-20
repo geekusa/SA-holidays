@@ -1,25 +1,24 @@
-#  python-holidays
-#  ---------------
+#  holidays
+#  --------
 #  A fast, efficient Python library for generating country, province and state
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
+#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
-#  Website: https://github.com/dr-prodigy/python-holidays
+#  Website: https://github.com/vacanza/holidays
 #  License: MIT (see LICENSE file)
 
-from datetime import date
-from datetime import timedelta as td
+from gettext import gettext as tr
 
-from dateutil.easter import easter
-
-from holidays.calendars import _get_nth_weekday_from
-from holidays.constants import JAN, MAR, MAY, AUG, SEP, OCT, NOV, DEC, WED
+from holidays.calendars.gregorian import MAY, JUN, OCT
+from holidays.constants import CATHOLIC, PUBLIC
+from holidays.groups import ChristianHolidays, InternationalHolidays, StaticHolidays
 from holidays.holiday_base import HolidayBase
 
 
-class Germany(HolidayBase):
+class Germany(HolidayBase, ChristianHolidays, InternationalHolidays, StaticHolidays):
     """Official holidays for Germany in its current form.
 
     This class doesn't return any holidays before 1990-10-03.
@@ -55,12 +54,15 @@ class Germany(HolidayBase):
     """
 
     country = "DE"
-    subdivisions = [
+    default_language = "de"
+    supported_categories = (CATHOLIC, PUBLIC)
+    supported_languages = ("de", "en_US", "th", "uk")
+    subdivisions = (
+        # ISO 3166-2:DE
         "BB",
         "BE",
         "BW",
         "BY",
-        "BYP",
         "HB",
         "HE",
         "HH",
@@ -73,87 +75,224 @@ class Germany(HolidayBase):
         "SN",
         "ST",
         "TH",
-    ]
+    )
+    subdivisions_aliases = {
+        "Brandenburg": "BB",
+        "Berlin": "BE",
+        "Baden-Württemberg": "BW",
+        "Bayern": "BY",
+        "Bremen": "HB",
+        "Hessen": "HE",
+        "Hamburg": "HH",
+        "Mecklenburg-Vorpommern": "MV",
+        "Niedersachsen": "NI",
+        "Nordrhein-Westfalen": "NW",
+        "Rheinland-Pfalz": "RP",
+        "Schleswig-Holstein": "SH",
+        "Saarland": "SL",
+        "Sachsen": "SN",
+        "Sachsen-Anhalt": "ST",
+        "Thüringen": "TH",
+    }
+    _deprecated_subdivisions = ("BYP",)
 
-    def _populate(self, year):
-        if year <= 1989:
+    def __init__(self, *args, **kwargs) -> None:
+        ChristianHolidays.__init__(self)
+        InternationalHolidays.__init__(self)
+        StaticHolidays.__init__(self, GermanyStaticHolidays)
+        super().__init__(*args, **kwargs)
+
+    def _populate_public_holidays(self):
+        if self._year <= 1989:
             return None
 
-        super()._populate(year)
+        if self._year >= 1991:
+            # New Year's Day.
+            self._add_new_years_day(tr("Neujahr"))
 
-        if year > 1990:
-            self[date(year, JAN, 1)] = "Neujahr"
+            # Good Friday.
+            self._add_good_friday(tr("Karfreitag"))
 
-            if self.subdiv in {"BW", "BY", "BYP", "ST"}:
-                self[date(year, JAN, 6)] = "Heilige Drei Könige"
+            # Easter Monday.
+            self._add_easter_monday(tr("Ostermontag"))
 
-            easter_date = easter(year)
+            # Labor Day.
+            self._add_labor_day(tr("Erster Mai"))
 
-            self[easter_date + td(days=-2)] = "Karfreitag"
+            # Ascension Day.
+            self._add_ascension_thursday(tr("Christi Himmelfahrt"))
 
-            if self.subdiv == "BB":
-                # will always be a Sunday and we have no "observed" rule so
-                # this is pretty pointless but it's nonetheless an official
-                # holiday by law
-                self[easter_date] = "Ostersonntag"
+            # Whit Monday.
+            self._add_whit_monday(tr("Pfingstmontag"))
 
-            self[easter_date + td(days=+1)] = "Ostermontag"
+        # German Unity Day.
+        self._add_holiday_oct_3(tr("Tag der Deutschen Einheit"))
 
-            self[date(year, MAY, 1)] = "Erster Mai"
+        if self._year <= 1994:
+            # Repentance and Prayer Day.
+            self._add_holiday_1st_wed_before_nov_22(tr("Buß- und Bettag"))
 
-            if self.subdiv == "BE" and year == 2020:
-                self[date(year, MAY, 8)] = (
-                    "75. Jahrestag der Befreiung vom Nationalsozialismus "
-                    "und der Beendigung des Zweiten Weltkriegs in Europa"
-                )
+        # Christmas Day.
+        self._add_christmas_day(tr("Erster Weihnachtstag"))
 
-            self[easter_date + td(days=+39)] = "Christi Himmelfahrt"
+        # Second Day of Christmas.
+        self._add_christmas_day_two(tr("Zweiter Weihnachtstag"))
 
-            if self.subdiv == "BB":
-                # will always be a Sunday and we have no "observed" rule so
-                # this is pretty pointless but it's nonetheless an official
-                # holiday by law
-                self[easter_date + td(days=+49)] = "Pfingstsonntag"
+        if self.subdiv == "BYP":
+            self._populate_subdiv_by_public_holidays()
 
-            self[easter_date + td(days=+50)] = "Pfingstmontag"
+    def _populate_subdiv_bb_public_holidays(self):
+        if self._year <= 1989:
+            return None
 
-            if self.subdiv in {"BW", "BY", "BYP", "HE", "NW", "RP", "SL"}:
-                self[easter_date + td(days=+60)] = "Fronleichnam"
+        if self._year >= 1991:
+            # Easter Sunday.
+            self._add_easter_sunday(tr("Ostersonntag"))
 
-            if self.subdiv in {"BY", "SL"}:
-                self[date(year, AUG, 15)] = "Mariä Himmelfahrt"
+            # Whit Sunday.
+            self._add_whit_sunday(tr("Pfingstsonntag"))
 
-        self[date(year, OCT, 3)] = "Tag der Deutschen Einheit"
+        # Reformation Day.
+        self._add_holiday_oct_31(tr("Reformationstag"))
 
-        if (
-            self.subdiv in {"BB", "MV", "SN", "ST", "TH"}
-            or (self.subdiv in {"HB", "HH", "NI", "SH"} and year >= 2018)
-            or year == 2017
-        ):
-            self[date(year, OCT, 31)] = "Reformationstag"
+    def _populate_subdiv_be_public_holidays(self):
+        if self._year <= 1989:
+            return None
 
-        if self.subdiv in {"BW", "BY", "BYP", "NW", "RP", "SL"}:
-            self[date(year, NOV, 1)] = "Allerheiligen"
+        if self._year >= 2019:
+            # International Women's Day.
+            self._add_womens_day(tr("Internationaler Frauentag"))
 
-        if year <= 1994 or self.subdiv == "SN":
-            # last wednesday before year-11-23
-            self[
-                _get_nth_weekday_from(-1, WED, date(year, NOV, 22))
-            ] = "Buß- und Bettag"
+    def _populate_subdiv_bw_public_holidays(self):
+        if self._year <= 1989:
+            return None
 
-        if year >= 2019:
-            if self.subdiv == "TH":
-                self[date(year, SEP, 20)] = "Weltkindertag"
+        if self._year >= 1991:
+            # Epiphany.
+            self._add_epiphany_day(tr("Heilige Drei Könige"))
 
-            if self.subdiv == "BE":
-                self[date(year, MAR, 8)] = "Internationaler Frauentag"
+            # Corpus Christi.
+            self._add_corpus_christi_day(tr("Fronleichnam"))
 
-        if year >= 2023:
-            if self.subdiv == "MV":
-                self[date(year, MAR, 8)] = "Internationaler Frauentag"
+        # All Saints' Day.
+        self._add_all_saints_day(tr("Allerheiligen"))
 
-        self[date(year, DEC, 25)] = "Erster Weihnachtstag"
-        self[date(year, DEC, 26)] = "Zweiter Weihnachtstag"
+    def _populate_subdiv_by_public_holidays(self):
+        if self._year <= 1989:
+            return None
+
+        if self._year >= 1991:
+            self._add_epiphany_day(tr("Heilige Drei Könige"))
+            self._add_corpus_christi_day(tr("Fronleichnam"))
+
+        self._add_all_saints_day(tr("Allerheiligen"))
+
+    def _populate_subdiv_by_catholic_holidays(self):
+        if self._year <= 1990:
+            return None
+
+        # Assumption Day.
+        self._add_assumption_of_mary_day(tr("Mariä Himmelfahrt"))
+
+    def _populate_subdiv_hb_public_holidays(self):
+        if self._year <= 1989:
+            return None
+
+        if self._year >= 2018:
+            self._add_holiday_oct_31(tr("Reformationstag"))
+
+    def _populate_subdiv_he_public_holidays(self):
+        if self._year <= 1989:
+            return None
+
+        if self._year >= 1991:
+            self._add_corpus_christi_day(tr("Fronleichnam"))
+
+    def _populate_subdiv_hh_public_holidays(self):
+        if self._year <= 1989:
+            return None
+
+        if self._year >= 2018:
+            self._add_holiday_oct_31(tr("Reformationstag"))
+
+    def _populate_subdiv_mv_public_holidays(self):
+        if self._year <= 1989:
+            return None
+
+        if self._year >= 2023:
+            self._add_womens_day(tr("Internationaler Frauentag"))
+
+        self._add_holiday_oct_31(tr("Reformationstag"))
+
+    def _populate_subdiv_ni_public_holidays(self):
+        if self._year <= 1989:
+            return None
+
+        if self._year >= 2018:
+            self._add_holiday_oct_31(tr("Reformationstag"))
+
+    def _populate_subdiv_nw_public_holidays(self):
+        if self._year <= 1989:
+            return None
+
+        if self._year >= 1991:
+            self._add_corpus_christi_day(tr("Fronleichnam"))
+
+        self._add_all_saints_day(tr("Allerheiligen"))
+
+    def _populate_subdiv_rp_public_holidays(self):
+        if self._year <= 1989:
+            return None
+
+        if self._year >= 1991:
+            self._add_corpus_christi_day(tr("Fronleichnam"))
+
+        self._add_all_saints_day(tr("Allerheiligen"))
+
+    def _populate_subdiv_sh_public_holidays(self):
+        if self._year <= 1989:
+            return None
+
+        if self._year >= 2018:
+            self._add_holiday_oct_31(tr("Reformationstag"))
+
+    def _populate_subdiv_sl_public_holidays(self):
+        if self._year <= 1989:
+            return None
+
+        if self._year >= 1991:
+            self._add_corpus_christi_day(tr("Fronleichnam"))
+            self._add_assumption_of_mary_day(tr("Mariä Himmelfahrt"))
+
+        self._add_all_saints_day(tr("Allerheiligen"))
+
+    def _populate_subdiv_sn_public_holidays(self):
+        if self._year <= 1989:
+            return None
+
+        self._add_holiday_oct_31(tr("Reformationstag"))
+
+        if self._year >= 1995:
+            self._add_holiday_1st_wed_before_nov_22(tr("Buß- und Bettag"))
+
+    def _populate_subdiv_st_public_holidays(self):
+        if self._year <= 1989:
+            return None
+
+        if self._year >= 1991:
+            self._add_epiphany_day(tr("Heilige Drei Könige"))
+
+        self._add_holiday_oct_31(tr("Reformationstag"))
+
+    def _populate_subdiv_th_public_holidays(self):
+        if self._year <= 1989:
+            return None
+
+        if self._year >= 2019:
+            # World Children's Day.
+            self._add_holiday_sep_20(tr("Weltkindertag"))
+
+        self._add_holiday_oct_31(tr("Reformationstag"))
 
 
 class DE(Germany):
@@ -162,3 +301,41 @@ class DE(Germany):
 
 class DEU(Germany):
     pass
+
+
+class GermanyStaticHolidays:
+    """
+    References:
+     - https://www.stuttgarter-zeitung.de/inhalt.reformationstag-2017-einmalig-bundesweiter-feiertag.b7e189b3-a33d-41a3-a0f4-141cd13df54e.html
+     - https://www.bbc.com/news/world-europe-52574748
+     - https://gesetze.berlin.de/bsbe/document/jlr-FeiertGBEV8P1
+    """
+
+    special_public_holidays = {
+        2017: (OCT, 31, tr("Reformationstag")),
+    }
+
+    special_be_public_holidays = {
+        2020: (
+            MAY,
+            8,
+            # 75th anniversary of the liberation from Nazism and
+            # the end of the Second World War in Europe.
+            tr(
+                "75. Jahrestag der Befreiung vom Nationalsozialismus "
+                "und der Beendigung des Zweiten Weltkriegs in Europa"
+            ),
+        ),
+        2025: (
+            MAY,
+            8,
+            # 80th anniversary of the liberation from Nazism and
+            # the end of the Second World War in Europe.
+            tr(
+                "80. Jahrestag der Befreiung vom Nationalsozialismus "
+                "und der Beendigung des Zweiten Weltkriegs in Europa"
+            ),
+        ),
+        # 75th anniversary of the East German uprising of 1953.
+        2028: (JUN, 17, tr("75. Jahrestag des Aufstandes vom 17. Juni 1953")),
+    }
