@@ -89,7 +89,7 @@ Currently supports 154 countries and 4 financial markets.
 
 ###**3: Add custom holiday**###
 
-`* | holidays custom_holiday="Jan 16,2020"`
+`* | holidays custom_holiday="Jan 16, 2020"`
 
 ###**4: Hong Kong holidays**###
 
