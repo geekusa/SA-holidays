@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -18,24 +18,30 @@ from holidays.holiday_base import HolidayBase
 
 
 class Djibouti(HolidayBase, ChristianHolidays, IslamicHolidays, InternationalHolidays):
+    """Djibouti holidays."""
+
     country = "DJ"
     default_language = "fr"
     # %s (estimated).
     estimated_label = tr("%s (estimé)")
     supported_languages = ("ar", "en_US", "fr")
     weekend = {FRI, SAT}
+    # On 27 June 1977, Djibouti gained independence from France.
+    start_year = 1978
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, islamic_show_estimated: bool = True, **kwargs):
+        """
+        Args:
+            islamic_show_estimated:
+                Whether to add "estimated" label to Islamic holidays name
+                if holiday date is estimated.
+        """
         ChristianHolidays.__init__(self)
-        IslamicHolidays.__init__(self)
+        IslamicHolidays.__init__(self, show_estimated=islamic_show_estimated)
         InternationalHolidays.__init__(self)
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
-        # On 27 June 1977, Djibouti gained independence from France.
-        if self._year <= 1977:
-            return None
-
         # New Year's Day.
         self._add_new_years_day(tr("Nouvel an"))
 

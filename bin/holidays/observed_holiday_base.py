@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -58,6 +58,7 @@ SAT_TO_NEXT_SUN = ObservedRule({SAT: +1})
 SAT_TO_NEXT_WORKDAY = ObservedRule({SAT: +7})
 SAT_TO_NONE = ObservedRule({SAT: None})
 
+SUN_TO_PREV_SAT = ObservedRule({SUN: -1})
 SUN_TO_NEXT_MON = ObservedRule({SUN: +1})
 SUN_TO_NEXT_TUE = ObservedRule({SUN: +2})
 SUN_TO_NEXT_WED = ObservedRule({SUN: +3})
@@ -104,7 +105,11 @@ class ObservedHolidayBase(HolidayBase):
     observed_label = "%s"
 
     def __init__(
-        self, observed_rule: ObservedRule = None, observed_since: int = None, *args, **kwargs
+        self,
+        observed_rule: Optional[ObservedRule] = None,
+        observed_since: Optional[int] = None,
+        *args,
+        **kwargs,
     ):
         self._observed_rule = observed_rule or ObservedRule()
         self._observed_since = observed_since
@@ -138,12 +143,17 @@ class ObservedHolidayBase(HolidayBase):
 
     def _add_observed(
         self,
-        dt: DateArg,
+        dt: Optional[DateArg] = None,
         name: Optional[str] = None,
         rule: Optional[ObservedRule] = None,
         show_observed_label: bool = True,
     ) -> tuple[bool, Optional[date]]:
-        dt = dt if isinstance(dt, date) else date(self._year, *dt)
+        if dt is None:
+            return False, None
+
+        # Use as is if already a date.
+        # Convert to date: (m, d) → use self._year; (y, m, d) → use directly.
+        dt = dt if isinstance(dt, date) else date(self._year, *dt) if len(dt) == 2 else date(*dt)
 
         if not self.observed or not self._is_observed(dt):
             return False, dt
@@ -167,7 +177,7 @@ class ObservedHolidayBase(HolidayBase):
                 )
             )
 
-            estimated_label_text = estimated_label.strip("%s ()")
+            estimated_label_text = estimated_label.strip("%s ()（）")
             # Use observed_estimated_label instead of observed_label for estimated dates.
             for name in (name,) if name else self.get_list(dt):
                 holiday_name = self.tr(name)

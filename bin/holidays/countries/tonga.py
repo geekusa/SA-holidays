@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -24,50 +24,53 @@ from holidays.observed_holiday_base import (
 
 
 class Tonga(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, StaticHolidays):
-    """
+    """Tonga holidays.
+
     References:
-      - 2020 Rev. https://ago.gov.to/cms/images/LEGISLATION/PRINCIPAL/1919/1919-0008/PublicHolidaysAct_3.pdf
-      - 2020 Rev. (to) https://ago.gov.to/cms/images/LEGISLATION/PRINCIPAL/1919/1919-0008/LaokihengaahiAhoMaloloFaka-Puleanga_3x.pdf
-      - 2016 Rev. https://ago.gov.to/cms/images/LEGISLATION/PRINCIPAL/1919/1919-0008/PublicHolidaysAct_2.pdf
-      - 1988 Rev. https://ago.gov.to/cms/images/LEGISLATION/PRINCIPAL/1919/1919-0008/PublicHolidaysAct_1.pdf
-      - 1988 Rev. (to) https://ago.gov.to/cms/images/LEGISLATION/PRINCIPAL/1919/1919-0008/LaokihengaahiAhoMaloloFaka-Puleanga_1x.pdf
-      - Act 10 of 2010 http://www.paclii.org/to/legis/num_act/pha2010243/
-      - Act 5 of 2013 http://www.paclii.org/to/legis/num_act/pha2013243/
+        * [1988 Rev. (to)](https://archive.org/details/laokihengaahi-aho-malolo-faka-puleanga-3x/LaokihengaahiAhoMaloloFaka-Puleanga_1x.pdf)
+        * [1988 Rev.](https://archive.org/details/tonga-public-holidays-act-1)
+        * [Act 10 of 2010](https://web.archive.org/web/20241217174606/http://www.paclii.org/to/legis/num_act/pha2010243/)
+        * [Act 5 of 2013](https://web.archive.org/web/20250128143333/http://www.paclii.org/to/legis/num_act/pha2013243/)
+        * [2016 Rev.](https://web.archive.org/web/20250329175511/https://ago.gov.to/cms/images/LEGISLATION/PRINCIPAL/1919/1919-0008/PublicHolidaysAct_2.pdf)
+        * [2020 Rev. (to)](https://archive.org/details/laokihengaahi-aho-malolo-faka-puleanga-3x/LaokihengaahiAhoMaloloFaka-Puleanga_3x.pdf)
+        * [2020 Rev.](https://web.archive.org/web/20240531232255/https://ago.gov.to/cms/images/LEGISLATION/PRINCIPAL/1919/1919-0008/PublicHolidaysAct_3.pdf)
 
     Checked With:
-      - https://www.gov.to/press-release/tonga-public-holidays-for-2024/  # 2024
-      - https://www.gov.to/press-release/tonga-public-holidays-for-2023/  # 2023
-      - https://www.gov.to/press-release/tonga-public-holidays-for-2022/  # 2022
-      - https://www.gov.to/press-release/tonga-public-holidays-for-2021/  # 2021
-      - https://www.gov.to/press-release/tonga-public-holidays-for-2020/  # 2020
-      - https://www.gov.to/press-release/tonga-public-holidays-for-2019-2/  # 2019
-      - https://www.gov.to/press-release/tonga-public-holidays-for-2018/  # 2018
-      - https://www.officeholidays.com/countries/tonga/2017  # 2017
+        * [2017](https://web.archive.org/web/20240224051858/https://www.officeholidays.com/countries/tonga/2017)
+        * [2018](https://web.archive.org/web/20220713062330/https://www.gov.to/press-release/tonga-public-holidays-for-2018/)
+        * [2019](https://www.gov.to/press-release/tonga-public-holidays-for-2019-2/)
+        * [2020](https://web.archive.org/web/20211207144655/https://www.gov.to/press-release/tonga-public-holidays-for-2020/)
+        * [2021](https://web.archive.org/web/20201101134029/https://www.gov.to/press-release/tonga-public-holidays-for-2021/)
+        * [2022](https://web.archive.org/web/20211216154631/https://www.gov.to/press-release/tonga-public-holidays-for-2022/)
+        * [2023](https://web.archive.org/web/20221116225808/https://www.gov.to/press-release/tonga-public-holidays-for-2023/)
+        * [2024](https://www.gov.to/press-release/tonga-public-holidays-for-2024/)
 
     1988 Revision Observance Rule:
-        Provided always that when any of the days specified falls upon a Sunday,
-        the next following Monday shall be a public holiday and that whenever
-        the twenty-sixth day of December falls upon a Monday the day following
-        shall be a public holiday. (Amended by Act 11 of 1970.)
+
+    Provided always that when any of the days specified falls upon a Sunday,
+    the next following Monday shall be a public holiday and that whenever
+    the twenty-sixth day of December falls upon a Monday the day following
+    shall be a public holiday. (Amended by Act 11 of 1970.)
 
     2016 and 2020 Revision Observance Rule:
-        Provided that when any public holidays specified, except Christmas Day, the
-        day immediately succeeding Christmas Day, New Years Day, Good Friday,
-        Easter Monday, ANZAC Day, Birthday of the reigning Sovereign of Tonga
-        and Birthday of the Heir to the Crown of Tonga, falls upon a Thursday,
-        Friday, Saturday or Sunday, that public holiday shall be celebrated on the next
-        following Monday; and if it falls on a Tuesday or Wednesday, that public
-        holiday shall be celebrated on the Monday before the actual public holiday.
-        (Amended by Act 10 of 2010: May 18, 2010.)
-        "Birthday of the reigning Sovereign of Tonga and Birthday of the Heir to
-        the Crown of Tonga" is add to the exempted list as seen above.
-        (Amended by Act 5 of 2013: Jun 28, 2013.)
 
-        Further provided that the Birthday of the reigning Sovereign of Tonga and the
-        Birthday of the Heir to the Crown of Tonga shall be celebrated on the day it
-        falls, unless it falls on a Sunday in which case it would be celebrated on the
-        next following Monday.
-        (Inserted by Act 5 of 2013: Jun 28, 2013.)
+    Provided that when any public holidays specified, except Christmas Day, the
+    day immediately succeeding Christmas Day, New Years Day, Good Friday,
+    Easter Monday, ANZAC Day, Birthday of the reigning Sovereign of Tonga
+    and Birthday of the Heir to the Crown of Tonga, falls upon a Thursday,
+    Friday, Saturday or Sunday, that public holiday shall be celebrated on the next
+    following Monday; and if it falls on a Tuesday or Wednesday, that public
+    holiday shall be celebrated on the Monday before the actual public holiday.
+    (Amended by Act 10 of 2010: May 18, 2010.)
+    "Birthday of the reigning Sovereign of Tonga and Birthday of the Heir to
+    the Crown of Tonga" is add to the exempted list as seen above.
+    (Amended by Act 5 of 2013: Jun 28, 2013.)
+
+    Further provided that the Birthday of the reigning Sovereign of Tonga and the
+    Birthday of the Heir to the Crown of Tonga shall be celebrated on the day it
+    falls, unless it falls on a Sunday in which case it would be celebrated on the
+    next following Monday.
+    (Inserted by Act 5 of 2013: Jun 28, 2013.)
     """
 
     country = "TO"
@@ -75,6 +78,8 @@ class Tonga(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, Stati
     # %s (observed).
     observed_label = tr("%s (fakatokanga'i)")
     supported_languages = ("en_US", "to")
+    # Public Holidays Act, 1988 Revision.
+    start_year = 1989
 
     def __init__(self, *args, **kwargs):
         ChristianHolidays.__init__(self)
@@ -89,10 +94,6 @@ class Tonga(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, Stati
         return super()._add_observed(dt, **kwargs)
 
     def _populate_public_holidays(self):
-        # Public Holidays Act, 1988 Revision.
-        if self._year <= 1988:
-            return None
-
         # New Year's Day.
         jan_1 = self._add_new_years_day(tr("'Uluaki 'Aho 'o e Ta'u Fo'ou"))
         if self._year <= 2016:
@@ -202,11 +203,12 @@ class TON(Tonga):
 
 
 class TongaStaticHolidays:
-    """
+    """Tonga special holidays.
+
     References:
-      - https://www.stuff.co.nz/sport/league/99338959/tonga-government-declares-public-holiday-over-rugby-league-teams-deeds
-      - https://www.rnz.co.nz/international/pacific-news/398653/tonga-declares-public-holiday-for-pm-pohiva-s-state-funeral
-      - https://www.nrl.com/news/2019/11/06/tonga-declare-public-holiday-for-woolfs-winning-warriors/
+        * <https://web.archive.org/web/20250414072115/https://www.stuff.co.nz/sport/league/99338959/tonga-government-declares-public-holiday-over-rugby-league-teams-deeds>
+        * <https://web.archive.org/web/20250414072128/https://www.rnz.co.nz/international/pacific-news/398653/tonga-declares-public-holiday-for-pm-pohiva-s-state-funeral>
+        * <https://web.archive.org/web/20250414072316/https://www.nrl.com/news/2019/11/06/tonga-declare-public-holiday-for-woolfs-winning-warriors/>
     """
 
     # Special Cases.

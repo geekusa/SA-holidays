@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -19,18 +19,18 @@ from holidays.holiday_base import HolidayBase
 
 
 class Cyprus(HolidayBase, ChristianHolidays, InternationalHolidays):
-    """
-    Cyprus holidays.
+    """Cyprus holidays.
 
     References:
-         - https://en.wikipedia.org/wiki/Public_holidays_in_Cyprus
-         - https://www.centralbank.cy/en/the-bank/working-hours-bank-holidays
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_Cyprus>
+        * <https://web.archive.org/web/20241127121516/https://www.centralbank.cy/en//the-bank/working-hours-bank-holidays>
     """
 
     country = "CY"
     default_language = "el"
     supported_categories = (BANK, OPTIONAL, PUBLIC)
     supported_languages = ("el", "en_CY", "en_US", "uk")
+    start_year = 1961
 
     def __init__(self, *args, **kwargs):
         ChristianHolidays.__init__(self, JULIAN_REVISED_CALENDAR)
@@ -38,9 +38,6 @@ class Cyprus(HolidayBase, ChristianHolidays, InternationalHolidays):
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
-        if self._year <= 1960:
-            return None
-
         # New Year's Day.
         self._add_new_years_day(tr("Πρωτοχρονιά"))
 
@@ -88,16 +85,10 @@ class Cyprus(HolidayBase, ChristianHolidays, InternationalHolidays):
         self._add_christmas_day_two(tr("Επομένη Χριστουγέννων"))
 
     def _populate_bank_holidays(self):
-        if self._year <= 1960:
-            return None
-
         # Easter Tuesday.
         self._add_easter_tuesday(tr("Τρίτη της Διακαινησίμου"))
 
     def _populate_optional_holidays(self):
-        if self._year <= 1960:
-            return None
-
         # Holy Saturday.
         self._add_holy_saturday(tr("Μεγάλο Σάββατο"))
 

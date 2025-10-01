@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -18,28 +18,32 @@ from holidays.holiday_base import HolidayBase
 
 
 class Sweden(HolidayBase, ChristianHolidays, InternationalHolidays):
-    """
-    Swedish holidays.
-    Note that holidays falling on a sunday are "lost",
-    it will not be moved to another day to make up for the collision.
-    In Sweden, ALL sundays are considered a holiday
-    (https://sv.wikipedia.org/wiki/Helgdagar_i_Sverige).
-    Initialize this class with include_sundays=False
-    to not include sundays as a holiday.
+    """Sweden holidays.
 
-    Primary sources:
-        - https://sv.wikipedia.org/wiki/Helgdagar_i_Sverige
-        - http://www.riksdagen.se/sv/dokument-lagar/dokument/svensk-forfattningssamling/lag-1989253-om-allmanna-helgdagar_sfs-1989-253
+    References:
+        * <https://sv.wikipedia.org/wiki/Helgdagar_i_Sverige>
+        * <https://web.archive.org/web/20250414065223/https://www.riksdagen.se/sv/dokument-lagar/dokument/svensk-forfattningssamling/lag-1989253-om-allmanna-helgdagar_sfs-1989-253>
+        * <https://sv.wikipedia.org/wiki/Första_maj>
+        * <https://sv.wikipedia.org/wiki/Sveriges_nationaldag>
+        * <https://sv.wikipedia.org/wiki/Midsommarafton>
+
+
+    Note that holidays falling on a sunday is "lost", it will not be moved
+    to another day to make up for the collision.
+
+    In Sweden, ALL sundays are considered a holiday.
+    Initialize this class with `include_sundays=False` to not include sundays as a holiday.
     """
 
     country = "SE"
     default_language = "sv"
     supported_languages = ("en_US", "sv", "th", "uk")
 
-    def __init__(self, include_sundays=True, *args, **kwargs):
+    def __init__(self, include_sundays: bool = True, *args, **kwargs):
         """
-        :param include_sundays:
-            Whether to consider sundays as a holiday (which they are in Sweden)
+        Args:
+            include_sundays:
+                Whether to consider sundays as a holiday (which they are in Sweden)
         """
         self.include_sundays = include_sundays
         ChristianHolidays.__init__(self)
@@ -66,7 +70,6 @@ class Sweden(HolidayBase, ChristianHolidays, InternationalHolidays):
         # Easter Monday.
         self._add_easter_monday(tr("Annandag påsk"))
 
-        # Source: https://sv.wikipedia.org/wiki/F%C3%B6rsta_maj
         if self._year >= 1939:
             # May Day.
             self._add_labor_day(tr("Första maj"))
@@ -74,7 +77,6 @@ class Sweden(HolidayBase, ChristianHolidays, InternationalHolidays):
         # Ascension Day.
         self._add_ascension_thursday(tr("Kristi himmelsfärdsdag"))
 
-        # Source: https://sv.wikipedia.org/wiki/Sveriges_nationaldag
         if self._year >= 2005:
             # National Day of Sweden.
             self._add_holiday_jun_6(tr("Sveriges nationaldag"))
@@ -85,11 +87,6 @@ class Sweden(HolidayBase, ChristianHolidays, InternationalHolidays):
         if self._year <= 2004:
             # Whit Monday.
             self._add_whit_monday(tr("Annandag pingst"))
-
-        # Source:
-        # https://sv.wikipedia.org/wiki/Midsommarafton
-        # https://www.nordiskamuseet.se/aretsdagar/midsommarafton
-        # Midsummer evening. Friday between June 19th and June 25th
 
         # Midsummer Eve.
         name = tr("Midsommarafton")
@@ -102,8 +99,9 @@ class Sweden(HolidayBase, ChristianHolidays, InternationalHolidays):
         # Midsummer Day.
         self._add_holiday(tr("Midsommardagen"), _timedelta(dt, +1))
 
-        # All Saints' Day.
-        self._add_holiday_1st_sat_from_oct_31(tr("Alla helgons dag"))
+        if self._year >= 1953:
+            # All Saints' Day.
+            self._add_holiday_1st_sat_from_oct_31(tr("Alla helgons dag"))
 
         # Christmas Eve.
         self._add_christmas_eve(tr("Julafton"))

@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -13,7 +13,7 @@
 from gettext import gettext as tr
 
 from holidays.calendars import _CustomIslamicHolidays
-from holidays.calendars.gregorian import MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV
+from holidays.calendars.gregorian import MAR, MAY, JUN, AUG, SEP, OCT, NOV
 from holidays.groups import (
     ChristianHolidays,
     IslamicHolidays,
@@ -26,62 +26,115 @@ from holidays.observed_holiday_base import ObservedHolidayBase, SUN_TO_NEXT_MON
 class Spain(
     ObservedHolidayBase, ChristianHolidays, InternationalHolidays, IslamicHolidays, StaticHolidays
 ):
-    """
-    Holidays checked with official sources for 2010-2023 only.
+    """Spain holidays.
 
     References:
-     - https://administracion.gob.es/pag_Home/atencionCiudadana/calendarios.html
+        * <https://web.archive.org/web/20250407130530/https://administracion.gob.es/pag_Home/atencionCiudadana/calendarios.html>
+        * [2010](https://web.archive.org/web/20250427181827/https://www.boe.es/buscar/doc.php?id=BOE-A-2009-18477)
+        * [2011](https://web.archive.org/web/20231121065830/https://www.boe.es/buscar/doc.php?id=BOE-A-2010-15722)
+        * [2012](https://web.archive.org/web/20250427181838/https://www.boe.es/buscar/doc.php?id=BOE-A-2011-16116)
+        * [2013](https://web.archive.org/web/20220120080053/https://www.boe.es/buscar/doc.php?id=BOE-A-2012-13644)
+        * [2014](https://web.archive.org/web/20201001232243/https://www.boe.es/buscar/doc.php?id=BOE-A-2013-12147)
+        * [2015](https://web.archive.org/web/20240915041804/https://www.boe.es/buscar/doc.php?id=BOE-A-2014-10823)
+        * [2016](https://web.archive.org/web/20240915044403/http://www.boe.es/buscar/doc.php?id=BOE-A-2015-11348)
+        * [2017](https://web.archive.org/web/20170609094105/http://www.boe.es:80/buscar/doc.php?id=BOE-A-2016-9244)
+        * [2018](https://web.archive.org/web/20241006073402/https://www.boe.es/buscar/doc.php?id=BOE-A-2017-11639)
+        * [2019](https://web.archive.org/web/20240329020330/https://boe.es/buscar/doc.php?id=BOE-A-2018-14369)
+        * [2020](https://web.archive.org/web/20240417060155/https://www.boe.es/buscar/doc.php?id=BOE-A-2019-14552)
+        * [2021](https://web.archive.org/web/20241114022913/https://www.boe.es/buscar/doc.php?id=BOE-A-2020-13343)
+        * [2022](https://web.archive.org/web/20240725121311/https://www.boe.es/buscar/doc.php?id=BOE-A-2021-17113)
+        * [2023](https://web.archive.org/web/20240811035605/https://www.boe.es/buscar/doc.php?id=BOE-A-2022-16755)
+        * [2024](https://web.archive.org/web/20240401192304/https://www.boe.es/buscar/doc.php?id=BOE-A-2023-22014)
+        * [2025](https://web.archive.org/web/20241226214918/https://www.boe.es/buscar/doc.php?id=BOE-A-2024-21316)
 
-     Labor Holidays:
-     2010: https://www.boe.es/buscar/doc.php?id=BOE-A-2009-18477
-     2011: https://www.boe.es/buscar/doc.php?id=BOE-A-2010-15722
-     2012: https://www.boe.es/buscar/doc.php?id=BOE-A-2011-16116
-     2013: https://www.boe.es/buscar/doc.php?id=BOE-A-2012-13644
-     2014: https://www.boe.es/buscar/doc.php?id=BOE-A-2013-12147
-     2015: https://www.boe.es/buscar/doc.php?id=BOE-A-2014-10823
-     2016: https://www.boe.es/buscar/doc.php?id=BOE-A-2015-11348
-     2017: https://www.boe.es/buscar/doc.php?id=BOE-A-2016-9244
-     2018: https://www.boe.es/buscar/doc.php?id=BOE-A-2017-11639
-     2019: https://www.boe.es/buscar/doc.php?id=BOE-A-2018-14369
-     2020: https://www.boe.es/buscar/doc.php?id=BOE-A-2019-14552
-     2021: https://www.boe.es/buscar/doc.php?id=BOE-A-2020-13343
-     2022: https://www.boe.es/buscar/doc.php?id=BOE-A-2021-17113
-     2023: https://www.boe.es/buscar/doc.php?id=BOE-A-2022-16755
-     2024: https://www.boe.es/buscar/doc.php?id=BOE-A-2023-22014
-     2025: https://www.boe.es/buscar/doc.php?id=BOE-A-2024-21316
+    Subdivisions Holidays References:
+        * Navarra:
+            * [2010](https://web.archive.org/web/20250903095706/https://www.lexnavarra.navarra.es/detalle.asp?r=8402)
+            * [2011](https://web.archive.org/web/20250903095217/https://www.lexnavarra.navarra.es/detalle.asp?r=8403)
+            * [2012](https://web.archive.org/web/20250903095133/https://www.lexnavarra.navarra.es/detalle.asp?r=12993)
+            * [2013](https://web.archive.org/web/20250903095136/https://www.lexnavarra.navarra.es/detalle.asp?r=26226)
+            * [2014](https://web.archive.org/web/20250903095123/https://www.lexnavarra.navarra.es/detalle.asp?r=32382)
+            * [2015](https://web.archive.org/web/20250903095257/https://www.lexnavarra.navarra.es/detalle.asp?r=34276)
+            * [2016](https://web.archive.org/web/20250903095302/https://www.lexnavarra.navarra.es/detalle.asp?r=36141)
+            * [2017](https://web.archive.org/web/20250903095306/https://www.lexnavarra.navarra.es/detalle.asp?r=37665)
+            * [2018](https://web.archive.org/web/20170728130845/https://www.lexnavarra.navarra.es/detalle.asp?r=38904)
+            * [2019](https://web.archive.org/web/20250903095819/https://www.lexnavarra.navarra.es/detalle.asp?r=50305)
+            * [2020](https://web.archive.org/web/20250623005808/https://www.lexnavarra.navarra.es/detalle.asp?r=52229)
+            * [2021](https://web.archive.org/web/20250623010750/https://www.lexnavarra.navarra.es/detalle.asp?r=52748)
+            * [2022](https://web.archive.org/web/20250623000851/https://www.lexnavarra.navarra.es/detalle.asp?r=53763)
+            * [2023](https://web.archive.org/web/20250623010106/https://www.lexnavarra.navarra.es/detalle.asp?r=55481)
+            * [2024](https://web.archive.org/web/20250623001355/https://www.lexnavarra.navarra.es/detalle.asp?r=56116)
+            * [2025](https://web.archive.org/web/20250622235218/https://www.lexnavarra.navarra.es/detalle.asp?r=57122)
+
+    Holidays checked with official sources for 2010-2025 only.
     """
 
     country = "ES"
     default_language = "es"
+    # %s (estimated).
+    estimated_label = tr("%s (estimado)")
+    # Monday following %s (estimated).
+    observed_estimated_label = tr("Lunes siguiente a %s (estimado)")
     # Monday following %s.
     observed_label = tr("Lunes siguiente a %s")
     subdivisions = (
-        "AN",  # Andalucía
-        "AR",  # Aragón
-        "AS",  # Asturias
-        "CB",  # Cantabria
-        "CE",  # Ceuta
-        "CL",  # Castilla y León
-        "CM",  # Castilla-La Mancha
-        "CN",  # Canarias
-        "CT",  # Cataluña
-        "EX",  # Extremadura
-        "GA",  # Galicia
-        "IB",  # Islas Baleares
-        "MC",  # Murcia
-        "MD",  # Madrid
-        "ML",  # Melilla
-        "NC",  # Navarra
-        "PV",  # País Vasco
-        "RI",  # La Rioja
-        "VC",  # Valenciana
+        "AN",  # Andalucía.
+        "AR",  # Aragón.
+        "AS",  # Asturias.
+        "CB",  # Cantabria.
+        "CE",  # Ceuta.
+        "CL",  # Castilla y León.
+        "CM",  # Castilla-La Mancha.
+        "CN",  # Canarias.
+        "CT",  # Cataluña (Catalunya).
+        "EX",  # Extremadura.
+        "GA",  # Galicia.
+        "IB",  # Islas Baleares (Illes Balears).
+        "MC",  # Murcia.
+        "MD",  # Madrid.
+        "ML",  # Melilla.
+        "NC",  # Navarra.
+        "PV",  # País Vasco.
+        "RI",  # La Rioja.
+        "VC",  # Valenciana.
     )
+    subdivisions_aliases = {
+        "Andalucía": "AN",
+        "Aragón": "AR",
+        "Asturias": "AS",
+        "Cantabria": "CB",
+        "Ceuta": "CE",
+        "Castilla y León": "CL",
+        "Castilla-La Mancha": "CM",
+        "Canarias": "CN",
+        "Cataluña": "CT",
+        "Catalunya": "CT",
+        "Extremadura": "EX",
+        "Galicia": "GA",
+        "Islas Baleares": "IB",
+        "Illes Balears": "IB",
+        "Murcia": "MC",
+        "Madrid": "MD",
+        "Melilla": "ML",
+        "Navarra": "NC",
+        "País Vasco": "PV",
+        "La Rioja": "RI",
+        "Valenciana": "VC",
+    }
     supported_languages = ("en_US", "es", "uk")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, islamic_show_estimated: bool = True, **kwargs):
+        """
+        Args:
+            islamic_show_estimated:
+                Whether to add "estimated" label to Islamic holidays name
+                if holiday date is estimated.
+        """
         ChristianHolidays.__init__(self)
         InternationalHolidays.__init__(self)
-        IslamicHolidays.__init__(self, cls=SpainIslamicHolidays)
+        IslamicHolidays.__init__(
+            self, cls=SpainIslamicHolidays, show_estimated=islamic_show_estimated
+        )
         StaticHolidays.__init__(self, cls=SpainStaticHolidays)
         kwargs.setdefault("observed_rule", SUN_TO_NEXT_MON)
         super().__init__(*args, **kwargs)
@@ -89,7 +142,7 @@ class Spain(
     def _populate_public_holidays(self):
         if self._year not in {2012, 2017, 2023}:
             # New Year's Day.
-            self._add_new_years_day(tr("Año nuevo"))
+            self._add_new_years_day(tr("Año Nuevo"))
 
         if self._year not in {2013, 2019}:
             # Epiphany.
@@ -127,7 +180,7 @@ class Spain(
 
     def _populate_subdiv_an_public_holidays(self):
         if self._year in {2012, 2017, 2023}:
-            self._move_holiday(self._add_new_years_day(tr("Año nuevo")))
+            self._move_holiday(self._add_new_years_day(tr("Año Nuevo")))
 
         if self._year in {2013, 2019}:
             self._move_holiday(self._add_epiphany_day(tr("Epifanía del Señor")))
@@ -161,7 +214,7 @@ class Spain(
 
     def _populate_subdiv_ar_public_holidays(self):
         if self._year in {2012, 2017, 2023}:
-            self._move_holiday(self._add_new_years_day(tr("Año nuevo")))
+            self._move_holiday(self._add_new_years_day(tr("Año Nuevo")))
 
         if self._year in {2013, 2019}:
             self._move_holiday(self._add_epiphany_day(tr("Epifanía del Señor")))
@@ -194,7 +247,7 @@ class Spain(
 
     def _populate_subdiv_as_public_holidays(self):
         if self._year in {2012, 2017, 2023}:
-            self._move_holiday(self._add_new_years_day(tr("Año nuevo")))
+            self._move_holiday(self._add_new_years_day(tr("Año Nuevo")))
 
         if self._year in {2013, 2019}:
             self._move_holiday(self._add_epiphany_day(tr("Epifanía del Señor")))
@@ -262,7 +315,7 @@ class Spain(
 
     def _populate_subdiv_ce_public_holidays(self):
         if self._year == 2012:
-            self._move_holiday(self._add_new_years_day(tr("Año nuevo")))
+            self._move_holiday(self._add_new_years_day(tr("Año Nuevo")))
 
         if self._year in {2013, 2019}:
             self._move_holiday(self._add_epiphany_day(tr("Epifanía del Señor")))
@@ -306,7 +359,7 @@ class Spain(
 
     def _populate_subdiv_cl_public_holidays(self):
         if self._year in {2017, 2023}:
-            self._move_holiday(self._add_new_years_day(tr("Año nuevo")))
+            self._move_holiday(self._add_new_years_day(tr("Año Nuevo")))
 
         if self._year in {2013, 2019}:
             self._move_holiday(self._add_epiphany_day(tr("Epifanía del Señor")))
@@ -417,7 +470,7 @@ class Spain(
 
     def _populate_subdiv_ex_public_holidays(self):
         if self._year == 2012:
-            self._move_holiday(self._add_new_years_day(tr("Año nuevo")))
+            self._move_holiday(self._add_new_years_day(tr("Año Nuevo")))
 
         if self._year in {2013, 2019}:
             self._move_holiday(self._add_epiphany_day(tr("Epifanía del Señor")))
@@ -498,7 +551,7 @@ class Spain(
 
     def _populate_subdiv_mc_public_holidays(self):
         if self._year in {2017, 2023}:
-            self._move_holiday(self._add_new_years_day(tr("Año nuevo")))
+            self._move_holiday(self._add_new_years_day(tr("Año Nuevo")))
 
         if self._year in {2013, 2019}:
             self._move_holiday(self._add_epiphany_day(tr("Epifanía del Señor")))
@@ -557,7 +610,7 @@ class Spain(
 
     def _populate_subdiv_ml_public_holidays(self):
         if self._year == 2017:
-            self._move_holiday(self._add_new_years_day(tr("Año nuevo")))
+            self._move_holiday(self._add_new_years_day(tr("Año Nuevo")))
 
         if self._year in {2013, 2019}:
             self._move_holiday(self._add_epiphany_day(tr("Epifanía del Señor")))
@@ -606,6 +659,9 @@ class Spain(
 
         if self._year in {2011, 2013, 2015, 2016, 2017} or self._year >= 2022:
             self._add_saint_james_day(tr("Santiago Apóstol"))
+
+        # Saint Francis Xavier's Day.
+        self._move_holiday(self._add_holiday_dec_3(tr("San Francisco Javier")))
 
         if self._year == 2020:
             self._move_holiday(self._add_holiday_dec_6(tr("Día de la Constitución Española")))
@@ -687,28 +743,21 @@ class ESP(Spain):
 
 
 class SpainIslamicHolidays(_CustomIslamicHolidays):
+    EID_AL_ADHA_DATES_CONFIRMED_YEARS = (2010, 2025)
     EID_AL_ADHA_DATES = {
         2010: (NOV, 17),
-        2011: (NOV, 6),
         2012: (OCT, 25),
-        2013: (OCT, 15),
-        2014: (OCT, 4),
         2015: (SEP, 25),
         2016: (SEP, 12),
-        2017: (SEP, 1),
         2018: (AUG, 22),
         2019: (AUG, 12),
-        2020: (JUL, 31),
-        2021: (JUL, 20),
-        2022: (JUL, 9),
         2023: (JUN, 29),
         2024: (JUN, 17),
-        2025: (JUN, 6),
     }
 
+    EID_AL_FITR_DATES_CONFIRMED_YEARS = (2022, 2025)
     EID_AL_FITR_DATES = {
         2022: (MAY, 3),
-        2023: (APR, 21),
         2025: (MAR, 31),
     }
 

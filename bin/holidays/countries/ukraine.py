@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -22,11 +22,11 @@ from holidays.observed_holiday_base import ObservedHolidayBase, SAT_SUN_TO_NEXT_
 
 
 class Ukraine(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, StaticHolidays):
-    """
-    Ukraine holidays.
+    """Ukraine holidays.
 
-    Current holidays list:
-        - https://zakon1.rada.gov.ua/laws/show/322-08/paran454#n454
+    References:
+        * [Labor Code of Ukraine, Art. 73](https://web.archive.org/web/20240607021920/https://zakon1.rada.gov.ua/laws/show/322-08/paran454)
+        * <https://web.archive.org/web/20240612025118/https://zakon.rada.gov.ua/laws/show/585-12>
     """
 
     country = "UA"
@@ -34,7 +34,9 @@ class Ukraine(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, Sta
     # %s (observed).
     observed_label = tr("%s (вихідний)")
     supported_categories = (PUBLIC, WORKDAY)
-    supported_languages = ("ar", "en_US", "uk")
+    supported_languages = ("ar", "en_US", "th", "uk")
+    # The current set of holidays came into force in 1991.
+    start_year = 1991
 
     def __init__(self, *args, **kwargs):
         ChristianHolidays.__init__(self, JULIAN_REVISED_CALENDAR)
@@ -45,20 +47,16 @@ class Ukraine(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, Sta
 
     def _is_observed(self, dt: date) -> bool:
         # 27.01.1995: holiday on weekend move to next workday
-        # https://zakon.rada.gov.ua/laws/show/35/95-вр
+        # https://web.archive.org/web/20230731064358/https://zakon.rada.gov.ua/laws/show/35/95-вр#Text
         # 10.01.1998: cancelled
-        # https://zakon.rada.gov.ua/laws/show/785/97-вр
+        # https://web.archive.org/web/20250121184919/https://zakon.rada.gov.ua/laws/show/785/97-вр
         # 23.04.1999: holiday on weekend move to next workday
-        # https://zakon.rada.gov.ua/laws/show/576-14
+        # https://web.archive.org/web/20240315074159/http://zakon.rada.gov.ua/laws/show/576-14
         return date(1995, JAN, 27) <= dt <= date(1998, JAN, 9) or dt >= date(1999, APR, 23)
 
     def _populate_common(self, is_martial_law: bool = False):
-        # The current set of holidays came into force in 1991
-        if self._year <= 1990:
-            return None
-
         # There is no public holidays in Ukraine during the period of martial law
-        # https://zakon.rada.gov.ua/laws/show/2136-20#n26
+        # https://web.archive.org/web/20250418204733/https://zakon.rada.gov.ua/laws/show/2136-20
         # law is in force from March 15, 2022
         dts_observed = set()
 
@@ -73,10 +71,9 @@ class Ukraine(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, Sta
             # International Women's Day.
             dts_observed.add(self._add_womens_day(tr("Міжнародний жіночий день")))
 
-        if (self._year >= 2022) == is_martial_law:
-            if self._year >= 1992:
-                # Easter Sunday (Pascha).
-                dts_observed.add(self._add_easter_sunday(tr("Великдень (Пасха)")))
+        if (self._year >= 2022) is is_martial_law:
+            # Easter Sunday (Pascha).
+            dts_observed.add(self._add_easter_sunday(tr("Великдень (Пасха)")))
 
             # Holy Trinity Day.
             dts_observed.add(self._add_whit_sunday(tr("Трійця")))
@@ -100,7 +97,7 @@ class Ukraine(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, Sta
                 else tr("День перемоги над нацизмом у Другій світовій війні (День перемоги)")
                 if self._year >= 2016
                 # Victory Day.
-                else tr("День перемоги")
+                else tr("День Перемоги")
             )
             dts_observed.add(
                 self._add_world_war_two_victory_day(name, is_western=(self._year >= 2024))
@@ -169,53 +166,56 @@ class UKR(Ukraine):
 
 
 class UkraineStaticHolidays:
-    """
-        Substituted holidays:
-            - `1992 [1] <https://zakon.rada.gov.ua/laws/show/202-92-%D0%BF>`_
-            - `1992 [2] <https://zakon.rada.gov.ua/laws/show/377-91-%D0%BF>`_
-            - `1993 [1] <https://zakon.rada.gov.ua/laws/show/563-93-%D0%BF>`_
-            - `1993 [2] <https://zakon.rada.gov.ua/laws/show/725-92-%D0%BF>`_
-            - `1994 <https://zakon.rada.gov.ua/laws/show/98-94-%D0%BF>`_
-            - `1995 [1] <https://zakon.rada.gov.ua/laws/show/852-95-%D0%BF>`_
-            - `1995 [2] <https://zakon.rada.gov.ua/laws/show/634-95-%D0%BF>`_
-            - `1995 [3] <https://zakon.rada.gov.ua/laws/show/266-95-%D0%BF>`_
-            - `1996 <https://zakon.rada.gov.ua/laws/show/424-96-%D0%BF>`_
-            - `1997[1] <https://zakon.rada.gov.ua/laws/show/326-97-%D0%BF>`_
-            - `1997[2] <https://zakon.rada.gov.ua/laws/show/1547-96-%D0%BF>`_
-            - `1999 [1] <https://zakon.rada.gov.ua/laws/show/1433-99-%D0%BF>`_,
-            - `1999 [2] <https://zakon.rada.gov.ua/laws/show/558-99-%D0%BF>`_,
-            - `1999 [3] <https://zakon.rada.gov.ua/laws/show/2070-98-%D0%BF>`_
-            - `2000 [1] <https://zakon.rada.gov.ua/laws/show/1251-2000-%D0%BF>`_
-            - `2000 [2] <https://zakon.rada.gov.ua/laws/show/717-2000-%D0%BF>`_
-            - `2001 [1] <https://zakon.rada.gov.ua/laws/show/138-2001-%D1%80>`_
-            - `2001 [2] <https://zakon.rada.gov.ua/laws/show/210-2001-%D0%BF>`_
-            - `2002 <https://zakon.rada.gov.ua/laws/show/202-2002-%D1%80>`_
-            - `2002 - 2003 <https:/zakon.rada.gov.ua/laws/show/705-2002-%D1%80>`_
-            - `2004 <https://zakon.rada.gov.ua/laws/show/773-2003-%D1%80>`_
-            - `2005 [1] <https://zakon.rada.gov.ua/laws/show/936-2004-%D1%80>`_
-            - `2005 [2] <https://zakon.rada.gov.ua/laws/show/133-2005-%D1%80>`_
-            - `2006 [1] <https://zakon.rada.gov.ua/laws/show/490-2005-%D1%80>`_
-            - `2006 [2] <https://zakon.rada.gov.ua/laws/show/562-2005-%D1%80>`_
-            - `2007 <https://zakon.rada.gov.ua/laws/show/612-2006-%D1%80>`_
-            - `2008 [1] <https://zakon.rada.gov.ua/laws/show/1059-2007-%D1%80>`_
-            - `2008 [2] <https://zakon.rada.gov.ua/laws/show/538-2008-%D1%80>`_
-            - `2009 <https://zakon.rada.gov.ua/laws/show/1458-2008-%D1%80>`_
-            - `2010 <https://zakon.rada.gov.ua/laws/show/1412-2009-%D1%80>`_
-            - `2011 <https://zakon.rada.gov.ua/laws/show/2130-2010-%D1%80>`_
-            - `2012 <https://zakon.rada.gov.ua/laws/show/1210-2011-%D1%80>`_
-            - `2013 <https://zakon.rada.gov.ua/laws/show/1043-2012-%D1%80>`_
-            - `2014 <https://zakon.rada.gov.ua/laws/show/920-2013-%D1%80>`_
-            - `2015 <https://zakon.rada.gov.ua/laws/show/1084-2014-%D1%80>`_
-            - `2016 <https://zakon.rada.gov.ua/laws/show/1155-2015-%D1%80>`_
-            - `2017 <https://zakon.rada.gov.ua/laws/show/850-2016-%D1%80>`_
-            - `2018 <https://zakon.rada.gov.ua/laws/show/1-2018-%D1%80>`_
-            - `2019 <https://zakon.rada.gov.ua/laws/show/7-2019-%D1%80>`_
-            - `2020 <https://zakon.rada.gov.ua/laws/show/995-2019-%D1%80>`_
-            - `2021 <https://zakon.rada.gov.ua/laws/show/1191-2020-%D1%80>`_
-            - `2022 <https://zakon.rada.gov.ua/laws/show/1004-2021-%D1%80>`_
+    """Ukraine special holidays.
 
-    Special holidays:
-        - `1995 <https://zakon.rada.gov.ua/laws/show/13/95>`_
+    Substituted holidays References:
+        * [1991](https://web.archive.org/web/20220830105426/https://zakon.rada.gov.ua/laws/show/60-91-п)
+        * [1992 [1]](https://web.archive.org/web/20220816132241/https://zakon.rada.gov.ua/laws/show/202-92-п)
+        * [1992 [2]](https://web.archive.org/web/20220514124422/https://zakon.rada.gov.ua/laws/show/377-91-п)
+        * [1993 [1]](https://web.archive.org/web/20220429231922/https://zakon.rada.gov.ua/laws/show/563-93-п/)
+        * [1993 [2]](https://web.archive.org/web/20220501192004/https://zakon.rada.gov.ua/laws/show/725-92-п/)
+        * [1994](https://web.archive.org/web/20220423134711/https://zakon.rada.gov.ua/laws/show/98-94-п)
+        * [1995 [1]](https://web.archive.org/web/20220416193351/https://zakon.rada.gov.ua/laws/show/852-95-п/)
+        * [1995 [2]](https://web.archive.org/web/20220727233924/https://zakon.rada.gov.ua/laws/show/634-95-п)
+        * [1995 [3]](https://web.archive.org/web/20220404230852/https://zakon.rada.gov.ua/laws/show/266-95-п)
+        * [1996](https://web.archive.org/web/20220703182454/https://zakon.rada.gov.ua/laws/show/424-96-п)
+        * [1997 [1]](https://web.archive.org/web/20220710133208/https://zakon.rada.gov.ua/laws/show/326-97-п)
+        * [1997 [2]](https://web.archive.org/web/20240707083032/https://zakon.rada.gov.ua/laws/show/1547-96-п)
+        * [1998](https://web.archive.org/web/20220516171244/https://zakon.rada.gov.ua/laws/show/1404-97-п>)
+        * [1999 [1]](https://web.archive.org/web/20220721004702/https://zakon.rada.gov.ua/laws/show/1433-99-п>)
+        * [1999 [2]](https://web.archive.org/web/20220701225902/https://zakon.rada.gov.ua/laws/show/558-99-п>)
+        * [1999 [3]](https://web.archive.org/web/20220703131420/https://zakon.rada.gov.ua/laws/show/2070-98-п)
+        * [2000 [1]](https://web.archive.org/web/20220416193413/https://zakon.rada.gov.ua/laws/show/1251-2000-п/)
+        * [2000 [2]](https://web.archive.org/web/20220404231224/https://zakon.rada.gov.ua/laws/show/717-2000-п)
+        * [2001 [1]](https://web.archive.org/web/20220312201133/https://zakon.rada.gov.ua/laws/show/138-2001-р/)
+        * [2001 [2]](https://web.archive.org/web/20220404230657/https://zakon.rada.gov.ua/laws/show/210-2001-п)
+        * [2002](https://web.archive.org/web/20220521085829/https://zakon.rada.gov.ua/laws/show/202-2002-р)
+        * [2002 - 2003](https://web.archive.org/web/20220312195735/https://zakon.rada.gov.ua/laws/show/705-2002-р)
+        * [2004](https://web.archive.org/web/20220404105708/https://zakon.rada.gov.ua/laws/show/773-2003-р)
+        * [2005 [1]](https://web.archive.org/web/20220521235321/https://zakon.rada.gov.ua/laws/show/936-2004-р)
+        * [2005 [2]](https://web.archive.org/web/20220611030516/https://zakon.rada.gov.ua/laws/show/133-2005-р)
+        * [2006 [1]](https://web.archive.org/web/20240822140051/https://zakon.rada.gov.ua/laws/show/490-2005-р)
+        * [2006 [2]](https://web.archive.org/web/20220312195751/https://zakon.rada.gov.ua/laws/show/562-2005-р/)
+        * [2007](https://web.archive.org/web/20240823064327/https://zakon.rada.gov.ua/laws/show/612-2006-р)
+        * [2008 [1]](https://web.archive.org/web/20240823064327/https://zakon.rada.gov.ua/laws/show/1059-2007-р)
+        * [2008 [2]](https://web.archive.org/web/20240901160821/https://zakon.rada.gov.ua/laws/show/538-2008-р)
+        * [2009](https://web.archive.org/web/20220312195619/https://zakon.rada.gov.ua/laws/show/1458-2008-р/)
+        * [2010](https://web.archive.org/web/20240826001002/https://zakon.rada.gov.ua/laws/show/1412-2009-р)
+        * [2011](https://web.archive.org/web/20220312200622/https://zakon.rada.gov.ua/laws/show/2130-2010-р/)
+        * [2012](https://web.archive.org/web/20250119122439/https://zakon.rada.gov.ua/laws/show/1210-2011-р)
+        * [2013](https://web.archive.org/web/20250119201324/https://zakon.rada.gov.ua/laws/show/1043-2012-р)
+        * [2014](https://web.archive.org/web/20250421100048/https://zakon.rada.gov.ua/laws/show/920-2013-р)
+        * [2015](https://web.archive.org/web/20240801225558/https://zakon.rada.gov.ua/laws/show/1084-2014-р)
+        * [2016](https://web.archive.org/web/20221210054440/https://zakon.rada.gov.ua/laws/show/1155-2015-р)
+        * [2017](https://web.archive.org/web/20240609025258/https://zakon.rada.gov.ua/laws/show/850-2016-р)
+        * [2018](https://web.archive.org/web/20221210060148/https://zakon.rada.gov.ua/laws/show/1-2018-р)
+        * [2019](https://web.archive.org/web/20220316200919/https://zakon.rada.gov.ua/laws/show/7-2019-р)
+        * [2020](https://web.archive.org/web/20250423064733/https://zakon.rada.gov.ua/laws/show/995-2019-р)
+        * [2021](https://web.archive.org/web/20250402142530/https://zakon.rada.gov.ua/laws/show/1191-2020-р)
+        * [2022](https://web.archive.org/web/20250404010912/https://zakon.rada.gov.ua/laws/show/1004-2021-р)
+
+    Special holidays References:
+        * [1995](https://web.archive.org/web/20220713111605/https://zakon.rada.gov.ua/laws/show/13/95)
     """
 
     # Date format (see strftime() Format Codes)
@@ -223,6 +223,11 @@ class UkraineStaticHolidays:
     # Day off (substituted from %s).
     substituted_label = tr("Вихідний день (перенесено з %s)")
     special_public_holidays = {
+        1991: (
+            (MAY, 3, MAY, 5),
+            (MAY, 10, MAY, 12),
+            (JUL, 15, JUL, 13),
+        ),
         1992: (
             (JAN, 6, JAN, 4),
             (APR, 27, MAY, 16),
@@ -246,9 +251,11 @@ class UkraineStaticHolidays:
         1997: (
             (JAN, 2, DEC, 28, 1996),
             (JAN, 6, JAN, 4),
+            (JAN, 8, JAN, 11),
             (APR, 29, APR, 19),
             (APR, 30, MAY, 17),
         ),
+        1998: (JAN, 2, JAN, 4),
         1999: (
             (JAN, 8, JAN, 10),
             (APR, 12, APR, 24),
@@ -326,7 +333,7 @@ class UkraineStaticHolidays:
         ),
         2012: (
             (MAR, 9, MAR, 3),
-            (APR, 20, APR, 28),
+            (APR, 30, APR, 28),
             (JUN, 29, JUL, 7),
             (DEC, 31, DEC, 29),
         ),

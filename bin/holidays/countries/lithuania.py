@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -17,17 +17,17 @@ from holidays.holiday_base import HolidayBase
 
 
 class Lithuania(HolidayBase, ChristianHolidays, InternationalHolidays):
-    """
-    Lithuania holidays.
+    """Lithuania holidays.
 
     References:
-    - https://en.wikipedia.org/wiki/Public_holidays_in_Lithuania
-    - https://www.kalendorius.today/
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_Lithuania>
+        * <https://web.archive.org/web/20250415141132/https://www.kalendorius.today/>
     """
 
     country = "LT"
     default_language = "lt"
     supported_languages = ("en_US", "lt", "uk")
+    start_year = 1990
 
     def __init__(self, *args, **kwargs) -> None:
         ChristianHolidays.__init__(self)
@@ -35,9 +35,6 @@ class Lithuania(HolidayBase, ChristianHolidays, InternationalHolidays):
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self) -> None:
-        if self._year <= 1989:
-            return None
-
         # New Year's Day.
         self._add_new_years_day(tr("Naujųjų metų diena"))
 
@@ -69,10 +66,7 @@ class Lithuania(HolidayBase, ChristianHolidays, InternationalHolidays):
         if self._year >= 1991:
             self._add_holiday_jul_6(
                 # Statehood Day.
-                tr(
-                    "Valstybės (Lietuvos karaliaus Mindaugo karūnavimo) "
-                    "ir Tautiškos giesmės diena"
-                ),
+                tr("Valstybės (Lietuvos karaliaus Mindaugo karūnavimo) ir Tautiškos giesmės diena")
             )
 
         # Assumption Day.

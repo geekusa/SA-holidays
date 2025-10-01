@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -22,14 +22,18 @@ from holidays.observed_holiday_base import (
 
 
 class DominicanRepublic(ObservedHolidayBase, ChristianHolidays, InternationalHolidays):
-    """
-    http://ojd.org.do/Normativas/LABORAL/Leyes/Ley%20No.%20%20139-97.pdf
-    https://es.wikipedia.org/wiki/Rep%C3%BAblica_Dominicana#D%C3%ADas_festivos_nacionales
+    """Dominican Republic holidays.
+
+    References:
+        * <https://web.archive.org/web/20220314033234/http://ojd.org.do/Normativas/LABORAL/Leyes/Ley%20No.%20%20139-97.pdf>
+        * <https://es.wikipedia.org/wiki/República_Dominicana#Días_festivos_nacionales>
     """
 
     country = "DO"
     default_language = "es"
     supported_languages = ("en_US", "es", "uk")
+    # Law No. 139-97 - Holidays Dominican Republic (Jun 27, 1997).
+    start_year = 1998
 
     def __init__(self, *args, **kwargs):
         ChristianHolidays.__init__(self)
@@ -38,10 +42,6 @@ class DominicanRepublic(ObservedHolidayBase, ChristianHolidays, InternationalHol
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
-        # Law No. 139-97 - Holidays Dominican Republic (Jun 27, 1997).
-        if self._year <= 1997:
-            return None
-
         # New Year's Day.
         self._add_new_years_day(tr("Año Nuevo"))
 

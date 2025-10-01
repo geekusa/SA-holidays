@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -16,15 +16,18 @@ from holidays.observed_holiday_base import ObservedHolidayBase, SUN_TO_NEXT_MON
 
 
 class Zambia(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, StaticHolidays):
-    """
-    https://www.officeholidays.com/countries/zambia/
-    https://www.timeanddate.com/holidays/zambia/
-    https://en.wikipedia.org/wiki/Public_holidays_in_Zambia
-    https://www.parliament.gov.zm/sites/default/files/documents/acts/Public%20Holidays%20Act.pdf
+    """Zambia holidays.
+
+    References:
+        * <https://web.archive.org/web/20241206135307/https://www.officeholidays.com/countries/zambia>
+        * <https://web.archive.org/web/20250408170158/https://www.timeanddate.com/holidays/zambia/>
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_Zambia>
+        * <https://web.archive.org/web/20250329191121/http://www.parliament.gov.zm/sites/default/files/documents/acts/Public%20Holidays%20Act.pdf>
     """
 
     country = "ZM"
     observed_label = "%s (observed)"
+    start_year = 1965
 
     def __init__(self, *args, **kwargs):
         ChristianHolidays.__init__(self)
@@ -34,10 +37,6 @@ class Zambia(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, Stat
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
-        # Observed since 1965
-        if self._year <= 1964:
-            return None
-
         # New Year's Day.
         self._add_observed(self._add_new_years_day("New Year's Day"))
 

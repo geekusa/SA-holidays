@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -62,6 +62,25 @@ class Malaysia(
     IslamicHolidays,
     StaticHolidays,
 ):
+    """Malaysia holidays.
+
+    References:
+        * [Holidays Act 1951](https://web.archive.org/web/20241202103403/https://www.kabinet.gov.my/bkpp/pdf/akta_warta/1951_12_31_act369.pdf)
+        * [Holidays Ordinance (Sabah Cap. 56)](https://web.archive.org/web/20201028045259/https://sagc.sabah.gov.my/sites/default/files/law/HolidaysOrdinance.pdf)
+        * [Public Holidays Ordinance (Sarawak Cap. 8)](https://web.archive.org/web/20221208142318/https://www.kabinet.gov.my/bkpp/pdf/akta_warta/sarawak_public_holidays_ord_chapter8.pdf)
+        * [Wikipedia](https://en.wikipedia.org/wiki/Public_holidays_in_Malaysia)
+        * <https://web.archive.org/web/20250123115300/https://www.nst.com.my/news/nation/2020/03/571660/agongs-birthday-moved-june-6-june-8>
+        * <https://web.archive.org/web/20240228225038/https://www.nst.com.my/news/nation/2024/02/1014012/melaka-cm-suggests-declaring-feb-20-federal-public-holiday-mark>
+
+    Section 3 of Holidays Act 1951:
+    > If any day specified in the Schedule falls on Sunday then the day following shall be
+    > a public holiday and if such day is already a public holiday, then the day following
+    > shall be a public holiday".
+
+    In Johor (until 1994 and in 2014-2024) and Kedah it's Friday to Sunday,
+    in Kelantan and Terengganu - Saturday to Sunday.
+    """
+
     country = "MY"
     default_language = "ms_MY"
     # %s (estimated).
@@ -70,23 +89,24 @@ class Malaysia(
     observed_label = tr("Cuti %s")
     # %s (observed, estimated).
     observed_estimated_label = tr("Cuti %s (anggaran)")
+    start_year = 1952
     subdivisions = (
-        "01",
-        "02",
-        "03",
-        "04",
-        "05",
-        "06",
-        "07",
-        "08",
-        "09",
-        "10",
-        "11",
-        "12",
-        "13",
-        "14",
-        "15",
-        "16",
+        "01",  # Johor.
+        "02",  # Kedah.
+        "03",  # Kelantan.
+        "04",  # Melaka.
+        "05",  # Negeri Sembilan.
+        "06",  # Pahang.
+        "07",  # Pulau Pinang.
+        "08",  # Perak.
+        "09",  # Perlis.
+        "10",  # Selangor.
+        "11",  # Terengganu.
+        "12",  # Sabah.
+        "13",  # Sarawak.
+        "14",  # Wilayah Persekutuan Kuala Lumpur.
+        "15",  # Wilayah Persekutuan Labuan.
+        "16",  # Wilayah Persekutuan Putrajaya.
     )
     subdivisions_aliases = {
         "Johor": "01",
@@ -115,48 +135,35 @@ class Malaysia(
         "SBH": "12",
         "Sarawak": "13",
         "SWK": "13",
-        "WP Kuala Lumpur": "14",
+        "Wilayah Persekutuan Kuala Lumpur": "14",
         "KUL": "14",
-        "WP Labuan": "15",
+        "Wilayah Persekutuan Labuan": "15",
         "LBN": "15",
-        "WP Putrajaya": "16",
+        "Wilayah Persekutuan Putrajaya": "16",
         "PJY": "16",
     }
     supported_languages = ("en_US", "ms_MY", "th")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, islamic_show_estimated: bool = True, **kwargs):
         """
-        References:
-            - `Holidays Act 1951 <https://www.kabinet.gov.my/bkpp/pdf/akta_warta/1951_12_31_act369.pdf>`_
-            - `Holidays Ordinance (Sabah Cap. 56) <https://sagc.sabah.gov.my/sites/default/files/law/HolidaysOrdinance.pdf>`_
-            - `Public Holidays Ordinance (Sarawak Cap. 8) <https://www.kabinet.gov.my/bkpp/pdf/akta_warta/sarawak_public_holidays_ord_chapter8.pdf>`_
-            - `Wikipedia <https://en.wikipedia.org/wiki/Public_holidays_in_Malaysia>`_
-            - https://www.nst.com.my/news/nation/2020/03/571660/agongs-birthday-moved-june-6-june-8
-            - https://www.nst.com.my/news/nation/2024/02/1014012/melaka-cm-suggests-declaring-feb-20-federal-public-holiday-mark
-
-        Section 3 of Holidays Act 1951:
-        "If any day specified in the Schedule falls on Sunday then the day following shall be
-        a public holiday and if such day is already a public holiday, then the day following
-        shall be a public holiday".
-        In Johor and Kedah it's Friday to Sunday, in Kelantan and Terengganu - Saturday to Sunday.
+        Args:
+            islamic_show_estimated:
+                Whether to add "estimated" label to Islamic holidays name
+                if holiday date is estimated.
         """
         BuddhistCalendarHolidays.__init__(self, cls=MalaysiaBuddhistHolidays, show_estimated=True)
         ChineseCalendarHolidays.__init__(self, cls=MalaysiaChineseHolidays, show_estimated=True)
         ChristianHolidays.__init__(self)
         HinduCalendarHolidays.__init__(self, cls=MalaysiaHinduHolidays)
         InternationalHolidays.__init__(self)
-        IslamicHolidays.__init__(self, cls=MalaysiaIslamicHolidays)
+        IslamicHolidays.__init__(
+            self, cls=MalaysiaIslamicHolidays, show_estimated=islamic_show_estimated
+        )
         StaticHolidays.__init__(self, cls=MalaysiaStaticHolidays)
         kwargs.setdefault("observed_rule", SUN_TO_NEXT_WORKDAY)
         super().__init__(*args, **kwargs)
-        self.dts_observed = set()
 
     def _populate_public_holidays(self):
-        if self._year <= 1951:
-            return None
-
-        # This must be done for every `_populate_public_holidays()` call.
-        # Otherwise, 2006/2007 Eid al-Adha observance would be miscalculated.
         self.dts_observed = set()
 
         # Chinese New Year.
@@ -212,9 +219,6 @@ class Malaysia(
         self.dts_observed.update(self._add_eid_al_adha_day(tr("Hari Raya Qurban")))
 
     def _populate_subdiv_holidays(self):
-        if self._year <= 1951:
-            return None
-
         if self.subdiv and self.subdiv not in {"13", "15"}:
             # Deepavali.
             self.dts_observed.add(self._add_diwali(tr("Hari Deepavali")))
@@ -326,8 +330,14 @@ class Malaysia(
             else self._add_holiday_2nd_fri_of_oct(name)
         )
 
-        # Beginning of Ramadan.
-        self.dts_observed.update(self._add_ramadan_beginning_day(tr("Awal Ramadan")))
+        if self._year >= 2025:
+            self.dts_observed.update(
+                # Eid al-Fitr (Third Day).
+                self._add_eid_al_fitr_day_three(tr("Hari Raya Puasa (Hari Ketiga)"))
+            )
+        else:
+            # Beginning of Ramadan.
+            self.dts_observed.update(self._add_ramadan_beginning_day(tr("Awal Ramadan")))
 
     def _populate_subdiv_05_public_holidays(self):
         # New Year's Day.
@@ -594,36 +604,12 @@ class MalaysiaBuddhistHolidays(_CustomBuddhistHolidays):
         2022: (MAY, 15),
         2023: (MAY, 4),
         2024: (MAY, 22),
+        2025: (MAY, 12),
     }
 
 
 class MalaysiaChineseHolidays(_CustomChineseHolidays):
-    LUNAR_NEW_YEAR_DATES = {
-        2001: (JAN, 24),
-        2002: (FEB, 12),
-        2003: (FEB, 1),
-        2004: (JAN, 22),
-        2005: (FEB, 9),
-        2006: (JAN, 29),
-        2007: (FEB, 18),
-        2008: (FEB, 7),
-        2009: (JAN, 26),
-        2010: (FEB, 14),
-        2011: (FEB, 3),
-        2012: (JAN, 23),
-        2013: (FEB, 10),
-        2014: (JAN, 31),
-        2015: (FEB, 19),
-        2016: (FEB, 8),
-        2017: (JAN, 28),
-        2018: (FEB, 16),
-        2019: (FEB, 5),
-        2020: (JAN, 25),
-        2021: (FEB, 12),
-        2022: (FEB, 1),
-        2023: (JAN, 22),
-        2024: (FEB, 10),
-    }
+    LUNAR_NEW_YEAR_DATES_CONFIRMED_YEARS = (2001, 2025)
 
 
 class MalaysiaHinduHolidays(_CustomHinduHolidays):
@@ -652,6 +638,7 @@ class MalaysiaHinduHolidays(_CustomHinduHolidays):
         2022: (OCT, 24),
         2023: (NOV, 12),
         2024: (OCT, 31),
+        2025: (OCT, 20),
     }
 
     THAIPUSAM_DATES = {
@@ -669,60 +656,39 @@ class MalaysiaHinduHolidays(_CustomHinduHolidays):
 
 
 class MalaysiaIslamicHolidays(_CustomIslamicHolidays):
+    EID_AL_ADHA_DATES_CONFIRMED_YEARS = (2001, 2025)
     EID_AL_ADHA_DATES = {
         2001: (MAR, 6),
         2002: (FEB, 23),
         2003: (FEB, 12),
         2004: (FEB, 2),
-        2005: (JAN, 21),
-        2006: ((JAN, 10), (DEC, 31)),
-        2007: (DEC, 20),
         2008: (DEC, 9),
         2009: (NOV, 28),
         2010: (NOV, 17),
         2011: (NOV, 7),
-        2012: (OCT, 26),
-        2013: (OCT, 15),
         2014: (OCT, 5),
         2015: (SEP, 24),
         2016: (SEP, 12),
-        2017: (SEP, 1),
         2018: (AUG, 22),
-        2019: (AUG, 11),
-        2020: (JUL, 31),
-        2021: (JUL, 20),
         2022: (JUL, 10),
         2023: (JUN, 29),
         2024: (JUN, 17),
+        2025: (JUN, 7),
     }
 
+    EID_AL_FITR_DATES_CONFIRMED_YEARS = (2001, 2025)
     EID_AL_FITR_DATES = {
         2001: (DEC, 17),
         2002: (DEC, 6),
         2003: (NOV, 26),
-        2004: (NOV, 14),
-        2005: (NOV, 3),
         2006: (OCT, 24),
-        2007: (OCT, 13),
-        2008: (OCT, 1),
-        2009: (SEP, 20),
-        2010: (SEP, 10),
         2011: (AUG, 31),
-        2012: (AUG, 19),
-        2013: (AUG, 8),
-        2014: (JUL, 28),
-        2015: (JUL, 17),
-        2016: (JUL, 6),
-        2017: (JUN, 25),
-        2018: (JUN, 15),
         2019: (JUN, 5),
-        2020: (MAY, 24),
-        2021: (MAY, 13),
-        2022: (MAY, 2),
         2023: (APR, 22),
-        2024: (APR, 10),
+        2025: (MAR, 31),
     }
 
+    HARI_HOL_JOHOR_DATES_CONFIRMED_YEARS = (2011, 2025)
     HARI_HOL_JOHOR_DATES = {
         2011: (JAN, 12),
         2012: (DEC, 20),
@@ -731,148 +697,82 @@ class MalaysiaIslamicHolidays(_CustomIslamicHolidays):
         2015: (NOV, 19),
         2016: (NOV, 7),
         2017: (OCT, 27),
-        2018: (OCT, 15),
-        2019: (OCT, 5),
         2020: (SEP, 24),
-        2021: (SEP, 13),
         2022: (SEP, 3),
         2023: (AUG, 23),
         2024: (AUG, 11),
     }
 
+    HIJRI_NEW_YEAR_DATES_CONFIRMED_YEARS = (2001, 2025)
     HIJRI_NEW_YEAR_DATES = {
-        2001: (MAR, 26),
-        2002: (MAR, 15),
         2003: (MAR, 5),
         2004: (FEB, 22),
-        2005: (FEB, 10),
-        2006: (JAN, 31),
-        2007: (JAN, 20),
-        2008: ((JAN, 10), (DEC, 29)),
-        2009: (DEC, 18),
         2010: (DEC, 8),
         2011: (NOV, 27),
-        2012: (NOV, 15),
         2013: (NOV, 5),
-        2014: (OCT, 25),
-        2015: (OCT, 14),
-        2016: (OCT, 2),
         2017: (SEP, 22),
-        2018: (SEP, 11),
         2019: (SEP, 1),
-        2020: (AUG, 20),
         2021: (AUG, 10),
-        2022: (JUL, 30),
-        2023: (JUL, 19),
-        2024: (JUL, 7),
+        2025: (JUN, 27),
     }
 
+    ISRA_AND_MIRAJ_DATES_CONFIRMED_YEARS = (2001, 2025)
     ISRA_AND_MIRAJ_DATES = {
         2001: (OCT, 15),
-        2002: (OCT, 4),
-        2003: (SEP, 24),
-        2004: (SEP, 12),
-        2005: (SEP, 1),
         2006: (AUG, 22),
         2007: (AUG, 11),
         2008: (JUL, 31),
-        2009: (JUL, 20),
-        2010: (JUL, 9),
-        2011: (JUN, 29),
-        2012: (JUN, 17),
-        2013: (JUN, 6),
         2014: (MAY, 27),
-        2015: (MAY, 16),
         2016: (MAY, 5),
-        2017: (APR, 24),
         2018: (APR, 14),
-        2019: (APR, 3),
-        2020: (MAR, 22),
-        2021: (MAR, 11),
         2022: (MAR, 1),
-        2023: (FEB, 18),
-        2024: (FEB, 8),
     }
 
+    MAWLID_DATES_CONFIRMED_YEARS = (2001, 2025)
     MAWLID_DATES = {
-        2001: (JUN, 4),
-        2002: (MAY, 24),
         2003: (MAY, 14),
         2004: (MAY, 2),
-        2005: (APR, 21),
         2006: (APR, 11),
-        2007: (MAR, 31),
-        2008: (MAR, 20),
-        2009: (MAR, 9),
-        2010: (FEB, 26),
         2011: (FEB, 16),
         2012: (FEB, 5),
-        2013: (JAN, 24),
         2014: (JAN, 14),
         2015: ((JAN, 3), (DEC, 24)),
         2016: (DEC, 12),
         2017: (DEC, 1),
-        2018: (NOV, 20),
-        2019: (NOV, 9),
-        2020: (OCT, 29),
         2021: (OCT, 19),
         2022: (OCT, 10),
         2023: (SEP, 28),
         2024: (SEP, 16),
+        2025: (SEP, 5),
     }
 
+    NUZUL_AL_QURAN_DATES_CONFIRMED_YEARS = (2001, 2025)
     NUZUL_AL_QURAN_DATES = {
         2001: (DEC, 3),
-        2002: (NOV, 22),
         2003: (NOV, 12),
         2004: (NOV, 1),
         2005: (OCT, 21),
-        2006: (OCT, 10),
-        2007: (SEP, 29),
         2008: (SEP, 18),
-        2009: (SEP, 7),
-        2010: (AUG, 27),
-        2011: (AUG, 17),
-        2012: (AUG, 5),
-        2013: (JUL, 25),
         2014: (JUL, 15),
-        2015: (JUL, 4),
-        2016: (JUN, 22),
-        2017: (JUN, 12),
         2018: (JUN, 2),
-        2019: (MAY, 22),
-        2020: (MAY, 10),
-        2021: (APR, 29),
         2022: (APR, 19),
-        2023: (APR, 8),
         2024: (MAR, 28),
+        2025: (MAR, 18),
     }
 
+    RAMADAN_BEGINNING_DATES_CONFIRMED_YEARS = (2001, 2025)
     RAMADAN_BEGINNING_DATES = {
         2001: (NOV, 17),
-        2002: (NOV, 6),
         2003: (OCT, 27),
         2004: (OCT, 16),
         2005: (OCT, 5),
-        2006: (SEP, 24),
-        2007: (SEP, 13),
         2008: (SEP, 2),
-        2009: (AUG, 22),
-        2010: (AUG, 11),
-        2011: (AUG, 1),
-        2012: (JUL, 20),
-        2013: (JUL, 9),
         2014: (JUN, 29),
-        2015: (JUN, 18),
         2016: (JUN, 7),
-        2017: (MAY, 27),
         2018: (MAY, 17),
-        2019: (MAY, 6),
-        2020: (APR, 24),
-        2021: (APR, 13),
         2022: (APR, 3),
-        2023: (MAR, 23),
         2024: (MAR, 12),
+        2025: (MAR, 2),
     }
 
 

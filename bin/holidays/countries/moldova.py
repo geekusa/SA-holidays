@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -19,14 +19,17 @@ from holidays.holiday_base import HolidayBase
 
 
 class Moldova(HolidayBase, ChristianHolidays, InternationalHolidays):
-    """
-    https://en.wikipedia.org/wiki/Public_holidays_in_Moldova
-    https://www.legis.md/cautare/getResults?doc_id=133686
+    """Moldova holidays.
+
+    References:
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_Moldova>
+        * <https://www.legis.md/cautare/getResults?doc_id=133686>
     """
 
     country = "MD"
     default_language = "ro"
     supported_languages = ("en_US", "ro", "uk")
+    start_year = 1991
 
     def __init__(self, *args, **kwargs):
         ChristianHolidays.__init__(self, JULIAN_CALENDAR)
@@ -34,9 +37,6 @@ class Moldova(HolidayBase, ChristianHolidays, InternationalHolidays):
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
-        if self._year <= 1990:
-            return None
-
         # New Year's Day.
         self._add_new_years_day(tr("Anul Nou"))
 

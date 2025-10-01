@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -18,13 +18,12 @@ from holidays.holiday_base import HolidayBase
 
 
 class Denmark(HolidayBase, ChristianHolidays, InternationalHolidays):
-    """
-    Denmark holidays.
+    """Denmark holidays.
 
     References:
-    - https://en.wikipedia.org/wiki/Public_holidays_in_Denmark
-    - https://www.norden.org/en/info-norden/public-holidays-denmark
-    - https://www.ft.dk/samling/20222/lovforslag/l13/index.htm
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_Denmark>
+        * <https://web.archive.org/web/20250422010005/https://www.norden.org/en/info-norden/public-holidays-denmark>
+        * <https://web.archive.org/web/20231219155820/http://www.ft.dk/samling/20222/lovforslag/l13/index.htm>
     """
 
     country = "DK"
@@ -73,7 +72,7 @@ class Denmark(HolidayBase, ChristianHolidays, InternationalHolidays):
         self._add_christmas_day_two(tr("Anden juledag"))
 
     def _populate_optional_holidays(self):
-        # International Workers' Day.
+        # Workers' Day.
         self._add_labor_day(tr("Arbejdernes kampdag"))
 
         # Constitution Day.

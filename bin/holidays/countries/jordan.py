@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -18,27 +18,34 @@ from holidays.holiday_base import HolidayBase
 
 
 class Jordan(HolidayBase, ChristianHolidays, InternationalHolidays, IslamicHolidays):
-    """
+    """Jordan holidays.
+
     References:
-        - https://en.wikipedia.org/wiki/Public_holidays_in_Jordan
-        - https://www.mfa.gov.jo/content/public-holidays
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_Jordan>
+        * <https://web.archive.org/web/20250116061815/https://www.mfa.gov.jo/content/public-holidays>
     """
 
     country = "JO"
     default_language = "ar"
     # %s (estimated).
-    estimated_label = tr("(تقدير) %s")
+    estimated_label = tr("%s (المقدرة)")
     supported_languages = ("ar", "en_US")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, islamic_show_estimated: bool = True, **kwargs):
+        """
+        Args:
+            islamic_show_estimated:
+                Whether to add "estimated" label to Islamic holidays name
+                if holiday date is estimated.
+        """
         ChristianHolidays.__init__(self)
         InternationalHolidays.__init__(self)
-        IslamicHolidays.__init__(self)
+        IslamicHolidays.__init__(self, show_estimated=islamic_show_estimated)
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
         # The resting days are Friday and Saturday since Jan 6, 2000.
-        # https://archive.wfn.org/2000/01/msg00078.html
+        # https://web.archive.org/web/20241226195649/http://archive.wfn.org/2000/01/msg00078.html
         self.weekend = {THU, FRI} if self._year <= 1999 else {FRI, SAT}
 
         # New Year's Day.

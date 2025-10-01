@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -18,18 +18,18 @@ from holidays.holiday_base import HolidayBase
 
 
 class Armenia(HolidayBase, ChristianHolidays, InternationalHolidays):
-    """
-    Armenia holidays.
+    """Armenia holidays.
 
     References:
-     - https://en.wikipedia.org/wiki/Public_holidays_in_Armenia
-     - http://www.parliament.am/legislation.php?sel=show&ID=1274&lang=arm&enc=utf8
-     - https://www.arlis.am/documentview.aspx?docid=259
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_Armenia>
+        * <https://web.archive.org/web/20250427132425/http://www.parliament.am/legislation.php?sel=show&ID=1274&lang=arm&enc=utf8>
+        * <https://web.archive.org/web/20240624002502/https://www.arlis.am/DocumentView.aspx?DocID=259>
     """
 
     country = "AM"
     default_language = "hy"
     supported_languages = ("en_US", "hy")
+    start_year = 1991
 
     def __init__(self, *args, **kwargs):
         ChristianHolidays.__init__(self, JULIAN_CALENDAR)
@@ -37,9 +37,6 @@ class Armenia(HolidayBase, ChristianHolidays, InternationalHolidays):
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
-        if self._year <= 1990:
-            return None
-
         # New Year's Day.
         name = tr("Նոր տարվա օր")
         self._add_new_years_day(name)

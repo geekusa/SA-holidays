@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -18,10 +18,12 @@ from holidays.observed_holiday_base import ObservedHolidayBase, SAT_SUN_TO_NEXT_
 
 
 class Latvia(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, StaticHolidays):
-    """
-    https://en.wikipedia.org/wiki/Public_holidays_in_Latvia
-    https://information.lv/
-    https://likumi.lv/ta/id/72608-par-svetku-atceres-un-atzimejamam-dienam
+    """Latvia holidays.
+
+    References:
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_Latvia>
+        * <https://web.archive.org/web/20250210170838/https://www.information.lv/>
+        * <https://web.archive.org/web/20240914233046/https://likumi.lv/ta/id/72608-par-svetku-atceres-un-atzimejamam-dienam>
     """
 
     country = "LV"
@@ -29,6 +31,7 @@ class Latvia(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, Stat
     # %s (observed).
     observed_label = tr("%s (brīvdiena)")
     supported_languages = ("en_US", "lv", "uk")
+    start_year = 1990
 
     def __init__(self, *args, **kwargs):
         ChristianHolidays.__init__(self)
@@ -38,9 +41,6 @@ class Latvia(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, Stat
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
-        if self._year <= 1989:
-            return None
-
         # New Year's Day.
         self._add_new_years_day(tr("Jaunais Gads"))
 
@@ -57,10 +57,8 @@ class Latvia(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, Stat
         self._add_labor_day(tr("Darba svētki"))
 
         if self._year >= 2002:
-            dt = self._add_holiday_may_4(
-                # Restoration of Independence Day.
-                tr("Latvijas Republikas Neatkarības atjaunošanas diena")
-            )
+            # Restoration of Independence Day.
+            dt = self._add_holiday_may_4(tr("Latvijas Republikas Neatkarības atjaunošanas diena"))
             if self._year >= 2008:
                 self._add_observed(dt)
 

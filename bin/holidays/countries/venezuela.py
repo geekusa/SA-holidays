@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -17,13 +17,22 @@ from holidays.holiday_base import HolidayBase
 
 
 class Venezuela(HolidayBase, ChristianHolidays, InternationalHolidays):
-    """
-    https://dias-festivos.eu/dias-festivos/venezuela/#
+    """Venezuela holidays.
+
+    References:
+        * <https://web.archive.org/web/20250317124608/https://dias-festivos.eu/dias-festivos/venezuela/>
+        * [1909 Aug 5](https://web.archive.org/web/20241012151721/https://www.guao.org/sites/default/files/efemerides/69.Ley%20fiestas%20nacionales%201909.pdf)
+        * [1918 May 19](https://web.archive.org/web/20250429081541/https://www.guao.org/sites/default/files/efemerides/70.%20Ley%20de%20fiestas%20nacionales%201918.pdf)
+        * [1921 Jun 11](https://web.archive.org/web/20241012160001/https://www.guao.org/sites/default/files/efemerides/37.LEYES_Y_DECRETOS_1921_Día_de_la_raza.PDF)
+        * [1971 Jun 22](https://web.archive.org/web/20240802055637/https://www.ilo.org/dyn/travail/docs/2030/Law%20No.29.541.pdf)
+        * [2002 Oct 10](https://web.archive.org/web/20250214140239/https://www.acnur.org/fileadmin/Documentos/BDL/2008/6635.pdf)
+        * [2012 May 7](https://web.archive.org/web/20250418204844/https://oig.cepal.org/sites/default/files/2012_leyorgtrabajo_ven.pdf)
     """
 
     country = "VE"
     default_language = "es"
     supported_languages = ("en_US", "es", "uk")
+    start_year = 1801
 
     def __init__(self, *args, **kwargs) -> None:
         ChristianHolidays.__init__(self)
@@ -31,17 +40,6 @@ class Venezuela(HolidayBase, ChristianHolidays, InternationalHolidays):
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
-        """
-        Overview: https://dias-festivos.eu/dias-festivos/venezuela/#
-        Various decrees about holidays:
-          1909 (AUG 5): https://bit.ly/3J0mWKQ
-          1918 (MAY 19): https://bit.ly/3B8O1Jz
-          1921 (JUN 11): https://bit.ly/3aUE2gz
-          1971 (JUN 22): https://bit.ly/3yZaUN9
-          2002 (OCT 10): https://bit.ly/3B7nRqC
-          2012 (MAY 7): https://bit.ly/2MT5x97
-        """
-
         # New Year's Day.
         self._add_new_years_day(tr("Año Nuevo"))
 
@@ -62,7 +60,7 @@ class Venezuela(HolidayBase, ChristianHolidays, InternationalHolidays):
             # Declaration of Independence.
             self._add_holiday_apr_19(tr("Declaración de la Independencia"))
 
-        # https://bit.ly/3B4Xd1L
+        # https://web.archive.org/web/20250428122616/https://venezuelaenretrospectiva.wordpress.com/2016/05/01/1o-de-mayo-dia-del-trabajador-venezolano/
         if self._year >= 1946:
             # International Worker's Day.
             self._add_labor_day(tr("Dia Mundial del Trabajador"))

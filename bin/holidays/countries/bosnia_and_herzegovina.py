@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -15,11 +15,8 @@ from gettext import gettext as tr
 from holidays.calendars import _CustomIslamicHolidays
 from holidays.calendars.gregorian import (
     GREGORIAN_CALENDAR,
-    JAN,
     FEB,
     MAR,
-    APR,
-    MAY,
     JUN,
     JUL,
     AUG,
@@ -42,27 +39,32 @@ from holidays.observed_holiday_base import (
 class BosniaAndHerzegovina(
     ObservedHolidayBase, ChristianHolidays, InternationalHolidays, IslamicHolidays
 ):
-    """
-    https://en.wikipedia.org/wiki/Public_holidays_in_Bosnia_and_Herzegovina
-    https://www.paragraf.ba/neradni-dani-fbih.html
-    https://www.paragraf.ba/neradni-dani-republike-srpske.html
-    https://www.paragraf.ba/neradni-dani-brcko.html
+    """Bosnia and Herzegovina holidays.
+
+    References:
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_Bosnia_and_Herzegovina>
+        * <https://web.archive.org/web/20250415045455/https://www.paragraf.ba/neradni-dani-fbih.html>
+        * <https://web.archive.org/web/20250415085409/https://www.paragraf.ba/neradni-dani-republike-srpske.html>
+        * <https://web.archive.org/web/20250414212923/https://www.paragraf.ba/neradni-dani-brcko.html>
 
     Observed holidays rules:
-    - BIH: if first day of New Year's Day and Labor Day fall on Sunday, observed on Tuesday.
-    - BRC: if holiday fall on Sunday, observed on next working day.
-    - SRP: if second day of New Year's Day and Labor Day fall on Sunday, observed on Monday.
+        * BIH: if first day of New Year's Day and Labor Day fall on Sunday, observed on Tuesday.
+        * BRC: if holiday fall on Sunday, observed on next working day.
+        * SRP: if second day of New Year's Day and Labor Day fall on Sunday, observed on Monday.
     """
 
     country = "BA"
     default_language = "bs"
-    supported_languages = ("bs", "en_US", "sr", "uk")
+    # %s (estimated).
+    estimated_label = tr("%s (procijenjeno)")
+    # %s (observed, estimated).
+    observed_estimated_label = tr("%s (slobodan dan, procijenjeno)")
     # %s (observed).
-    observed_label = tr("%s (preneseno)")
+    observed_label = tr("%s (slobodan dan)")
     subdivisions = (
-        "BIH",  # Federacija Bosne i Hercegovine
-        "BRC",  # Brčko distrikt
-        "SRP",  # Republika Srpska
+        "BIH",  # Federacija Bosne i Hercegovine.
+        "BRC",  # Brčko distrikt.
+        "SRP",  # Republika Srpska.
     )
     subdivisions_aliases = {
         "Federacija Bosne i Hercegovine": "BIH",
@@ -72,11 +74,20 @@ class BosniaAndHerzegovina(
         "Republika Srpska": "SRP",
         "RS": "SRP",
     }
+    supported_languages = ("bs", "en_US", "sr", "uk")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, islamic_show_estimated: bool = True, **kwargs):
+        """
+        Args:
+            islamic_show_estimated:
+                Whether to add "estimated" label to Islamic holidays name
+                if holiday date is estimated.
+        """
         ChristianHolidays.__init__(self, JULIAN_CALENDAR)
         InternationalHolidays.__init__(self)
-        IslamicHolidays.__init__(self, cls=BosniaAndHerzegovinaIslamicHolidays)
+        IslamicHolidays.__init__(
+            self, cls=BosniaAndHerzegovinaIslamicHolidays, show_estimated=islamic_show_estimated
+        )
         kwargs.setdefault("observed_rule", SUN_TO_NEXT_MON)
         super().__init__(*args, **kwargs)
 
@@ -224,7 +235,7 @@ class BosniaAndHerzegovina(
 
         self._add_holiday_nov_21(
             # Dayton Agreement Day.
-            tr("Dan uspostave Opšteg okvirnog sporazuma za mir u Bosni i Hercegovini"),
+            tr("Dan uspostave Opšteg okvirnog sporazuma za mir u Bosni i Hercegovini")
         )
 
         # Catholic Christmas Eve.
@@ -249,55 +260,33 @@ class BIH(BosniaAndHerzegovina):
 
 
 class BosniaAndHerzegovinaIslamicHolidays(_CustomIslamicHolidays):
+    EID_AL_ADHA_DATES_CONFIRMED_YEARS = (2001, 2023)
     EID_AL_ADHA_DATES = {
         2001: (MAR, 6),
         2002: (FEB, 23),
         2003: (FEB, 12),
         2004: (FEB, 2),
-        2005: (JAN, 21),
-        2006: ((JAN, 10), (DEC, 31)),
-        2007: (DEC, 20),
         2008: (DEC, 9),
         2009: (NOV, 28),
         2010: (NOV, 17),
         2011: (NOV, 7),
-        2012: (OCT, 26),
-        2013: (OCT, 15),
-        2014: (OCT, 4),
         2015: (SEP, 24),
         2016: (SEP, 13),
         2017: (SEP, 2),
         2018: (AUG, 22),
-        2019: (AUG, 11),
-        2020: (JUL, 31),
-        2021: (JUL, 20),
-        2022: (JUL, 9),
-        2023: (JUN, 28),
     }
 
+    EID_AL_FITR_DATES_CONFIRMED_YEARS = (2001, 2024)
     EID_AL_FITR_DATES = {
         2001: (DEC, 17),
         2002: (DEC, 6),
         2003: (NOV, 26),
-        2004: (NOV, 14),
         2005: (NOV, 4),
         2006: (OCT, 24),
-        2007: (OCT, 13),
         2008: (OCT, 2),
         2009: (SEP, 21),
-        2010: (SEP, 10),
         2011: (AUG, 31),
-        2012: (AUG, 19),
-        2013: (AUG, 8),
-        2014: (JUL, 28),
         2015: (JUL, 18),
         2016: (JUL, 7),
         2017: (JUN, 26),
-        2018: (JUN, 15),
-        2019: (JUN, 4),
-        2020: (MAY, 24),
-        2021: (MAY, 13),
-        2022: (MAY, 2),
-        2023: (APR, 21),
-        2024: (APR, 10),
     }

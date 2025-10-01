@@ -4,40 +4,52 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
 #  License: MIT (see LICENSE file)
 
 from holidays.calendars import _CustomIslamicHolidays
-from holidays.calendars.gregorian import JAN, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC
+from holidays.calendars.gregorian import JAN, JUN, JUL, SEP, OCT, NOV, DEC
 from holidays.groups import ChristianHolidays, InternationalHolidays, IslamicHolidays
 from holidays.observed_holiday_base import ObservedHolidayBase, SUN_TO_NEXT_MON
 
 
 class BurkinaFaso(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, IslamicHolidays):
-    """
+    """Burkina Faso holidays.
+
     References:
-      - https://en.wikipedia.org/wiki/Public_holidays_in_Burkina_Faso
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_Burkina_Faso>
     """
 
     country = "BF"
+    # %s (estimated).
+    estimated_label = "%s (estimated)"
+    # %s (observed, estimated).
+    observed_estimated_label = "%s (observed, estimated)"
+    # %s (observed).
     observed_label = "%s (observed)"
+    # On 5 August 1960, Burkina Faso (Republic of Upper Volta at that time)
+    # gained independence from France.
+    start_year = 1961
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, islamic_show_estimated: bool = True, **kwargs):
+        """
+        Args:
+            islamic_show_estimated:
+                Whether to add "estimated" label to Islamic holidays name
+                if holiday date is estimated.
+        """
         ChristianHolidays.__init__(self)
         InternationalHolidays.__init__(self)
-        IslamicHolidays.__init__(self, cls=BurkinaFasoIslamicHolidays)
+        IslamicHolidays.__init__(
+            self, cls=BurkinaFasoIslamicHolidays, show_estimated=islamic_show_estimated
+        )
         kwargs.setdefault("observed_rule", SUN_TO_NEXT_MON)
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
-        # On 5 August 1960, Burkina Faso (Republic of Upper Volta at that time)
-        # gained independence from France.
-        if self._year <= 1960:
-            return None
-
         # New Year's Day.
         self._add_observed(self._add_new_years_day("New Year's Day"))
 
@@ -97,33 +109,23 @@ class BFA(BurkinaFaso):
 
 
 class BurkinaFasoIslamicHolidays(_CustomIslamicHolidays):
+    EID_AL_ADHA_DATES_CONFIRMED_YEARS = (2014, 2023)
     EID_AL_ADHA_DATES = {
         2014: (OCT, 5),
         2015: (SEP, 24),
         2016: (SEP, 13),
         2017: (SEP, 2),
-        2018: (AUG, 21),
-        2019: (AUG, 11),
-        2020: (JUL, 31),
-        2021: (JUL, 20),
-        2022: (JUL, 9),
-        2023: (JUN, 28),
     }
 
+    EID_AL_FITR_DATES_CONFIRMED_YEARS = (2014, 2024)
     EID_AL_FITR_DATES = {
         2014: (JUL, 29),
         2015: (JUL, 18),
         2016: (JUL, 7),
         2017: (JUN, 26),
-        2018: (JUN, 15),
-        2019: (JUN, 4),
-        2020: (MAY, 24),
-        2021: (MAY, 13),
-        2022: (MAY, 2),
-        2023: (APR, 21),
-        2024: (APR, 10),
     }
 
+    MAWLID_DATES_CONFIRMED_YEARS = (2014, 2022)
     MAWLID_DATES = {
         2014: (JAN, 14),
         2015: ((JAN, 3), (DEC, 24)),
@@ -131,7 +133,6 @@ class BurkinaFasoIslamicHolidays(_CustomIslamicHolidays):
         2017: (DEC, 1),
         2018: (NOV, 21),
         2019: (NOV, 10),
-        2020: (OCT, 29),
         2021: (OCT, 19),
         2022: (OCT, 9),
     }

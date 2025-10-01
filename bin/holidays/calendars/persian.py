@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -25,6 +25,12 @@ class _Persian:
 
     START_YEAR = 1901
     END_YEAR = 2100
+
+    def is_leap_year(self, year: int) -> bool:
+        """
+        Is Persian year that begins in the specified Gregorian year a leap year.
+        """
+        return (year % 33) in {3, 7, 11, 16, 20, 24, 28, 32}
 
     def new_year_date(self, year: int) -> Optional[date]:
         """

@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -24,10 +24,11 @@ from holidays.observed_holiday_base import (
 
 
 class Ecuador(ObservedHolidayBase, ChristianHolidays, InternationalHolidays):
-    """
+    """Ecuador holidays.
+
     References:
-      - https://en.wikipedia.org/wiki/Public_holidays_in_Ecuador
-      - http://tiny.cc/ec_co_tr
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_Ecuador>
+        * [Código del Trabajo](https://web.archive.org/web/20250428092005/https://biblioteca.defensoria.gob.ec/bitstream/37000/3364/1/Código%20de%20Trabajo%20(04-11-2021).pdf)
     """
 
     country = "EC"

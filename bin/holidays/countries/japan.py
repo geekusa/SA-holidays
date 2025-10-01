@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -32,17 +32,19 @@ from holidays.observed_holiday_base import ObservedHolidayBase, SUN_TO_NEXT_WORK
 
 
 class Japan(ObservedHolidayBase, InternationalHolidays, StaticHolidays):
-    """
-    References:
+    """Japan holidays.
 
-    - https://en.wikipedia.org/wiki/Public_holidays_in_Japan
-    - https://www.boj.or.jp/en/about/outline/holi.htm
+    References:
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_Japan>
+        * <https://web.archive.org/web/20240913161809/https://www.boj.or.jp/en/about/outline/holi.htm>
     """
 
     country = "JP"
     default_language = "ja"
     supported_categories = (BANK, PUBLIC)
     supported_languages = ("en_US", "ja", "th")
+    start_year = 1949
+    end_year = 2099
 
     def __init__(self, *args, **kwargs) -> None:
         InternationalHolidays.__init__(self)
@@ -80,9 +82,6 @@ class Japan(ObservedHolidayBase, InternationalHolidays, StaticHolidays):
                     break
 
     def _populate_public_holidays(self):
-        if self._year < 1949 or self._year > 2099:
-            raise NotImplementedError
-
         dts_observed = set()
 
         # New Year's Day.
@@ -138,11 +137,9 @@ class Japan(ObservedHolidayBase, InternationalHolidays, StaticHolidays):
                     2020: (JUL, 23),
                     2021: (JUL, 22),
                 }
-                dts_observed.add(
-                    self._add_holiday(name, dates[self._year])
-                    if self._year in dates
-                    else self._add_holiday_3rd_mon_of_jul(name)
-                )
+                dts_observed.add(self._add_holiday(name, dt)) if (
+                    dt := dates.get(self._year)
+                ) else dts_observed.add(self._add_holiday_3rd_mon_of_jul(name))
 
         if self._year >= 2016:
             dates = {
@@ -179,9 +176,9 @@ class Japan(ObservedHolidayBase, InternationalHolidays, StaticHolidays):
                     2020: (JUL, 24),
                     2021: (JUL, 23),
                 }
-                dts_observed.add(
-                    self._add_holiday(name, dates[self._year])
-                ) if self._year in dates else self._add_holiday_2nd_mon_of_oct(name)
+                dts_observed.add(self._add_holiday(name, dt)) if (
+                    dt := dates.get(self._year)
+                ) else dts_observed.add(self._add_holiday_2nd_mon_of_oct(name))
             else:
                 dts_observed.add(self._add_holiday_oct_10(name))
 
@@ -199,9 +196,6 @@ class Japan(ObservedHolidayBase, InternationalHolidays, StaticHolidays):
             self._populate_observed(dts_observed)
 
     def _populate_bank_holidays(self):
-        if self._year < 1949 or self._year > 2099:
-            raise NotImplementedError
-
         # Bank Holiday.
         name = tr("銀行休業日")
         self._add_new_years_day(name)

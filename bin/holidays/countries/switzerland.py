@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -19,43 +19,78 @@ from holidays.observed_holiday_base import ObservedHolidayBase, MON_ONLY, TUE_TO
 
 
 class Switzerland(ObservedHolidayBase, ChristianHolidays, InternationalHolidays):
-    """
+    """Switzerland holidays.
+
     References:
-        - https://www.bj.admin.ch/dam/bj/de/data/publiservice/service/zivilprozessrecht/kant-feiertage.pdf
-        - https://de.wikipedia.org/wiki/Feiertage_in_der_Schweiz
-        - https://en.wikipedia.org/wiki/Public_holidays_in_Switzerland
+        * <https://web.archive.org/web/20250201054902/https://www.bj.admin.ch/dam/bj/de/data/publiservice/service/zivilprozessrecht/kant-feiertage.pdf>
+        * <https://de.wikipedia.org/wiki/Feiertage_in_der_Schweiz>
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_Switzerland>
     """
 
     country = "CH"
     default_language = "de"
+    start_year = 1801
     subdivisions = (
-        "AG",  # Aargau
-        "AI",  # Appenzell Innerrhoden
-        "AR",  # Appenzell Ausserrhoden
-        "BL",  # Basel-Landschaft
-        "BS",  # Basel-Stadt
-        "BE",  # Bern
-        "FR",  # Fribourg
-        "GE",  # Geneva
-        "GL",  # Glarus
-        "GR",  # Graubünden
-        "JU",  # Jura
-        "LU",  # Luzern
-        "NE",  # Neuchâtel
-        "NW",  # Nidwalden
-        "OW",  # Obwalden
-        "SG",  # St. Gallen
-        "SH",  # Schaffhausen
-        "SZ",  # Schwyz
-        "SO",  # Solothurn
-        "TG",  # Thurgau
-        "TI",  # Ticino
-        "UR",  # Uri
-        "VD",  # Vaud
-        "VS",  # Valais
-        "ZG",  # Zug
-        "ZH",  # Zürich
+        "AG",  # Aargau.
+        "AI",  # Appenzell Innerrhoden.
+        "AR",  # Appenzell Ausserrhoden.
+        "BE",  # Bern (Berne).
+        "BL",  # Basel-Landschaft.
+        "BS",  # Basel-Stadt.
+        "FR",  # Freiburg (Fribourg).
+        "GE",  # Genève.
+        "GL",  # Glarus.
+        "GR",  # Graubünden (Grigioni, Grischun).
+        "JU",  # Jura.
+        "LU",  # Luzern.
+        "NE",  # Neuchâtel.
+        "NW",  # Nidwalden.
+        "OW",  # Obwalden.
+        "SG",  # Sankt Gallen.
+        "SH",  # Schaffhausen.
+        "SO",  # Solothurn.
+        "SZ",  # Schwyz.
+        "TG",  # Thurgau.
+        "TI",  # Ticino.
+        "UR",  # Uri.
+        "VD",  # Vaud.
+        "VS",  # Valais (Wallis).
+        "ZG",  # Zug.
+        "ZH",  # Zürich.
     )
+    subdivisions_aliases = {
+        "Aargau": "AG",
+        "Appenzell Innerrhoden": "AI",
+        "Appenzell Ausserrhoden": "AR",
+        "Bern": "BE",
+        "Berne": "BE",
+        "Basel-Landschaft": "BL",
+        "Basel-Stadt": "BS",
+        "Freiburg": "FR",
+        "Fribourg": "FR",
+        "Genève": "GE",
+        "Glarus": "GL",
+        "Graubünden": "GR",
+        "Grigioni": "GR",
+        "Grischun": "GR",
+        "Jura": "JU",
+        "Luzern": "LU",
+        "Neuchâtel": "NE",
+        "Nidwalden": "NW",
+        "Obwalden": "OW",
+        "Sankt Gallen": "SG",
+        "Schaffhausen": "SH",
+        "Solothurn": "SO",
+        "Schwyz": "SZ",
+        "Thurgau": "TG",
+        "Ticino": "TI",
+        "Uri": "UR",
+        "Vaud": "VD",
+        "Valais": "VS",
+        "Wallis": "VS",
+        "Zug": "ZG",
+        "Zürich": "ZH",
+    }
     supported_categories = (HALF_DAY, OPTIONAL, PUBLIC)
     supported_languages = ("de", "en_US", "fr", "it", "uk")
 
@@ -78,7 +113,7 @@ class Switzerland(ObservedHolidayBase, ChristianHolidays, InternationalHolidays)
         self._add_christmas_day(tr("Weihnachten"))
 
     def _populate_subdiv_ag_public_holidays(self):
-        # Berchtold's Day.
+        # Saint Berchtold's Day.
         self._add_new_years_day_two(tr("Berchtoldstag"))
 
         # Good Friday.

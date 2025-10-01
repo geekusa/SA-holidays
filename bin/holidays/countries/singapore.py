@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -41,52 +41,49 @@ class Singapore(
     IslamicHolidays,
     StaticHolidays,
 ):
+    """Singapore holidays.
+
+    References:
+        * [Wikipedia](https://en.wikipedia.org/wiki/Public_holidays_in_Singapore)
+        * [Holidays Act 1998](https://web.archive.org/web/20250405061431/https://sso.agc.gov.sg/Act/HA1998)
+        * [Ministry of Manpower](https://web.archive.org/web/20250616105633/https://mom.gov.sg/employment-practices/public-holidays)
+
+    Limitations:
+        * Prior to 1969: holidays are estimated.
+        * Prior to 2000: holidays may not be accurate.
+        * 2024 and later: the following four moving date holidays (whose exact
+            date is announced yearly) are estimated, and so denoted:
+            * Hari Raya Puasa
+            * Hari Raya Haji
+            * Vesak Day
+            * Deepavali
+    """
+
     country = "SG"
+    # %s (estimated).
+    estimated_label = tr("%s (estimated)")
     default_language = "en_SG"
+    # %s (observed, estimated).
+    observed_estimated_label = tr("%s (observed, estimated)")
     # %s (observed).
     observed_label = tr("%s (observed)")
     supported_languages = ("en_SG", "en_US", "th")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, islamic_show_estimated: bool = True, **kwargs):
         """
-        A subclass of :py:class:`HolidayBase` representing public holidays in
-        Singapore.
-
-        Limitations:
-
-        - Prior to 1969: holidays are estimated.
-        - Prior to 2000: holidays may not be accurate.
-        - 2024 and later: the following four moving date holidays (whose exact
-          date is announced yearly) are estimated, and so denoted:
-
-          - Hari Raya Puasa
-          - Hari Raya Haji
-          - Vesak Day
-          - Deepavali
-
-        Sources:
-
-        - `Holidays Act <https://sso.agc.gov.sg/Act/HA1998>`__ (Act 24 of
-          1968—Holidays (Amendment) Act 1968)
-        - `Ministry of Manpower
-          <https://www.mom.gov.sg/employment-practices/public-holidays>`__
-
-        References:
-
-        - `Wikipedia
-          <https://en.wikipedia.org/wiki/Public_holidays_in_Singapore>`__
-
-        Country created and maintained by: `Mike Borsetti
-        <https://github.com/mborsetti>`__
-
-        See parameters and usage in :py:class:`HolidayBase`.
+        Args:
+            islamic_show_estimated:
+                Whether to add "estimated" label to Islamic holidays name
+                if holiday date is estimated.
         """
         BuddhistCalendarHolidays.__init__(self, cls=SingaporeBuddhistHolidays, show_estimated=True)
         ChineseCalendarHolidays.__init__(self, cls=SingaporeChineseHolidays, show_estimated=True)
         ChristianHolidays.__init__(self)
         HinduCalendarHolidays.__init__(self, cls=SingaporeHinduHolidays)
         InternationalHolidays.__init__(self)
-        IslamicHolidays.__init__(self, cls=SingaporeIslamicHolidays)
+        IslamicHolidays.__init__(
+            self, cls=SingaporeIslamicHolidays, show_estimated=islamic_show_estimated
+        )
         StaticHolidays.__init__(self, cls=SingaporeStaticHolidays)
         # Implement Section 4(2) of the Holidays Act:
         # "if any day specified in the Schedule falls on a Sunday,
@@ -142,7 +139,7 @@ class Singapore(
         dts_observed.add(self._add_christmas_day(tr("Christmas Day")))
 
         if self._year <= 1968:
-            # Boxing day.
+            # Boxing Day.
             self._add_christmas_day_two(tr("Boxing Day"))
 
         if self.observed:
@@ -184,36 +181,15 @@ class SingaporeBuddhistHolidays(_CustomBuddhistHolidays):
         2023: (JUN, 2),
         2024: (MAY, 22),
         2025: (MAY, 12),
+        2026: (MAY, 31),
     }
 
 
 class SingaporeChineseHolidays(_CustomChineseHolidays):
+    LUNAR_NEW_YEAR_DATES_CONFIRMED_YEARS = (2001, 2026)
     LUNAR_NEW_YEAR_DATES = {
-        2001: (JAN, 24),
-        2002: (FEB, 12),
-        2003: (FEB, 1),
-        2004: (JAN, 22),
-        2005: (FEB, 9),
         2006: (JAN, 30),
         2007: (FEB, 19),
-        2008: (FEB, 7),
-        2009: (JAN, 26),
-        2010: (FEB, 14),
-        2011: (FEB, 3),
-        2012: (JAN, 23),
-        2013: (FEB, 10),
-        2014: (JAN, 31),
-        2015: (FEB, 19),
-        2016: (FEB, 8),
-        2017: (JAN, 28),
-        2018: (FEB, 16),
-        2019: (FEB, 5),
-        2020: (JAN, 25),
-        2021: (FEB, 12),
-        2022: (FEB, 1),
-        2023: (JAN, 22),
-        2024: (FEB, 10),
-        2025: (JAN, 29),
     }
 
 
@@ -245,74 +221,47 @@ class SingaporeHinduHolidays(_CustomHinduHolidays):
         2023: (NOV, 12),
         2024: (OCT, 31),
         2025: (OCT, 20),
+        2026: (NOV, 8),
     }
 
 
 class SingaporeIslamicHolidays(_CustomIslamicHolidays):
-    # Hari Raya Haji
+    EID_AL_ADHA_DATES_CONFIRMED_YEARS = (2001, 2026)
     EID_AL_ADHA_DATES = {
         2001: (MAR, 6),
         2002: (FEB, 23),
         2003: (FEB, 12),
-        2004: (FEB, 1),
-        2005: (JAN, 21),
-        2006: ((JAN, 10), (DEC, 31)),
-        2007: (DEC, 20),
-        2008: (DEC, 8),
-        2009: (NOV, 27),
         2010: (NOV, 17),
-        2011: (NOV, 6),
-        2012: (OCT, 26),
-        2013: (OCT, 15),
         2014: (OCT, 5),
         2015: (SEP, 24),
         2016: (SEP, 12),
-        2017: (SEP, 1),
         2018: (AUG, 22),
-        2019: (AUG, 11),
-        2020: (JUL, 31),
-        2021: (JUL, 20),
         2022: (JUL, 10),
         2023: (JUN, 29),
         2024: (JUN, 17),
         2025: (JUN, 7),
     }
 
-    # Hari Raya Puasa
+    EID_AL_FITR_DATES_CONFIRMED_YEARS = (2001, 2026)
     EID_AL_FITR_DATES = {
-        2001: (DEC, 16),
         2002: (DEC, 6),
-        2003: (NOV, 25),
-        2004: (NOV, 14),
-        2005: (NOV, 3),
         2006: (OCT, 24),
-        2007: (OCT, 13),
-        2008: (OCT, 1),
-        2009: (SEP, 20),
-        2010: (SEP, 10),
-        2011: (AUG, 30),
-        2012: (AUG, 19),
-        2013: (AUG, 8),
-        2014: (JUL, 28),
-        2015: (JUL, 17),
-        2016: (JUL, 6),
-        2017: (JUN, 25),
-        2018: (JUN, 15),
         2019: (JUN, 5),
-        2020: (MAY, 24),
-        2021: (MAY, 13),
         2022: (MAY, 3),
         2023: (APR, 22),
-        2024: (APR, 10),
         2025: (MAR, 31),
+        2026: (MAR, 21),
     }
 
 
 class SingaporeStaticHolidays:
-    """
-    References
-     - https://www.mom.gov.sg/newsroom/press-releases/2015/sg50-public-holiday-on-7-august-2015
-     - https://www.straitstimes.com/singapore/politics/singapore-presidential-election-2023-polling-day-on-sept-1-nomination-day-on-aug-22
+    """Singapore special holidays.
+
+    References:
+        * <https://web.archive.org/web/20241015024728/https://www.mom.gov.sg/newsroom/press-releases/2015/sg50-public-holiday-on-7-august-2015>
+        * <https://web.archive.org/web/20240809195048/https://www.mom.gov.sg/newsroom/press-releases/2020/0624-public-holiday-on-polling-day---10-july-2020>
+        * <https://web.archive.org/web/20241113193000/https://www.mom.gov.sg/newsroom/press-releases/2023/0822-public-holiday-on-polling-day---1-sep-2023>
+        * <https://web.archive.org/web/20250424145037/https://www.mom.gov.sg/newsroom/press-releases/2025/0415-public-holiday-on-polling-day_3-may-2025>
     """
 
     # Polling Day.
@@ -329,6 +278,7 @@ class SingaporeStaticHolidays:
         ),
         2020: (JUL, 10, polling_day_name),
         2023: (SEP, 1, polling_day_name),
+        2025: (MAY, 3, polling_day_name),
     }
 
     special_public_holidays_observed = {

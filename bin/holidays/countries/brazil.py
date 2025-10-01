@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -20,17 +20,20 @@ from holidays.observed_holiday_base import ObservedHolidayBase, TUE_WED_THU_TO_N
 
 
 class Brazil(ObservedHolidayBase, ChristianHolidays, InternationalHolidays):
-    """
+    """Brazil holidays.
+
     References:
-        - https://pt.wikipedia.org/wiki/Feriados_no_Brasil
-        - `Decreto n. 155-B, de 14.01.1890 <https://www2.camara.leg.br/legin/fed/decret/1824-1899/decreto-155-b-14-janeiro-1890-517534-publicacaooriginal-1-pe.html>`_
-        - `Decreto n. 19.488, de 15.12.1930 <https://www2.camara.leg.br/legin/fed/decret/1930-1939/decreto-19488-15-dezembro-1930-508040-republicacao-85201-pe.html>`_
-        - `Lei n. 662, de 6.04.1949 <https://www2.camara.leg.br/legin/fed/lei/1940-1949/lei-662-6-abril-1949-347136-publicacaooriginal-1-pl.html>`_
-        - `Lei n. 14.759, de 21.12.2023 <https://www2.camara.leg.br/legin/fed/lei/2023/lei-14759-21-dezembro-2023-795091-publicacaooriginal-170522-pl.html>`_
+        * <https://pt.wikipedia.org/wiki/Feriados_no_Brasil>
+        * [Decreto n. 155-B, de 14.01.1890](https://web.archive.org/web/20241226133739/https://www2.camara.leg.br/legin/fed/decret/1824-1899/decreto-155-b-14-janeiro-1890-517534-publicacaooriginal-1-pe.html)
+        * [Decreto n. 19.488, de 15.12.1930](https://web.archive.org/web/20241006041503/http://camara.leg.br/legin/fed/decret/1930-1939/decreto-19488-15-dezembro-1930-508040-republicacao-85201-pe.html)
+        * [Lei n. 662, de 6.04.1949](https://web.archive.org/web/20240913060643/https://www2.camara.leg.br/legin/fed/lei/1940-1949/lei-662-6-abril-1949-347136-publicacaooriginal-1-pl.html)
+        * [Lei n. 14.759, de 21.12.2023](https://web.archive.org/web/20250402234552/https://www2.camara.leg.br/legin/fed/lei/2023/lei-14759-21-dezembro-2023-795091-publicacaooriginal-170522-pl.html)
     """
 
     country = "BR"
     default_language = "pt_BR"
+    # Decreto n. 155-B, de 14.01.1890
+    start_year = 1890
     subdivisions = (
         "AC",
         "AL",
@@ -89,7 +92,6 @@ class Brazil(ObservedHolidayBase, ChristianHolidays, InternationalHolidays):
         "São Paulo": "SP",
         "Tocantins": "TO",
     }
-
     supported_categories = (OPTIONAL, PUBLIC)
     supported_languages = ("en_US", "pt_BR", "uk")
 
@@ -99,10 +101,6 @@ class Brazil(ObservedHolidayBase, ChristianHolidays, InternationalHolidays):
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
-        # Decreto n. 155-B, de 14.01.1890
-        if self._year <= 1889:
-            return None
-
         # Universal Fraternization Day.
         self._add_new_years_day(tr("Confraternização Universal"))
 
@@ -158,9 +156,6 @@ class Brazil(ObservedHolidayBase, ChristianHolidays, InternationalHolidays):
             self._add_christmas_day(tr("Natal"))
 
     def _populate_optional_holidays(self):
-        if self._year <= 1889:
-            return None
-
         # Carnival.
         name = tr("Carnaval")
         self._add_carnival_monday(name)

@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -18,15 +18,17 @@ from holidays.holiday_base import HolidayBase
 
 
 class Madagascar(HolidayBase, ChristianHolidays, InternationalHolidays):
-    """
+    """Madagascar holidays.
+
     References:
-        - https://www.officeholidays.com/countries/madagascar
-        - https://www.timeanddate.com/holidays/madagascar/
+        * <https://web.archive.org/web/20250114061412/https://www.officeholidays.com/countries/madagascar>
+        * <https://web.archive.org/web/20250413112126/https://www.timeanddate.com/holidays/madagascar/>
     """
 
     country = "MG"
     default_language = "mg"
     supported_languages = ("en_US", "mg", "uk")
+    start_year = 1947
 
     def __init__(self, *args, **kwargs):
         ChristianHolidays.__init__(self)
@@ -34,10 +36,6 @@ class Madagascar(HolidayBase, ChristianHolidays, InternationalHolidays):
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
-        # Observed since 1947
-        if self._year <= 1946:
-            return None
-
         # New Year's Day.
         self._add_new_years_day(tr("Taom-baovao"))
 

@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -13,7 +13,7 @@
 from gettext import gettext as tr
 
 from holidays.calendars import _CustomIslamicHolidays
-from holidays.calendars.gregorian import JAN, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC
+from holidays.calendars.gregorian import JAN, MAR, APR, MAY, JUL, AUG, SEP, OCT, DEC
 from holidays.calendars.julian import JULIAN_CALENDAR
 from holidays.groups import (
     ChristianHolidays,
@@ -27,53 +27,16 @@ from holidays.observed_holiday_base import ObservedHolidayBase, SAT_SUN_TO_NEXT_
 class Kazakhstan(
     ObservedHolidayBase, ChristianHolidays, InternationalHolidays, IslamicHolidays, StaticHolidays
 ):
-    """
-    References:
-        - https://en.wikipedia.org/wiki/Public_holidays_in_Kazakhstan
-        - https://egov.kz/cms/en/articles/holidays-calend
-        - https://adilet.zan.kz/kaz/docs/Z010000267%5F/history
-        - https://adilet.zan.kz/kaz/docs/Z990000493%5F#z63
+    """Kazakhstan holidays.
 
-    Substituted holidays:
-        - `2000 <https://adilet.zan.kz/kaz/docs/P000000642%5F>`_
-        - 2001: `<https://adilet.zan.kz/kaz/docs/P010000282%5F>`_,
-                `<https://adilet.zan.kz/kaz/docs/P010000515%5F>`_,
-                `<https://adilet.zan.kz/kaz/docs/P010001604%5F>`_
-        - `2002 <https://adilet.zan.kz/kaz/docs/P020000466%5F>`_
-        - 2003: `<https://adilet.zan.kz/kaz/docs/P030000338%5F>`_,
-                `<https://adilet.zan.kz/kaz/docs/P030001166%5F>`_
-        - 2005: `<https://adilet.zan.kz/kaz/docs/P050000142%5F>`_,
-                `<https://adilet.zan.kz/kaz/docs/P050000751%5F>`_,
-                `<https://adilet.zan.kz/kaz/docs/P050000949%5F>`_
-        - 2006: `<https://adilet.zan.kz/kaz/docs/P050001309%5F>`_,
-                `<https://adilet.zan.kz/kaz/docs/P060000277%5F>`_
-        - 2007: `<https://adilet.zan.kz/kaz/docs/P070000148%5F>`_,
-                `<https://adilet.zan.kz/kaz/docs/P070000165%5F>`_,
-                `<https://adilet.zan.kz/kaz/docs/P070000713%5F>`_,
-                `<https://adilet.zan.kz/kaz/docs/P070000925%5F>`_,
-                `<https://adilet.zan.kz/kaz/docs/P070001113%5F>`_
-        - `2008 <https://adilet.zan.kz/kaz/docs/P080000364%5F>`_
-        - `2009 <https://adilet.zan.kz/kaz/docs/P090001936%5F>`_
-        - 2010: `<https://adilet.zan.kz/kaz/docs/P090002216%5F>`_,
-                `<https://adilet.zan.kz/kaz/docs/P100000637%5F>`_
-        - 2011: `<https://adilet.zan.kz/kaz/docs/P1100000167>`_,
-                `<https://adilet.zan.kz/kaz/docs/P1100000948>`_
-        - 2012: `<https://adilet.zan.kz/kaz/docs/P1200000268>`_,
-                `<https://adilet.zan.kz/kaz/docs/P1200000458>`_,
-                `<https://adilet.zan.kz/kaz/docs/P1200001538>`_
-        - 2013: `<https://adilet.zan.kz/kaz/docs/P1300000345>`_,
-                `<https://adilet.zan.kz/kaz/docs/P1300001068>`_,
-                `<https://adilet.zan.kz/kaz/docs/P1300001322>`_
-        - `2014 <https://adilet.zan.kz/kaz/docs/P1400000365>`_
-        - `2016 <https://adilet.zan.kz/kaz/docs/P1600000067>`_
-        - `2017 <https://adilet.zan.kz/kaz/docs/P1700000005>`_
-        - `2018 <https://adilet.zan.kz/kaz/docs/P1700000864>`_
-        - `2019 <https://adilet.zan.kz/kaz/docs/P1800000888>`_
-        - `2020 <https://adilet.zan.kz/kaz/docs/P1900000820>`_
-        - `2021 <https://adilet.zan.kz/kaz/docs/P2000000930>`_
-        - `2022 <https://adilet.zan.kz/kaz/docs/P2200000796>`_
-        - `2023 <https://adilet.zan.kz/kaz/docs/P2300000326>`_
-        - `2024 <https://adilet.zan.kz/kaz/docs/G24G0000109>`_
+    References:
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_Kazakhstan>
+        * <https://web.archive.org/web/20241225060133/https://egov.kz/cms/en/articles/holidays-calend>
+        * <https://web.archive.org/web/20240828112119/https://adilet.zan.kz/kaz/docs/Z010000267_/history>
+        * <https://web.archive.org/web/20240918145208/https://adilet.zan.kz/kaz/docs/Z990000493_#z63>
+
+    Islamic holidays:
+        * [2025](https://web.archive.org/web/20250429084936/https://qazinform.com/news/first-day-of-ramadan-to-fall-on-march-1-2025-ca393f)
     """
 
     country = "KZ"
@@ -85,21 +48,27 @@ class Kazakhstan(
     # %s (observed, estimated).
     observed_estimated_label = tr("%s (қайта белгіленген демалыс, бағаланған)")
     supported_languages = ("en_US", "kk", "uk")
+    # Kazakhstan declared its sovereignty on 25 October 1990.
+    start_year = 1991
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, islamic_show_estimated: bool = True, **kwargs):
+        """
+        Args:
+            islamic_show_estimated:
+                Whether to add "estimated" label to Islamic holidays name
+                if holiday date is estimated.
+        """
         ChristianHolidays.__init__(self, JULIAN_CALENDAR)
         InternationalHolidays.__init__(self)
-        IslamicHolidays.__init__(self, KazakhstanIslamicHolidays)
+        IslamicHolidays.__init__(
+            self, cls=KazakhstanIslamicHolidays, show_estimated=islamic_show_estimated
+        )
         StaticHolidays.__init__(self, KazakhstanStaticHolidays)
         kwargs.setdefault("observed_rule", SAT_SUN_TO_NEXT_WORKDAY)
         kwargs.setdefault("observed_since", 2002)
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
-        # Kazakhstan declared its sovereignty on 25 October 1990
-        if self._year <= 1990:
-            return None
-
         dts_observed = set()
 
         # New Year's Day.
@@ -115,7 +84,7 @@ class Kazakhstan(
         dts_observed.add(self._add_womens_day(tr("Халықаралық әйелдер күні")))
 
         if self._year >= 2002:
-            # Nowruz holiday.
+            # Nowruz Holiday.
             name = tr("Наурыз мейрамы")
             dts_observed.add(self._add_holiday_mar_22(name))
             if self._year >= 2010:
@@ -177,30 +146,69 @@ class KAZ(Kazakhstan):
 
 
 class KazakhstanIslamicHolidays(_CustomIslamicHolidays):
+    EID_AL_ADHA_DATES_CONFIRMED_YEARS = (2006, 2025)
     EID_AL_ADHA_DATES = {
         2006: (JAN, 10),
-        2007: (DEC, 20),
-        2008: (DEC, 8),
-        2009: (NOV, 27),
-        2010: (NOV, 16),
-        2011: (NOV, 6),
-        2012: (OCT, 26),
-        2013: (OCT, 15),
-        2014: (OCT, 4),
         2015: (SEP, 24),
         2016: (SEP, 12),
-        2017: (SEP, 1),
-        2018: (AUG, 21),
-        2019: (AUG, 11),
-        2020: (JUL, 31),
-        2021: (JUL, 20),
-        2022: (JUL, 9),
-        2023: (JUN, 28),
-        2024: (JUN, 16),
     }
 
 
 class KazakhstanStaticHolidays:
+    """Kazakhstan special holidays.
+
+    References:
+        * [2000](https://web.archive.org/web/20250428203427/https://adilet.zan.kz/kaz/docs/P000000642_)
+        * 2001:
+            * <https://web.archive.org/web/20200221115328/http://adilet.zan.kz:80/kaz/docs/P010000282_>
+            * <https://web.archive.org/web/20250428203415/https://adilet.zan.kz/kaz/docs/P010000515_>
+            * <https://web.archive.org/web/20250428203411/https://adilet.zan.kz/kaz/docs/P010001604_>
+        * [2002](https://web.archive.org/web/20250428203447/https://adilet.zan.kz/kaz/docs/P020000466_)
+        * 2003:
+            * <https://web.archive.org/web/20250428203424/https://adilet.zan.kz/kaz/docs/P030000338_>
+            * <https://web.archive.org/web/20240913114351/https://www.adilet.zan.kz/kaz/docs/P030001166_>
+        * 2005:
+            * <https://web.archive.org/web/20180101044854/http://adilet.zan.kz:80/kaz/docs/P050000142_>
+            * <https://web.archive.org/web/20250428203454/https://adilet.zan.kz/kaz/docs/P050000751_>
+            * <https://web.archive.org/web/20250428204009/https://adilet.zan.kz/kaz/docs/P050000949_>
+        * 2006:
+            * <https://web.archive.org/web/20250428204118/https://adilet.zan.kz/kaz/docs/P050001309_>
+            * <https://web.archive.org/web/20250428204001/https://adilet.zan.kz/kaz/docs/P060000277_>
+        * 2007:
+            * <https://web.archive.org/web/20250428204133/https://adilet.zan.kz/kaz/docs/P070000148_>
+            * <https://web.archive.org/web/20250428204131/https://adilet.zan.kz/kaz/docs/P070000165_>
+            * <https://web.archive.org/web/20250428204025/https://adilet.zan.kz/kaz/docs/P070000713_>
+            * <https://web.archive.org/web/20250428204150/https://adilet.zan.kz/kaz/docs/P070000925_>
+            * <https://web.archive.org/web/20250428204033/https://adilet.zan.kz/kaz/docs/P070001113_>
+        * [2008](https://web.archive.org/web/20250428204634/https://adilet.zan.kz/kaz/docs/P080000364_)
+        * [2009](https://web.archive.org/web/20250428204627/https://adilet.zan.kz/kaz/docs/P090001936_)
+        * 2010:
+            * <https://web.archive.org/web/20250428204638/https://adilet.zan.kz/kaz/docs/P090002216_>
+            * <https://web.archive.org/web/20250428204659/https://adilet.zan.kz/kaz/docs/P100000637_>
+        * 2011:
+            * <https://web.archive.org/web/20170602150014/http://adilet.zan.kz:80/kaz/docs/P1100000167>
+            * <https://web.archive.org/web/20250428204646/https://adilet.zan.kz/kaz/docs/P1100000948>
+        * 2012:
+            * <https://web.archive.org/web/20250429081405/https://adilet.zan.kz/kaz/docs/P1200000268>
+            * <https://web.archive.org/web/20250428204720/https://adilet.zan.kz/kaz/docs/P1200000458>
+            * <https://web.archive.org/web/20250428204647/https://adilet.zan.kz/kaz/docs/P1200001538>
+        * 2013:
+            * <https://web.archive.org/web/20130424070807/http://adilet.zan.kz/kaz/docs/P1300000345>
+            * <https://web.archive.org/web/20250428204654/https://adilet.zan.kz/kaz/docs/P1300001068>
+            * <https://web.archive.org/web/20131213045017/http://adilet.zan.kz/kaz/docs/P1300001322>
+        * [2014](https://web.archive.org/web/20200715173002/http://adilet.zan.kz/kaz/docs/P1400000365)
+        * [2016](https://web.archive.org/web/20200225220136/http://adilet.zan.kz/kaz/docs/P1600000067)
+        * [2017](https://web.archive.org/web/20200203183402/http://adilet.zan.kz/kaz/docs/P1700000005)
+        * [2018](https://web.archive.org/web/20200226012057/http://adilet.zan.kz/kaz/docs/P1700000864)
+        * [2019](https://web.archive.org/web/20200630083024/http://adilet.zan.kz/kaz/docs/P1800000888)
+        * [2020](https://web.archive.org/web/20221023205506/https://adilet.zan.kz/kaz/docs/P1900000820)
+        * [2021](https://web.archive.org/web/20250428204757/https://adilet.zan.kz/kaz/docs/P2000000930)
+        * [2022](https://web.archive.org/web/20250428204753/https://adilet.zan.kz/kaz/docs/P2200000796)
+        * [2023](https://web.archive.org/web/20230928205344/https://adilet.zan.kz/kaz/docs/P2300000326)
+        * [2024](https://web.archive.org/web/20250108222408/https://adilet.zan.kz/kaz/docs/G24G0000109)
+        * [2025](https://web.archive.org/web/20250428203311/https://adilet.zan.kz/kaz/docs/G24G0000436)
+    """
+
     # Substituted date format.
     substituted_date_format = tr("%d.%m.%Y")
     # Day off (substituted from %s).
@@ -275,7 +283,6 @@ class KazakhstanStaticHolidays:
         2019: (MAY, 10, MAY, 4),
         2020: (
             (JAN, 3, JAN, 5),
-            (MAY, 8, MAY, 11),
             (DEC, 18, DEC, 20),
         ),
         2021: (JUL, 5, JUL, 3),
@@ -286,8 +293,10 @@ class KazakhstanStaticHolidays:
         ),
         2023: (JUL, 7, JUL, 1),
         2024: (MAY, 8, MAY, 4),
+        2025: (JAN, 3, JAN, 5),
     }
 
     special_public_holidays_observed = {
-        2020: (MAY, 8, MAY, 11),
+        # Victory Day.
+        2020: (MAY, 8, tr("Жеңіс күні")),
     }

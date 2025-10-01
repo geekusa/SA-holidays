@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -13,7 +13,7 @@
 from gettext import gettext as tr
 
 from holidays.calendars import _CustomIslamicHolidays
-from holidays.calendars.gregorian import JAN, MAR, APR, MAY, JUN, JUL, AUG
+from holidays.calendars.gregorian import JAN, MAR
 from holidays.calendars.julian import JULIAN_CALENDAR
 from holidays.groups import (
     ChristianHolidays,
@@ -27,11 +27,12 @@ from holidays.observed_holiday_base import ObservedHolidayBase, SAT_SUN_TO_NEXT_
 class Albania(
     ObservedHolidayBase, ChristianHolidays, InternationalHolidays, IslamicHolidays, StaticHolidays
 ):
-    """
+    """Albania holidays.
+
     References:
-        - https://en.wikipedia.org/wiki/Public_holidays_in_Albania
-        - `Law No. 7651 <http://kqk.gov.al/sites/default/files/publikime/ligj_7651_-_per_festat_zyrtare_e_ditet_perkujtimore.pdf>`_
-        - `Holidays for 2018–2024 <https://www.bankofalbania.org/Shtypi/Kalendari_i_festave_zyrtare_2024/>`_
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_Albania>
+        * [Law No. 7651](https://web.archive.org/web/20250119183539/http://kqk.gov.al/sites/default/files/publikime/ligj_7651_-_per_festat_zyrtare_e_ditet_perkujtimore.pdf)
+        * [Holidays for 2018-2024](https://web.archive.org/web/20250119183537/https://www.bankofalbania.org/Shtypi/Kalendari_i_festave_zyrtare_2024/)
     """
 
     country = "AL"
@@ -43,20 +44,26 @@ class Albania(
     # %s (observed, estimated).
     observed_estimated_label = tr("%s (ditë pushimi e shtyrë, e vlerësuar)")
     supported_languages = ("en_US", "sq", "uk")
+    # Law No. 7651 from 21.12.1992.
+    start_year = 1993
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, islamic_show_estimated: bool = True, **kwargs):
+        """
+        Args:
+            islamic_show_estimated:
+                Whether to add "estimated" label to Islamic holidays name
+                if holiday date is estimated.
+        """
         ChristianHolidays.__init__(self)
         InternationalHolidays.__init__(self)
-        IslamicHolidays.__init__(self, AlbaniaIslamicHolidays)
+        IslamicHolidays.__init__(
+            self, cls=AlbaniaIslamicHolidays, show_estimated=islamic_show_estimated
+        )
         StaticHolidays.__init__(self, AlbaniaStaticHolidays)
         kwargs.setdefault("observed_rule", SAT_SUN_TO_NEXT_WORKDAY)
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
-        # Law No. 7651 from 21.12.1992.
-        if self._year <= 1992:
-            return None
-
         dts_observed = set()
 
         # New Year's Day.
@@ -126,27 +133,8 @@ class ALB(Albania):
 
 
 class AlbaniaIslamicHolidays(_CustomIslamicHolidays):
-    EID_AL_ADHA_DATES = {
-        2018: (AUG, 21),
-        2019: (AUG, 11),
-        2020: (JUL, 31),
-        2021: (JUL, 20),
-        2022: (JUL, 9),
-        2023: (JUN, 28),
-        2024: (JUN, 16),
-        2025: (JUN, 6),
-    }
-
-    EID_AL_FITR_DATES = {
-        2018: (JUN, 15),
-        2019: (JUN, 4),
-        2020: (MAY, 24),
-        2021: (MAY, 13),
-        2022: (MAY, 2),
-        2023: (APR, 21),
-        2024: (APR, 10),
-        2025: (MAR, 30),
-    }
+    EID_AL_ADHA_DATES_CONFIRMED_YEARS = (2018, 2025)
+    EID_AL_FITR_DATES_CONFIRMED_YEARS = (2018, 2025)
 
 
 class AlbaniaStaticHolidays:

@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -16,15 +16,19 @@ from holidays.observed_holiday_base import ObservedHolidayBase, SUN_TO_NEXT_MON
 
 
 class SouthAfrica(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, StaticHolidays):
-    """
-    https://www.gov.za/about-sa/public-holidays
-    https://en.wikipedia.org/wiki/Public_holidays_in_South_Africa
-    https://www.gov.za/speeches/president-cyril-ramaphosa-progress-economic-recovery-30-oct-2023-0000
-    https://www.gov.za/documents/notices/public-holidays-act-declaration-29-may-2024-public-holiday-23-feb-2024
+    """South Africa holidays.
+
+    References:
+        * <https://web.archive.org/web/20250424073852/https://www.gov.za/about-sa/public-holidays>
+        * <https://en.wikipedia.org/wiki/Public_holidays_in_South_Africa>
+        * <https://web.archive.org/web/20240715110800/https://www.gov.za/speeches/president-cyril-ramaphosa-progress-economic-recovery-30-oct-2023-0000>
+        * <https://web.archive.org/web/20250427184315/https://www.gov.za/documents/notices/public-holidays-act-declaration-29-may-2024-public-holiday-23-feb-2024>
     """
 
     country = "ZA"
     observed_label = "%s (observed)"
+    # Observed since 1910, with a few name changes
+    start_year = 1910
 
     def __init__(self, *args, **kwargs):
         ChristianHolidays.__init__(self)
@@ -35,10 +39,6 @@ class SouthAfrica(ObservedHolidayBase, ChristianHolidays, InternationalHolidays,
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
-        # Observed since 1910, with a few name changes
-        if self._year <= 1909:
-            return None
-
         self._add_observed(self._add_new_years_day("New Year's Day"))
 
         self._add_good_friday("Good Friday")
@@ -152,6 +152,6 @@ class SouthAfricaStaticHolidays:
     }
 
     special_public_holidays_observed = {
-        # Special holiday http://tiny.cc/za_y2k
+        # https://web.archive.org/web/20120328122217/http://www.info.gov.za/speeches/1999/991028409p1002.htm
         2000: (JAN, 3, y2k_changeover),
     }

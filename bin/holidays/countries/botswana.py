@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -21,15 +21,18 @@ from holidays.observed_holiday_base import (
 
 
 class Botswana(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, StaticHolidays):
-    """
-    https://www.gov.bw/public-holidays
-    https://publicholidays.africa/botswana/2021-dates/
-    https://www.timeanddate.com/holidays/botswana/
-    http://www.ilo.org/dyn/travail/docs/1766/Public%20Holidays%20Act.pdf
+    """Botswana holidays.
+
+    References:
+        * <https://web.archive.org/web/20250126165541/https://www.gov.bw/public-holidays>
+        * <https://web.archive.org/web/20240303024114/https://publicholidays.africa/botswana/2021-dates/>
+        * <https://web.archive.org/web/20250126135243/https://www.timeanddate.com/holidays/botswana/>
+        * <https://web.archive.org/web/20231103081712/http://www.ilo.org/dyn/travail/docs/1766/Public%20Holidays%20Act.pdf>
     """
 
     country = "BW"
     observed_label = "%s (observed)"
+    start_year = 1966
 
     def __init__(self, *args, **kwargs):
         ChristianHolidays.__init__(self)
@@ -40,9 +43,6 @@ class Botswana(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, St
         super().__init__(*args, **kwargs)
 
     def _populate_public_holidays(self):
-        if self._year <= 1965:
-            return None
-
         self._add_observed(self._add_new_years_day("New Year's Day"), rule=SUN_TO_NEXT_TUE)
         self._add_observed(self._add_new_years_day_two("New Year's Day Holiday"))
 

@@ -4,7 +4,7 @@
 #  specific sets of holidays on the fly. It aims to make determining whether a
 #  specific date is a holiday as fast and flexible as possible.
 #
-#  Authors: Vacanza Team and individual contributors (see AUTHORS file)
+#  Authors: Vacanza Team and individual contributors (see CONTRIBUTORS file)
 #           dr-prodigy <dr.prodigy.github@gmail.com> (c) 2017-2023
 #           ryanss <ryanssdev@icloud.com> (c) 2014-2017
 #  Website: https://github.com/vacanza/holidays
@@ -24,30 +24,33 @@ from holidays.observed_holiday_base import (
 
 
 class NewZealand(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, StaticHolidays):
+    """New Zealand holidays."""
+
     country = "NZ"
     observed_label = "%s (observed)"
+    start_year = 1894
     subdivisions = (
         # ISO 3166-2: Regions and Special Island Authorities.
         # https://en.wikipedia.org/wiki/ISO_3166-2:NZ
-        "AUK",  # Auckland / Tāmaki-makaurau
-        "BOP",  # Bay of Plenty / Toi Moana
-        "CAN",  # Canterbury / Waitaha
-        "CIT",  # Chatham Islands Territory / Wharekauri
-        "GIS",  # Gisborne / Te Tairāwhiti
-        "HKB",  # Hawke's Bay / Te Matau a Māui
-        "MBH",  # Marlborough
-        "MWT",  # Manawatū-Whanganui / Manawatū Whanganui
-        "NSN",  # Nelson / Whakatū
-        "NTL",  # Northland / Te Tai tokerau
-        "OTA",  # Otago / Ō Tākou
-        "STL",  # Southland / Te Taiao Tonga
-        "TAS",  # Tasman / Te tai o Aorere
-        "TKI",  # Taranaki
-        "WGN",  # Greater Wellington / Te Pane Matua Taiao
-        "WKO",  # Waikato
-        "WTC",  # West Coast / Te Tai o Poutini
+        "AUK",  # Auckland (Tāmaki-Makaurau).
+        "BOP",  # Bay of Plenty (Toi Moana).
+        "CAN",  # Canterbury (Waitaha).
+        "CIT",  # Chatham Islands Territory (Wharekauri).
+        "GIS",  # Gisborne (Te Tairāwhiti).
+        "HKB",  # Hawke's Bay (Te Matau-a-Māui).
+        "MBH",  # Marlborough (Manawatū-Whanganui).
+        "MWT",  # Manawatū-Whanganui (Manawatū Whanganui).
+        "NSN",  # Nelson (Whakatū).
+        "NTL",  # Northland (Te Taitokerau).
+        "OTA",  # Otago (Ō Tākou).
+        "STL",  # Southland (Te Taiao Tonga).
+        "TAS",  # Tasman (Te tai o Aorere).
+        "TKI",  # Taranaki (Taranaki).
+        "WGN",  # Greater Wellington (Te Pane Matua Taiao).
+        "WKO",  # Waikato (Waikato).
+        "WTC",  # West Coast (Te Tai o Poutini).
         # Subregions:
-        # https://www.govt.nz/browse/work/public-holidays-and-work/public-holidays-and-anniversary-dates/
+        # https://web.archive.org/web/20250415230521/https://www.govt.nz/browse/work/public-holidays-and-work/public-holidays-and-anniversary-dates/
         "South Canterbury",
     )
     subdivisions_aliases = {
@@ -121,9 +124,7 @@ class NewZealand(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, 
         super().__init__(*args, **kwargs)
 
     def _get_nearest_monday(self, *args) -> Optional[date]:
-        dt = args if len(args) > 1 else args[0]
-        dt = dt if isinstance(dt, date) else date(self._year, *dt)
-        return self._get_observed_date(dt, rule=ALL_TO_NEAREST_MON)
+        return self._get_observed_date(date(self._year, *args), rule=ALL_TO_NEAREST_MON)
 
     def _populate_public_holidays(self):
         # Bank Holidays Act 1873
@@ -136,9 +137,6 @@ class NewZealand(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, 
         # Waitangi Day Act 1960, 1976
         # Sovereign's Birthday Observance Act 1937, 1952
         # Holidays Act 1981, 2003
-
-        if self._year <= 1893:
-            return None
 
         # New Year's Day
         self._add_observed(self._add_new_years_day("New Year's Day"), rule=SAT_SUN_TO_NEXT_MON_TUE)
@@ -177,7 +175,7 @@ class NewZealand(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, 
             elif self._year >= 1912:
                 self._add_holiday_jun_3(name)  # George V
             else:
-                # http://paperspast.natlib.govt.nz/cgi-bin/paperspast?a=d&d=NZH19091110.2.67
+                # https://web.archive.org/web/20250427125629/https://paperspast.natlib.govt.nz/cgi-bin/paperspast?a=d&d=NZH19091110.2.67
                 self._add_holiday_nov_9(name)  # Edward VII
 
         # Matariki
@@ -214,8 +212,8 @@ class NewZealand(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, 
             2051: (JUN, 30),
             2052: (JUN, 21),
         }
-        if self._year in dates_obs:
-            self._add_holiday("Matariki", dates_obs[self._year])
+        if dt := dates_obs.get(self._year):
+            self._add_holiday("Matariki", dt)
 
         # Labour Day
         if self._year >= 1900:
@@ -258,12 +256,9 @@ class NewZealand(ObservedHolidayBase, ChristianHolidays, InternationalHolidays, 
 
     def _populate_subdiv_ntl_public_holidays(self):
         if 1964 <= self._year <= 1973:
-            name = "Waitangi Day"
-            dt = (FEB, 6)
+            self._add_holiday("Waitangi Day", self._get_nearest_monday(FEB, 6))
         else:
-            name = "Auckland Anniversary Day"
-            dt = (JAN, 29)
-        self._add_holiday(name, self._get_nearest_monday(dt))
+            self._add_holiday("Auckland Anniversary Day", self._get_nearest_monday(JAN, 29))
 
     def _populate_subdiv_ota_public_holidays(self):
         # there is no easily determined single day of local observance?!?!
