@@ -2,7 +2,7 @@
 
 This supporting add-on provides one command -- `holidays`. A wrapper for python-holidays providing holidays, business days, and business holidays when presented a \_time (or specified) field.
 
-Version: 1.3.0
+Version: 1.4.0
 
 Command reference:
 
@@ -108,4 +108,8 @@ Currently supports 154 countries and 4 financial markets.
 `* | holidays market=NYSE`
 
 ### Release Notes
+v1.4.0:
+Updated splunklib from 2.0.2 to 2.1.1. Updated python-holidays from 0.61 to 0.81.
+
+v1.3.0:
 Updated splunklib from 1.7.3 to 2.0.2. Updated python-holidays from 0.21.13 to migrated holidays 0.61. Added new market option to find financial market holidays.
